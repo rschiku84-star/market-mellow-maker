@@ -24,6 +24,7 @@ interface ProductGridProps {
 }
 
 const ProductGrid = ({ products, onDelete, onStatusChange }: ProductGridProps) => {
+  const navigate = useNavigate();
   if (products.length === 0) {
     return (
       <div className="text-center py-16">
