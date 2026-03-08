@@ -12,6 +12,7 @@ import ProductsPage from "./pages/ProductsPage";
 import NewProductPage from "./pages/NewProductPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import AIStudioPage from "./pages/AIStudioPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
