@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const CTASection = () => {
   return (
@@ -31,9 +32,11 @@ const CTASection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-base gap-2 px-10 shadow-lg shadow-primary/25">
-              Get Started — It's Free
-              <ArrowRight className="w-5 h-5" />
+            <Button asChild size="lg" className="text-base gap-2 px-10 shadow-lg shadow-primary/25">
+              <Link to="/signup">
+                Get Started — It's Free
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </Button>
           </div>
         </motion.div>
