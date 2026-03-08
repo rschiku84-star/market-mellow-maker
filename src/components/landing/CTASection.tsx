@@ -1,11 +1,12 @@
+import { forwardRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
-const CTASection = () => {
+const CTASection = forwardRef<HTMLElement>((_, ref) => {
   return (
-    <section className="py-24 bg-hero relative overflow-hidden">
+    <section ref={ref} className="py-24 bg-hero relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-primary/10 blur-[120px]" />
       <div className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full bg-accent/10 blur-[100px]" />
 
@@ -43,6 +44,8 @@ const CTASection = () => {
       </div>
     </section>
   );
-};
+});
+
+CTASection.displayName = "CTASection";
 
 export default CTASection;
