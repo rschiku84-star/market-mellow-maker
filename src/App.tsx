@@ -12,6 +12,7 @@ import ProductsPage from "./pages/ProductsPage";
 import NewProductPage from "./pages/NewProductPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import AIStudioPage from "./pages/AIStudioPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
               <Route index element={<DashboardOverview />} />
               <Route path="products" element={<ProductsPage />} />
               <Route path="products/new" element={<NewProductPage />} />
+              <Route path="ai-studio" element={<AIStudioPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
