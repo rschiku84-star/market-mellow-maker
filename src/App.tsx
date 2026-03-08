@@ -39,6 +39,7 @@ const App = () => (
               <Route index element={<DashboardOverview />} />
               <Route path="products" element={<ProductsPage />} />
               <Route path="products/new" element={<NewProductPage />} />
+              <Route path="ai-studio" element={<AIStudioPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
