@@ -19,6 +19,7 @@ import SocialMediaPage from "./pages/SocialMediaPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
+import PublicProductsPage from "./pages/PublicProductsPage";
 
 const queryClient = new QueryClient();
 
