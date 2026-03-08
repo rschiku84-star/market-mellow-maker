@@ -1,6 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState, useCallback } from "react";
 
 export interface Product {
   id: string;
@@ -13,87 +11,85 @@ export interface Product {
   createdAt: Date;
 }
 
+const SAMPLE_PRODUCTS: Product[] = [
+  {
+    id: "1",
+    name: "Premium T-Shirt",
+    description: "High-quality cotton t-shirt with modern fit and premium stitching.",
+    price: 29.99,
+    category: "Fashion",
+    status: "active",
+    images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500"],
+    createdAt: new Date("2026-03-01"),
+  },
+  {
+    id: "2",
+    name: "Wireless Headphones",
+    description: "Noise-cancelling Bluetooth headphones with 30-hour battery life.",
+    price: 89.99,
+    category: "Electronics",
+    status: "active",
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"],
+    createdAt: new Date("2026-03-02"),
+  },
+  {
+    id: "3",
+    name: "Smart Watch",
+    description: "Fitness tracker with heart rate monitor, GPS, and water resistance.",
+    price: 199.99,
+    category: "Gadgets",
+    status: "active",
+    images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"],
+    createdAt: new Date("2026-03-03"),
+  },
+  {
+    id: "4",
+    name: "Artisan Leather Wallet",
+    description: "Premium handcrafted leather wallet with RFID blocking and 8 card slots.",
+    price: 59.99,
+    category: "Fashion",
+    status: "active",
+    images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?w=500"],
+    createdAt: new Date("2026-03-04"),
+  },
+  {
+    id: "5",
+    name: "Portable Speaker",
+    description: "Waterproof Bluetooth speaker with deep bass and 12-hour playtime.",
+    price: 49.99,
+    category: "Electronics",
+    status: "draft",
+    images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500"],
+    createdAt: new Date("2026-03-05"),
+  },
+];
+
 export function useProducts() {
-  const { user } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(SAMPLE_PRODUCTS);
+  const [loading] = useState(false);
 
-  const fetchProducts = useCallback(async () => {
-    if (!user) { setProducts([]); setLoading(false); return; }
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const addProduct = useCallback(async (product: Omit<Product, "id" | "createdAt">) => {
+    const newProduct: Product = {
+      ...product,
+      id: crypto.randomUUID(),
+      createdAt: new Date(),
+    };
+    setProducts((prev) => [newProduct, ...prev]);
+    return newProduct;
+  }, []);
 
-    if (!error && data) {
-      setProducts(
-        data.map((p) => ({
-          id: p.id,
-          name: p.name,
-          description: p.description ?? "",
-          price: Number(p.price),
-          category: p.category,
-          status: p.status as Product["status"],
-          images: p.images ?? [],
-          createdAt: new Date(p.created_at),
-        }))
-      );
-    }
-    setLoading(false);
-  }, [user]);
+  const deleteProduct = useCallback(async (id: string) => {
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+  }, []);
 
-  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+  const updateProductStatus = useCallback(async (id: string, status: Product["status"]) => {
+    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)));
+  }, []);
 
-  const addProduct = async (product: Omit<Product, "id" | "createdAt">) => {
-    if (!user) return null;
-    const { data, error } = await supabase
-      .from("products")
-      .insert({
-        user_id: user.id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        category: product.category,
-        status: product.status,
-        images: product.images,
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      await fetchProducts();
-      return data;
-    }
-    return null;
-  };
-
-  const deleteProduct = async (id: string) => {
-    await supabase.from("products").delete().eq("id", id);
-    await fetchProducts();
-  };
-
-  const updateProductStatus = async (id: string, status: Product["status"]) => {
-    await supabase.from("products").update({ status }).eq("id", id);
-    await fetchProducts();
-  };
-
-  const updateProduct = async (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => {
-    const { error } = await supabase
-      .from("products")
-      .update({
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        category: product.category,
-        status: product.status,
-        images: product.images,
-      })
-      .eq("id", id);
-
-    if (!error) await fetchProducts();
-    return !error;
-  };
+  const updateProduct = useCallback(async (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => {
+    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...product } : p)));
+    return true;
+  }, []);
 
   return { products, loading, addProduct, deleteProduct, updateProductStatus, updateProduct };
 }
