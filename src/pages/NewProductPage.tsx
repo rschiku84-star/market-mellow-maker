@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import ProductUploadForm from "@/components/dashboard/ProductUploadForm";
-import { useProducts } from "@/hooks/useProducts";
+import { useProductsContext } from "@/contexts/ProductsContext";
 import { Card, CardContent } from "@/components/ui/card";
 
 const NewProductPage = () => {
-  const { addProduct } = useProducts();
+  const { addProduct } = useProductsContext();
   const navigate = useNavigate();
 
   return (
