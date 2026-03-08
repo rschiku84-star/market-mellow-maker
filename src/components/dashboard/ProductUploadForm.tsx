@@ -292,11 +292,13 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" className="px-8" disabled={uploading}>
-          Save Product
+          {submitLabel}
         </Button>
-        <Button type="button" variant="outline">
-          Save as Draft
-        </Button>
+        {!initialData && (
+          <Button type="button" variant="outline">
+            Save as Draft
+          </Button>
+        )}
       </div>
     </motion.form>
   );
