@@ -1,0 +1,258 @@
+import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
+import type { Product } from "@/hooks/useProducts";
+
+const CATEGORIES = [
+  "Home & Living",
+  "Digital Art",
+  "Services",
+  "Fashion",
+  "Jewelry",
+  "Food & Drink",
+  "Crafts",
+  "Other",
+];
+
+interface ProductUploadFormProps {
+  onSubmit: (product: Omit<Product, "id" | "createdAt">) => void;
+}
+
+const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState<Product["status"]>("draft");
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFiles = useCallback((files: FileList | null) => {
+    if (!files) return;
+    const newPreviews: string[] = [];
+    Array.from(files).forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        const url = URL.createObjectURL(file);
+        newPreviews.push(url);
+      }
+    });
+    setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      handleFiles(e.dataTransfer.files);
+    },
+    [handleFiles]
+  );
+
+  const removePreview = (index: number) => {
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !price || !category) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+    onSubmit({
+      name: name.trim(),
+      description: description.trim(),
+      price: parseFloat(price),
+      category,
+      status,
+      images: previews,
+    });
+    toast({ title: "Product added!", description: `"${name}" has been saved.` });
+    setName("");
+    setDescription("");
+    setPrice("");
+    setCategory("");
+    setStatus("draft");
+    setPreviews([]);
+  };
+
+  return (
+    <motion.form
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
+      {/* Image Upload */}
+      <div>
+        <Label className="text-foreground font-semibold mb-2 block">
+          Product Images
+        </Label>
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
+            isDragging
+              ? "border-primary bg-primary/5"
+              : "border-border hover:border-primary/50"
+          }`}
+          onClick={() => document.getElementById("file-input")?.click()}
+        >
+          <input
+            id="file-input"
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => handleFiles(e.target.files)}
+          />
+          <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+          <p className="text-sm font-medium text-foreground">
+            Drag & drop images here
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            or click to browse • PNG, JPG up to 5MB • Max 4 images
+          </p>
+        </div>
+
+        {previews.length > 0 && (
+          <div className="flex gap-3 mt-4 flex-wrap">
+            {previews.map((src, i) => (
+              <div
+                key={i}
+                className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group"
+              >
+                <img
+                  src={src}
+                  alt={`Preview ${i + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => removePreview(i)}
+                  className="absolute top-1 right-1 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {previews.length < 4 && (
+              <button
+                type="button"
+                onClick={() => document.getElementById("file-input")?.click()}
+                className="w-20 h-20 rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
+              >
+                <ImageIcon className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Product Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="md:col-span-2">
+          <Label htmlFor="name" className="text-foreground font-semibold">
+            Product Name *
+          </Label>
+          <Input
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Handcrafted Ceramic Mug"
+            className="mt-1.5"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <Label htmlFor="description" className="text-foreground font-semibold">
+            Description
+          </Label>
+          <Textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe your product..."
+            className="mt-1.5 min-h-[100px]"
+          />
+        </div>
+        <div>
+          <Label htmlFor="price" className="text-foreground font-semibold">
+            Price (USD) *
+          </Label>
+          <Input
+            id="price"
+            type="number"
+            step="0.01"
+            min="0"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="0.00"
+            className="mt-1.5"
+          />
+        </div>
+        <div>
+          <Label className="text-foreground font-semibold">Category *</Label>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="mt-1.5">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              {CATEGORIES.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label className="text-foreground font-semibold">Status</Label>
+          <Select
+            value={status}
+            onValueChange={(v) => setStatus(v as Product["status"])}
+          >
+            <SelectTrigger className="mt-1.5">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-2">
+        <Button type="submit" className="px-8">
+          Save Product
+        </Button>
+        <Button type="button" variant="outline">
+          Save as Draft
+        </Button>
+      </div>
+    </motion.form>
+  );
+};
+
+export default ProductUploadForm;
