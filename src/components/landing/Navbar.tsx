@@ -35,8 +35,8 @@ const Navbar = () => {
                 {item}
               </a>
             ))}
-            <Button variant="outline" size="sm">Log in</Button>
-            <Button size="sm">Get Started Free</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/dashboard")}>Log in</Button>
+            <Button size="sm" onClick={() => navigate("/dashboard")}>Get Started Free</Button>
           </div>
 
           <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
