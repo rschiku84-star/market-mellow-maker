@@ -3,10 +3,10 @@ import { PlusCircle } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import ProductGrid from "@/components/dashboard/ProductGrid";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/useProducts";
+import { useProductsContext } from "@/contexts/ProductsContext";
 
 const ProductsPage = () => {
-  const { products, deleteProduct, updateProductStatus } = useProducts();
+  const { products, deleteProduct, updateProductStatus } = useProductsContext();
   const navigate = useNavigate();
 
   return (
