@@ -59,7 +59,13 @@ const Navbar = () => {
           className="md:hidden border-t border-border bg-background"
         >
           <div className="px-4 py-4 space-y-3">
-            {["Features", "Pricing", "Testimonials"].map((item) => (
+            <button
+              onClick={() => { navigate("/storefront"); setIsOpen(false); }}
+              className="block text-sm font-medium text-muted-foreground w-full text-left"
+            >
+              Storefront
+            </button>
+            {["Features", "Pricing"].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
