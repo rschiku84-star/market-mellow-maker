@@ -25,7 +25,7 @@ export type Database = {
           price: number
           status: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           category?: string
@@ -37,7 +37,7 @@ export type Database = {
           price?: number
           status?: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           category?: string
@@ -49,7 +49,7 @@ export type Database = {
           price?: number
           status?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
