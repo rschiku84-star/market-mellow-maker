@@ -78,5 +78,22 @@ export function useProducts() {
     await fetchProducts();
   };
 
-  return { products, loading, addProduct, deleteProduct, updateProductStatus };
+  const updateProduct = async (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => {
+    const { error } = await supabase
+      .from("products")
+      .update({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        status: product.status,
+        images: product.images,
+      })
+      .eq("id", id);
+
+    if (!error) await fetchProducts();
+    return !error;
+  };
+
+  return { products, loading, addProduct, deleteProduct, updateProductStatus, updateProduct };
 }

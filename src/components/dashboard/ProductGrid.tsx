@@ -1,5 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MoreVertical, Package, Trash2, Eye, Archive } from "lucide-react";
+import { MoreVertical, Package, Trash2, Eye, Archive, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -23,6 +24,7 @@ interface ProductGridProps {
 }
 
 const ProductGrid = ({ products, onDelete, onStatusChange }: ProductGridProps) => {
+  const navigate = useNavigate();
   if (products.length === 0) {
     return (
       <div className="text-center py-16">
@@ -70,6 +72,9 @@ const ProductGrid = ({ products, onDelete, onStatusChange }: ProductGridProps) =
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate(`/dashboard/products/${product.id}/edit`)}>
+                    <Pencil className="w-4 h-4 mr-2" /> Edit
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onStatusChange(product.id, "active")}>
                     <Eye className="w-4 h-4 mr-2" /> Publish
                   </DropdownMenuItem>

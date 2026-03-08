@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import DashboardOverview from "./pages/DashboardOverview";
 import ProductsPage from "./pages/ProductsPage";
 import NewProductPage from "./pages/NewProductPage";
+import EditProductPage from "./pages/EditProductPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AIStudioPage from "./pages/AIStudioPage";
@@ -41,6 +42,7 @@ const App = () => (
               <Route index element={<DashboardOverview />} />
               <Route path="products" element={<ProductsPage />} />
               <Route path="products/new" element={<NewProductPage />} />
+              <Route path="products/:id/edit" element={<EditProductPage />} />
               <Route path="ai-studio" element={<AIStudioPage />} />
               <Route path="social" element={<SocialMediaPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />

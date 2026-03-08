@@ -29,17 +29,19 @@ const CATEGORIES = [
 ];
 
 interface ProductUploadFormProps {
+  initialData?: Product;
   onSubmit: (product: Omit<Product, "id" | "createdAt">) => void;
+  submitLabel?: string;
 }
 
-const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
+const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product" }: ProductUploadFormProps) => {
   const { user } = useAuth();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState<Product["status"]>("draft");
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [name, setName] = useState(initialData?.name ?? "");
+  const [description, setDescription] = useState(initialData?.description ?? "");
+  const [price, setPrice] = useState(initialData?.price?.toString() ?? "");
+  const [category, setCategory] = useState(initialData?.category ?? "");
+  const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "draft");
+  const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images ?? []);
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -116,13 +118,15 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
       status,
       images: imageUrls,
     });
-    toast({ title: "Product added!", description: `"${name}" has been saved.` });
-    setName("");
-    setDescription("");
-    setPrice("");
-    setCategory("");
-    setStatus("draft");
-    setImageUrls([]);
+    toast({ title: initialData ? "Product updated!" : "Product added!", description: `"${name}" has been saved.` });
+    if (!initialData) {
+      setName("");
+      setDescription("");
+      setPrice("");
+      setCategory("");
+      setStatus("draft");
+      setImageUrls([]);
+    }
   };
 
   return (
@@ -288,11 +292,13 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" className="px-8" disabled={uploading}>
-          Save Product
+          {submitLabel}
         </Button>
-        <Button type="button" variant="outline">
-          Save as Draft
-        </Button>
+        {!initialData && (
+          <Button type="button" variant="outline">
+            Save as Draft
+          </Button>
+        )}
       </div>
     </motion.form>
   );

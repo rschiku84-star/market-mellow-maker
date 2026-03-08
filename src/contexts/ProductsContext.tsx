@@ -7,6 +7,7 @@ interface ProductsContextType {
   addProduct: (product: Omit<Product, "id" | "createdAt">) => Promise<unknown>;
   deleteProduct: (id: string) => Promise<void>;
   updateProductStatus: (id: string, status: Product["status"]) => Promise<void>;
+  updateProduct: (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => Promise<boolean>;
 }
 
 const ProductsContext = createContext<ProductsContextType | null>(null);
