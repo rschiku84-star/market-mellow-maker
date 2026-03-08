@@ -47,6 +47,7 @@ const App = () => (
               <Route path="ai-studio" element={<AIStudioPage />} />
               <Route path="social" element={<SocialMediaPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
