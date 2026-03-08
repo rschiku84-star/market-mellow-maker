@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Upload, X, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import type { Product } from "@/hooks/useProducts";
 
 const CATEGORIES = [
@@ -31,37 +33,69 @@ interface ProductUploadFormProps {
 }
 
 const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
+  const { user } = useAuth();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState<Product["status"]>("draft");
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  const handleFiles = useCallback((files: FileList | null) => {
-    if (!files) return;
-    const newPreviews: string[] = [];
-    Array.from(files).forEach((file) => {
-      if (file.type.startsWith("image/")) {
-        const url = URL.createObjectURL(file);
-        newPreviews.push(url);
+  const uploadFiles = useCallback(
+    async (files: FileList | null) => {
+      if (!files || !user) return;
+      const remaining = 4 - imageUrls.length;
+      const toUpload = Array.from(files)
+        .filter((f) => f.type.startsWith("image/"))
+        .slice(0, remaining);
+
+      if (toUpload.length === 0) return;
+      setUploading(true);
+
+      const uploaded: string[] = [];
+      for (const file of toUpload) {
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from("product-images")
+          .upload(path, file, { upsert: false });
+
+        if (error) {
+          toast({
+            title: "Upload failed",
+            description: error.message,
+            variant: "destructive",
+          });
+          continue;
+        }
+
+        const { data: urlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(path);
+
+        uploaded.push(urlData.publicUrl);
       }
-    });
-    setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
-  }, []);
+
+      setImageUrls((prev) => [...prev, ...uploaded].slice(0, 4));
+      setUploading(false);
+    },
+    [user, imageUrls.length]
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
-      handleFiles(e.dataTransfer.files);
+      uploadFiles(e.dataTransfer.files);
     },
-    [handleFiles]
+    [uploadFiles]
   );
 
-  const removePreview = (index: number) => {
-    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = (index: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +114,7 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
       price: parseFloat(price),
       category,
       status,
-      images: previews,
+      images: imageUrls,
     });
     toast({ title: "Product added!", description: `"${name}" has been saved.` });
     setName("");
@@ -88,7 +122,7 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
     setPrice("");
     setCategory("");
     setStatus("draft");
-    setPreviews([]);
+    setImageUrls([]);
   };
 
   return (
@@ -124,20 +158,29 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
             accept="image/*"
             multiple
             className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
+            onChange={(e) => uploadFiles(e.target.files)}
           />
-          <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm font-medium text-foreground">
-            Drag & drop images here
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            or click to browse • PNG, JPG up to 5MB • Max 4 images
-          </p>
+          {uploading ? (
+            <>
+              <Loader2 className="w-8 h-8 text-primary mx-auto mb-3 animate-spin" />
+              <p className="text-sm font-medium text-foreground">Uploading…</p>
+            </>
+          ) : (
+            <>
+              <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm font-medium text-foreground">
+                Drag & drop images here
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                or click to browse • PNG, JPG up to 5MB • Max 4 images
+              </p>
+            </>
+          )}
         </div>
 
-        {previews.length > 0 && (
+        {imageUrls.length > 0 && (
           <div className="flex gap-3 mt-4 flex-wrap">
-            {previews.map((src, i) => (
+            {imageUrls.map((src, i) => (
               <div
                 key={i}
                 className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group"
@@ -149,14 +192,14 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
                 />
                 <button
                   type="button"
-                  onClick={() => removePreview(i)}
+                  onClick={() => removeImage(i)}
                   className="absolute top-1 right-1 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </div>
             ))}
-            {previews.length < 4 && (
+            {imageUrls.length < 4 && !uploading && (
               <button
                 type="button"
                 onClick={() => document.getElementById("file-input")?.click()}
@@ -244,7 +287,7 @@ const ProductUploadForm = ({ onSubmit }: ProductUploadFormProps) => {
       </div>
 
       <div className="flex gap-3 pt-2">
-        <Button type="submit" className="px-8">
+        <Button type="submit" className="px-8" disabled={uploading}>
           Save Product
         </Button>
         <Button type="button" variant="outline">
