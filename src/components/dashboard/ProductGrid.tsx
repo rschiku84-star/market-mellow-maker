@@ -72,6 +72,9 @@ const ProductGrid = ({ products, onDelete, onStatusChange }: ProductGridProps) =
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate(`/dashboard/products/${product.id}/edit`)}>
+                    <Pencil className="w-4 h-4 mr-2" /> Edit
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onStatusChange(product.id, "active")}>
                     <Eye className="w-4 h-4 mr-2" /> Publish
                   </DropdownMenuItem>
