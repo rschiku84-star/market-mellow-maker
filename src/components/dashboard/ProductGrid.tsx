@@ -1,5 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MoreVertical, Package, Trash2, Eye, Archive } from "lucide-react";
+import { MoreVertical, Package, Trash2, Eye, Archive, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
