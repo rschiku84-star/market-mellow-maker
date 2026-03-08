@@ -43,6 +43,7 @@ const App = () => (
               <Route path="products/new" element={<NewProductPage />} />
               <Route path="ai-studio" element={<AIStudioPage />} />
               <Route path="social" element={<SocialMediaPage />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
