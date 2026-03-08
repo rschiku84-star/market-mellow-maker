@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <motion.nav
@@ -34,8 +36,8 @@ const Navbar = () => {
                 {item}
               </a>
             ))}
-            <Button variant="outline" size="sm">Log in</Button>
-            <Button size="sm">Get Started Free</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/dashboard")}>Log in</Button>
+            <Button size="sm" onClick={() => navigate("/dashboard")}>Get Started Free</Button>
           </div>
 
           <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
@@ -62,8 +64,8 @@ const Navbar = () => {
               </a>
             ))}
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" size="sm" className="flex-1">Log in</Button>
-              <Button size="sm" className="flex-1">Get Started</Button>
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => navigate("/dashboard")}>Log in</Button>
+              <Button size="sm" className="flex-1" onClick={() => navigate("/dashboard")}>Get Started</Button>
             </div>
           </div>
         </motion.div>
