@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface Product {
   id: string;
@@ -11,71 +13,70 @@ export interface Product {
   createdAt: Date;
 }
 
-const SAMPLE_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "Handcrafted Ceramic Mug",
-    description: "A beautiful handmade ceramic mug perfect for morning coffee.",
-    price: 24.99,
-    category: "Home & Living",
-    status: "active",
-    images: [],
-    createdAt: new Date("2026-03-01"),
-  },
-  {
-    id: "2",
-    name: "Digital Art Print – Sunset",
-    description: "High-resolution digital art print of a stunning sunset scene.",
-    price: 12.00,
-    category: "Digital Art",
-    status: "active",
-    images: [],
-    createdAt: new Date("2026-03-03"),
-  },
-  {
-    id: "3",
-    name: "Custom Logo Design Package",
-    description: "Professional logo design with 3 concepts and unlimited revisions.",
-    price: 149.00,
-    category: "Services",
-    status: "draft",
-    images: [],
-    createdAt: new Date("2026-03-05"),
-  },
-  {
-    id: "4",
-    name: "Organic Soy Candle Set",
-    description: "Set of 3 hand-poured organic soy candles with natural fragrances.",
-    price: 34.50,
-    category: "Home & Living",
-    status: "active",
-    images: [],
-    createdAt: new Date("2026-03-07"),
-  },
-];
-
 export function useProducts() {
-  const [products, setProducts] = useState<Product[]>(SAMPLE_PRODUCTS);
+  const { user } = useAuth();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const addProduct = (product: Omit<Product, "id" | "createdAt">) => {
-    const newProduct: Product = {
-      ...product,
-      id: crypto.randomUUID(),
-      createdAt: new Date(),
-    };
-    setProducts((prev) => [newProduct, ...prev]);
-    return newProduct;
+  const fetchProducts = useCallback(async () => {
+    if (!user) { setProducts([]); setLoading(false); return; }
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setProducts(
+        data.map((p) => ({
+          id: p.id,
+          name: p.name,
+          description: p.description ?? "",
+          price: Number(p.price),
+          category: p.category,
+          status: p.status as Product["status"],
+          images: p.images ?? [],
+          createdAt: new Date(p.created_at),
+        }))
+      );
+    }
+    setLoading(false);
+  }, [user]);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  const addProduct = async (product: Omit<Product, "id" | "createdAt">) => {
+    if (!user) return null;
+    const { data, error } = await supabase
+      .from("products")
+      .insert({
+        user_id: user.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        status: product.status,
+        images: product.images,
+      })
+      .select()
+      .single();
+
+    if (!error && data) {
+      await fetchProducts();
+      return data;
+    }
+    return null;
   };
 
-  const deleteProduct = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const deleteProduct = async (id: string) => {
+    await supabase.from("products").delete().eq("id", id);
+    await fetchProducts();
   };
 
-  const updateProductStatus = (id: string, status: Product["status"]) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status } : p))
-    );
+  const updateProductStatus = async (id: string, status: Product["status"]) => {
+    await supabase.from("products").update({ status }).eq("id", id);
+    await fetchProducts();
   };
 
-  return { products, addProduct, deleteProduct, updateProductStatus };
+  return { products, loading, addProduct, deleteProduct, updateProductStatus };
 }

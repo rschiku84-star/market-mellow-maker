@@ -18,8 +18,8 @@ const NewProductPage = () => {
         <Card>
           <CardContent className="p-6">
             <ProductUploadForm
-              onSubmit={(product) => {
-                addProduct(product);
+              onSubmit={async (product) => {
+                await addProduct(product);
                 navigate("/dashboard/products");
               }}
             />
