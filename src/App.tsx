@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AIStudioPage from "./pages/AIStudioPage";
 import SocialMediaPage from "./pages/SocialMediaPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
