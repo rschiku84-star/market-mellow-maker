@@ -118,13 +118,15 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
       status,
       images: imageUrls,
     });
-    toast({ title: "Product added!", description: `"${name}" has been saved.` });
-    setName("");
-    setDescription("");
-    setPrice("");
-    setCategory("");
-    setStatus("draft");
-    setImageUrls([]);
+    toast({ title: initialData ? "Product updated!" : "Product added!", description: `"${name}" has been saved.` });
+    if (!initialData) {
+      setName("");
+      setDescription("");
+      setPrice("");
+      setCategory("");
+      setStatus("draft");
+      setImageUrls([]);
+    }
   };
 
   return (
