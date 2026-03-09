@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
@@ -15,10 +16,11 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             </span>
           </div>
 
-          <div className="flex items-center gap-8 text-sm text-secondary-foreground/60">
-            <a href="#" className="hover:text-secondary-foreground transition-colors">Privacy</a>
-            <a href="#" className="hover:text-secondary-foreground transition-colors">Terms</a>
-            <a href="#" className="hover:text-secondary-foreground transition-colors">Support</a>
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-secondary-foreground/60">
+            <Link to="/about" className="hover:text-secondary-foreground transition-colors">About</Link>
+            <Link to="/contact" className="hover:text-secondary-foreground transition-colors">Contact</Link>
+            <Link to="/privacy" className="hover:text-secondary-foreground transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-secondary-foreground transition-colors">Terms</Link>
           </div>
 
           <p className="text-sm text-secondary-foreground/40">
