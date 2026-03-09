@@ -31,9 +31,9 @@ const { data, error } = await supabase.from("products").select("*").order("creat
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
-  const addProduct = async (product: Omit<Product, "id" | "createdAt">) => {
+const addProduct = async (product: Omit<Product, "id" | "createdAt">) => {
     if (!user) return null;
-    const { data, error } = await supabase.from("products").insert({ user_id: user.id, name: product.name, description: product.description, price: product.price, category: product.category, status: product.status, images: product.images }).select().single();
+    const { data, error } = await supabase.from("products").insert({ user_id: user.id, name: product.name, description: product.description, price: product.price, offer_amount: product.offerAmount, category: product.category, status: product.status, images: product.images }).select().single();
     if (!error && data) { await fetchProducts(); return data; }
     return null;
   };
