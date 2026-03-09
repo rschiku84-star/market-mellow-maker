@@ -103,6 +103,7 @@ export type Database = {
           bio: string | null
           created_at: string
           id: string
+          plan: string
           updated_at: string
           user_id: string
           username: string | null
@@ -112,6 +113,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           id?: string
+          plan?: string
           updated_at?: string
           user_id: string
           username?: string | null
@@ -121,6 +123,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           id?: string
+          plan?: string
           updated_at?: string
           user_id?: string
           username?: string | null
