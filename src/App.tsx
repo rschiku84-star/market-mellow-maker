@@ -32,6 +32,22 @@ import ContactPage from "./pages/ContactPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsPage from "./pages/TermsPage";
 
+// New AI tools
+import VideoGeneratorPage from "./pages/VideoGeneratorPage";
+import ViralIdeasPage from "./pages/ViralIdeasPage";
+import HookGeneratorPage from "./pages/HookGeneratorPage";
+import CaptionGeneratorPage from "./pages/CaptionGeneratorPage";
+import ScriptConverterPage from "./pages/ScriptConverterPage";
+import TikTokIdeasPage from "./pages/TikTokIdeasPage";
+import FacelessYouTubePage from "./pages/FacelessYouTubePage";
+import ThumbnailIdeasPage from "./pages/ThumbnailIdeasPage";
+import ReelCreatorPage from "./pages/ReelCreatorPage";
+import ContentRepurposerPage from "./pages/ContentRepurposerPage";
+import TrendingTopicsPage from "./pages/TrendingTopicsPage";
+import ContentCalendarPage from "./pages/ContentCalendarPage";
+import ViralHookLibraryPage from "./pages/ViralHookLibraryPage";
+import MyContentPage from "./pages/MyContentPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -74,6 +90,21 @@ const App = () => (
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="subscription" element={<SubscriptionPage />} />
+              {/* AI Tools */}
+              <Route path="video-generator" element={<VideoGeneratorPage />} />
+              <Route path="viral-ideas" element={<ViralIdeasPage />} />
+              <Route path="hook-generator" element={<HookGeneratorPage />} />
+              <Route path="caption-generator" element={<CaptionGeneratorPage />} />
+              <Route path="script-converter" element={<ScriptConverterPage />} />
+              <Route path="tiktok-ideas" element={<TikTokIdeasPage />} />
+              <Route path="faceless-youtube" element={<FacelessYouTubePage />} />
+              <Route path="thumbnail-ideas" element={<ThumbnailIdeasPage />} />
+              <Route path="reel-creator" element={<ReelCreatorPage />} />
+              <Route path="content-repurposer" element={<ContentRepurposerPage />} />
+              <Route path="trending-topics" element={<TrendingTopicsPage />} />
+              <Route path="content-calendar" element={<ContentCalendarPage />} />
+              <Route path="viral-hooks" element={<ViralHookLibraryPage />} />
+              <Route path="my-content" element={<MyContentPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

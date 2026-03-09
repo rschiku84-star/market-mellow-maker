@@ -4,7 +4,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useVideoLimit } from "@/hooks/useVideoLimit";
+import { useCredits } from "@/hooks/useCredits";
 import { toast } from "@/hooks/use-toast";
 
 const plans = [
@@ -14,7 +14,7 @@ const plans = [
     price: "$0",
     period: "/month",
     icon: Zap,
-    features: ["3 videos per day", "Basic AI scripts", "Watermarked exports", "Community support"],
+    features: ["5 AI generations / month", "All 13 AI tools", "Copy & download outputs", "Content history"],
   },
   {
     id: "pro",
@@ -23,26 +23,26 @@ const plans = [
     period: "/month",
     icon: Crown,
     popular: true,
-    features: ["Unlimited videos", "Advanced AI scripts", "No watermarks", "HD exports", "Priority support"],
+    features: ["50 AI generations / month", "All 13 AI tools", "Priority support", "Early access to new tools"],
   },
   {
-    id: "business",
-    name: "Business",
+    id: "premium",
+    name: "Premium",
     price: "$49",
     period: "/month",
     icon: Rocket,
-    features: ["Everything in Pro", "Team collaboration", "Custom branding", "API access", "Dedicated support"],
+    features: ["Unlimited AI generations", "All 13 AI tools", "Priority support", "API access", "Custom branding"],
   },
 ];
 
 const SubscriptionPage = () => {
-  const { plan: currentPlan, loading } = useVideoLimit();
+  const { plan: currentPlan, loading } = useCredits();
 
   const handleUpgrade = (planId: string) => {
     if (planId === currentPlan) return;
     toast({
       title: "Coming soon",
-      description: "Subscription upgrades will be available soon. Stay tuned!",
+      description: "Stripe payment integration will be available soon. Stay tuned!",
     });
   };
 
