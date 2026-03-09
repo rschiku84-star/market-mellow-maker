@@ -22,6 +22,7 @@ export type Database = {
           id: string
           images: string[] | null
           name: string
+          offer_amount: number | null
           price: number
           status: string
           updated_at: string
@@ -34,6 +35,7 @@ export type Database = {
           id?: string
           images?: string[] | null
           name: string
+          offer_amount?: number | null
           price?: number
           status?: string
           updated_at?: string
@@ -46,6 +48,7 @@ export type Database = {
           id?: string
           images?: string[] | null
           name?: string
+          offer_amount?: number | null
           price?: number
           status?: string
           updated_at?: string

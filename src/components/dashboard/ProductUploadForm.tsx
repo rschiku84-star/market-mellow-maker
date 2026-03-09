@@ -25,7 +25,8 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [price, setPrice] = useState(initialData?.price?.toString() ?? "");
   const [category, setCategory] = useState(initialData?.category ?? "");
-  const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "draft");
+const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "draft");
+  const [offerAmount, setOfferAmount] = useState(initialData?.offerAmount?.toString() ?? "");
   const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images ?? []);
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -52,12 +53,12 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
   const handleDrop = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); uploadFiles(e.dataTransfer.files); }, [uploadFiles]);
   const removeImage = (index: number) => setImageUrls((prev) => prev.filter((_, i) => i !== index));
 
-  const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !price || !category) { toast({ title: "Missing fields", description: "Please fill in all required fields.", variant: "destructive" }); return; }
-    onSubmit({ name: name.trim(), description: description.trim(), price: parseFloat(price), category, status, images: imageUrls });
+    onSubmit({ name: name.trim(), description: description.trim(), price: parseFloat(price), offerAmount: offerAmount ? parseFloat(offerAmount) : null, category, status, images: imageUrls });
     toast({ title: initialData ? "Product updated!" : "Product added!", description: `"${name}" has been saved.` });
-    if (!initialData) { setName(""); setDescription(""); setPrice(""); setCategory(""); setStatus("draft"); setImageUrls([]); }
+    if (!initialData) { setName(""); setDescription(""); setPrice(""); setOfferAmount(""); setCategory(""); setStatus("draft"); setImageUrls([]); }
   };
 
   return (
@@ -87,7 +88,8 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="md:col-span-2"><Label htmlFor="name" className="text-foreground font-semibold">Product Name *</Label><Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Handcrafted Ceramic Mug" className="mt-1.5" /></div>
         <div className="md:col-span-2"><Label htmlFor="description" className="text-foreground font-semibold">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe your product..." className="mt-1.5 min-h-[100px]" /></div>
-        <div><Label htmlFor="price" className="text-foreground font-semibold">Price (USD) *</Label><Input id="price" type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" className="mt-1.5" /></div>
+       <div><Label htmlFor="price" className="text-foreground font-semibold">Price (USD) *</Label><Input id="price" type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="0.00" className="mt-1.5" /></div>
+        <div><Label htmlFor="offer" className="text-foreground font-semibold">Offer Discount ($)</Label><Input id="offer" type="number" step="0.01" min="0" value={offerAmount} onChange={(e) => setOfferAmount(e.target.value)} placeholder="e.g. 10" className="mt-1.5" /></div>
         <div><Label className="text-foreground font-semibold">Category *</Label><Select value={category} onValueChange={setCategory}><SelectTrigger className="mt-1.5"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select></div>
         <div><Label className="text-foreground font-semibold">Status</Label><Select value={status} onValueChange={(v) => setStatus(v as Product["status"])}><SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="active">Active</SelectItem><SelectItem value="archived">Archived</SelectItem></SelectContent></Select></div>
       </div>
