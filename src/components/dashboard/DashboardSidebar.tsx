@@ -2,31 +2,24 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  Package,
-  PlusCircle,
-  BarChart3,
   Sparkles,
-  Share2,
   Settings,
   LogOut,
   Film,
   ImageIcon,
   FileText,
-  Megaphone,
+  CreditCard,
+  PenTool,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Overview", end: true },
-  { to: "/dashboard/products", icon: Package, label: "Products" },
-  { to: "/dashboard/products/new", icon: PlusCircle, label: "Add Product" },
-  { to: "/dashboard/ai-studio", icon: Sparkles, label: "AI Studio" },
-  { to: "/dashboard/image-to-reel", icon: ImageIcon, label: "Image to Reel" },
-  { to: "/dashboard/script-to-video", icon: FileText, label: "Script to Video" },
-  { to: "/dashboard/product-ad", icon: Megaphone, label: "Product Ad" },
+  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard Home", end: true },
+  { to: "/dashboard/script-to-video", icon: FileText, label: "Text to Video" },
+  { to: "/dashboard/image-to-reel", icon: ImageIcon, label: "Image to Video" },
+  { to: "/dashboard/ai-studio", icon: PenTool, label: "AI Script Generator" },
   { to: "/dashboard/my-videos", icon: Film, label: "My Videos" },
-  { to: "/dashboard/social", icon: Share2, label: "Social Media" },
-  { to: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
+  { to: "/dashboard/subscription", icon: CreditCard, label: "Subscription Plan" },
   { to: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
 
@@ -40,7 +33,7 @@ const DashboardSidebar = () => {
   };
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-card min-h-screen">
+    <aside className="flex flex-col w-64 border-r border-border bg-card min-h-screen">
       <div className="p-6 border-b border-border">
         <NavLink to="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
