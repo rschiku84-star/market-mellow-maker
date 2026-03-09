@@ -16,6 +16,9 @@ import SignupPage from "./pages/SignupPage";
 import StorefrontPage from "./pages/StorefrontPage";
 import AIStudioPage from "./pages/AIStudioPage";
 import MyVideosPage from "./pages/MyVideosPage";
+import ImageToReelPage from "./pages/ImageToReelPage";
+import ScriptToVideoPage from "./pages/ScriptToVideoPage";
+import ProductAdPage from "./pages/ProductAdPage";
 import SocialMediaPage from "./pages/SocialMediaPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -51,6 +54,9 @@ const App = () => (
               <Route path="products/:id/edit" element={<EditProductPage />} />
               <Route path="ai-studio" element={<AIStudioPage />} />
               <Route path="my-videos" element={<MyVideosPage />} />
+              <Route path="image-to-reel" element={<ImageToReelPage />} />
+              <Route path="script-to-video" element={<ScriptToVideoPage />} />
+              <Route path="product-ad" element={<ProductAdPage />} />
               <Route path="social" element={<SocialMediaPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="settings" element={<SettingsPage />} />

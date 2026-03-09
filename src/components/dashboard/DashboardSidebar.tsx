@@ -10,6 +10,9 @@ import {
   Settings,
   LogOut,
   Film,
+  ImageIcon,
+  FileText,
+  Megaphone,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -18,6 +21,9 @@ const navItems = [
   { to: "/dashboard/products", icon: Package, label: "Products" },
   { to: "/dashboard/products/new", icon: PlusCircle, label: "Add Product" },
   { to: "/dashboard/ai-studio", icon: Sparkles, label: "AI Studio" },
+  { to: "/dashboard/image-to-reel", icon: ImageIcon, label: "Image to Reel" },
+  { to: "/dashboard/script-to-video", icon: FileText, label: "Script to Video" },
+  { to: "/dashboard/product-ad", icon: Megaphone, label: "Product Ad" },
   { to: "/dashboard/my-videos", icon: Film, label: "My Videos" },
   { to: "/dashboard/social", icon: Share2, label: "Social Media" },
   { to: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
