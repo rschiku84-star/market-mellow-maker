@@ -1,53 +1,30 @@
 import { motion } from "framer-motion";
-import { Upload, Sparkles, Share2, BarChart3, Video, FileText } from "lucide-react";
+import { Video, Lightbulb, Zap, MessageSquare, FileText, Music, Youtube, Image, Instagram, Repeat, TrendingUp, CalendarDays, BookOpen } from "lucide-react";
 
-const features = [
-  {
-    icon: Upload,
-    title: "Product Upload",
-    description: "Upload your products with images, descriptions, and pricing in seconds. Bulk import supported.",
-    color: "text-primary",
-  },
-  {
-    icon: Sparkles,
-    title: "AI Ad Generator",
-    description: "Instantly create scroll-stopping ad copy tailored to your brand voice and target audience.",
-    color: "text-accent",
-  },
-  {
-    icon: Video,
-    title: "AI Video Scripts",
-    description: "Generate professional video scripts for TikTok, Reels, and YouTube Shorts automatically.",
-    color: "text-primary",
-  },
-  {
-    icon: FileText,
-    title: "Smart Descriptions",
-    description: "AI writes compelling product descriptions that convert browsers into buyers.",
-    color: "text-accent",
-  },
-  {
-    icon: Share2,
-    title: "Social Posting",
-    description: "Schedule and publish to multiple social platforms from one unified dashboard.",
-    color: "text-primary",
-  },
-  {
-    icon: BarChart3,
-    title: "Analytics Dashboard",
-    description: "Track views, clicks, and conversions with real-time insights to optimize your strategy.",
-    color: "text-accent",
-  },
+const tools = [
+  { icon: Video, title: "AI Video Generator", desc: "Full video scripts, scene breakdowns & hashtags" },
+  { icon: Lightbulb, title: "Viral Idea Generator", desc: "10-15 viral content ideas for any niche" },
+  { icon: Zap, title: "Hook Generator", desc: "10 scroll-stopping hooks per generation" },
+  { icon: MessageSquare, title: "Caption Generator", desc: "Platform-specific captions with emojis & hashtags" },
+  { icon: FileText, title: "Script Converter", desc: "Long scripts to short-form video scripts" },
+  { icon: Music, title: "TikTok Ideas", desc: "15 viral TikTok video ideas with hooks" },
+  { icon: Youtube, title: "Faceless YouTube", desc: "Full 5-8 min scripts with SEO optimization" },
+  { icon: Image, title: "Thumbnail Ideas", desc: "Text, visuals & color suggestions" },
+  { icon: Instagram, title: "Reel Creator", desc: "Reel ideas, hooks, captions & hashtags" },
+  { icon: Repeat, title: "Content Repurposer", desc: "Convert to TikTok, Shorts, captions & threads" },
+  { icon: TrendingUp, title: "Trending Topics", desc: "20 trending ideas in your niche" },
+  { icon: CalendarDays, title: "Content Calendar", desc: "30-day posting plan generated instantly" },
+  { icon: BookOpen, title: "Viral Hook Library", desc: "100 proven viral hooks by category" },
 ];
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
 const FeaturesSection = () => {
@@ -62,13 +39,13 @@ const FeaturesSection = () => {
           className="text-center mb-16"
         >
           <span className="text-sm font-semibold text-primary uppercase tracking-wider">
-            Everything you need
+            13 AI-powered tools
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mt-3 mb-4 text-foreground">
-            One platform, <span className="text-gradient-primary">infinite possibilities</span>
+            Everything you need to <span className="text-gradient-primary">go viral</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From product upload to viral social posts — CreatorHub handles it all with the power of AI.
+            From hooks to full video scripts — generate any content type in seconds with AI.
           </p>
         </motion.div>
 
@@ -77,23 +54,19 @@ const FeaturesSection = () => {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
         >
-          {features.map((feature) => (
+          {tools.map((tool) => (
             <motion.div
-              key={feature.title}
+              key={tool.title}
               variants={item}
-              className="group relative p-8 rounded-2xl bg-card border border-border card-glow hover:card-hover-glow transition-all duration-300 hover:-translate-y-1"
+              className="group relative p-5 rounded-xl bg-card border border-border card-glow hover:card-hover-glow transition-all duration-300 hover:-translate-y-0.5"
             >
-              <div className={`w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 ${feature.color} group-hover:scale-110 transition-transform`}>
-                <feature.icon className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3 text-primary group-hover:scale-110 transition-transform">
+                <tool.icon className="w-5 h-5" />
               </div>
-              <h3 className="text-xl font-display font-semibold mb-3 text-card-foreground">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
+              <h3 className="text-sm font-display font-semibold text-card-foreground mb-1">{tool.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{tool.desc}</p>
             </motion.div>
           ))}
         </motion.div>

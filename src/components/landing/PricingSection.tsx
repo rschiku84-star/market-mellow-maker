@@ -1,18 +1,20 @@
 import { motion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const tiers = [
   {
-    name: "Starter",
+    name: "Free",
     price: "Free",
     period: "",
-    description: "Perfect for getting started",
+    description: "Get started with AI content",
     features: [
-      "5 product uploads",
-      "3 AI generations / day",
-      "Basic analytics",
-      "1 social account",
+      "5 AI generations / month",
+      "All 13 AI tools",
+      "Copy & download outputs",
+      "Content history",
+      "Community support",
     ],
     cta: "Start Free",
     popular: false,
@@ -23,31 +25,32 @@ const tiers = [
     period: "/month",
     description: "For growing creators",
     features: [
-      "Unlimited products",
-      "50 AI generations / day",
-      "Advanced analytics",
-      "5 social accounts",
-      "Video script generator",
+      "50 AI generations / month",
+      "All 13 AI tools",
+      "Copy & download outputs",
+      "Content history",
       "Priority support",
+      "Early access to new tools",
     ],
     cta: "Go Pro",
     popular: true,
   },
   {
-    name: "Business",
+    name: "Premium",
     price: "$49",
     period: "/month",
-    description: "For teams and agencies",
+    description: "Unlimited content creation",
     features: [
-      "Everything in Pro",
       "Unlimited AI generations",
-      "Team collaboration",
-      "Unlimited social accounts",
-      "Custom branding",
+      "All 13 AI tools",
+      "Copy & download outputs",
+      "Content history",
+      "Priority support",
+      "Early access to new tools",
       "API access",
-      "Dedicated support",
+      "Custom branding",
     ],
-    cta: "Contact Sales",
+    cta: "Go Premium",
     popular: false,
   },
 ];
@@ -69,7 +72,7 @@ const PricingSection = () => {
             Plans that <span className="text-gradient-primary">scale with you</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start free, upgrade when you're ready. No hidden fees, cancel anytime.
+            Start free with 5 generations per month. Upgrade when you're ready.
           </p>
         </motion.div>
 
@@ -110,18 +113,19 @@ const PricingSection = () => {
               <ul className="space-y-3 mb-8">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-3 text-sm">
-                    <Check className={`w-4 h-4 flex-shrink-0 ${tier.popular ? "text-primary" : "text-primary"}`} />
+                    <Check className="w-4 h-4 flex-shrink-0 text-primary" />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Button
+                asChild
                 className="w-full"
                 variant={tier.popular ? "default" : "outline"}
                 size="lg"
               >
-                {tier.cta}
+                <Link to="/signup">{tier.cta}</Link>
               </Button>
             </motion.div>
           ))}
