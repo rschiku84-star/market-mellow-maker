@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Film, CreditCard, Zap, Crown } from "lucide-react";
 import { Film, CreditCard, Zap, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
