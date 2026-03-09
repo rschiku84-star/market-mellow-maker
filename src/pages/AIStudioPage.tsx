@@ -43,6 +43,7 @@ const VIDEO_STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gene
 
 export default function AIStudioPage() {
   const { products } = useProductsContext();
+  const { user } = useAuth();
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedType, setSelectedType] = useState("ad-copy");
   const [output, setOutput] = useState("");
