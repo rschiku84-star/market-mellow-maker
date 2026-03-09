@@ -7,6 +7,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  offerAmount?: number | null;
   category: string;
   status: "active" | "draft" | "archived";
   images: string[];

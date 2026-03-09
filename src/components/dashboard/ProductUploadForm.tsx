@@ -25,7 +25,8 @@ const ProductUploadForm = ({ initialData, onSubmit, submitLabel = "Save Product"
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [price, setPrice] = useState(initialData?.price?.toString() ?? "");
   const [category, setCategory] = useState(initialData?.category ?? "");
-  const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "draft");
+const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "draft");
+  const [offerAmount, setOfferAmount] = useState(initialData?.offerAmount?.toString() ?? "");
   const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images ?? []);
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
