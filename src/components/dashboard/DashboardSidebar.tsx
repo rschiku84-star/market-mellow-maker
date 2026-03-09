@@ -18,6 +18,7 @@ const navItems = [
   { to: "/dashboard/products", icon: Package, label: "Products" },
   { to: "/dashboard/products/new", icon: PlusCircle, label: "Add Product" },
   { to: "/dashboard/ai-studio", icon: Sparkles, label: "AI Studio" },
+  { to: "/dashboard/my-videos", icon: Film, label: "My Videos" },
   { to: "/dashboard/social", icon: Share2, label: "Social Media" },
   { to: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
   { to: "/dashboard/settings", icon: Settings, label: "Settings" },
