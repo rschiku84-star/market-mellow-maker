@@ -6,7 +6,9 @@ const Dashboard = () => {
   return (
     <ProductsProvider>
       <div className="flex min-h-screen bg-background">
-        <DashboardSidebar />
+        <div className="hidden lg:block">
+          <DashboardSidebar />
+        </div>
         <main className="flex-1 flex flex-col min-h-screen overflow-auto">
           <Outlet />
         </main>

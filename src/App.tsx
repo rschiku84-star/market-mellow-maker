@@ -24,6 +24,7 @@ import ProductAdPage from "./pages/ProductAdPage";
 import SocialMediaPage from "./pages/SocialMediaPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 import NotFound from "./pages/NotFound";
 import PublicProductsPage from "./pages/PublicProductsPage";
 
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="social" element={<SocialMediaPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="subscription" element={<SubscriptionPage />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
