@@ -13,6 +13,8 @@ import NewProductPage from "./pages/NewProductPage";
 import EditProductPage from "./pages/EditProductPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import StorefrontPage from "./pages/StorefrontPage";
 import AIStudioPage from "./pages/AIStudioPage";
 import MyVideosPage from "./pages/MyVideosPage";
