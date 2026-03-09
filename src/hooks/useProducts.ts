@@ -40,8 +40,8 @@ const addProduct = async (product: Omit<Product, "id" | "createdAt">) => {
 
   const deleteProduct = async (id: string) => { await supabase.from("products").delete().eq("id", id); await fetchProducts(); };
   const updateProductStatus = async (id: string, status: Product["status"]) => { await supabase.from("products").update({ status }).eq("id", id); await fetchProducts(); };
-  const updateProduct = async (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => {
-    const { error } = await supabase.from("products").update({ name: product.name, description: product.description, price: product.price, category: product.category, status: product.status, images: product.images }).eq("id", id);
+const updateProduct = async (id: string, product: Partial<Omit<Product, "id" | "createdAt">>) => {
+    const { error } = await supabase.from("products").update({ name: product.name, description: product.description, price: product.price, offer_amount: product.offerAmount, category: product.category, status: product.status, images: product.images }).eq("id", id);
     if (!error) await fetchProducts();
     return !error;
   };
