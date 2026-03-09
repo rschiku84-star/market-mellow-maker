@@ -9,6 +9,7 @@ import {
   Share2,
   Settings,
   LogOut,
+  Film,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
