@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_generations: {
+        Row: {
+          content: Json | null
+          created_at: string
+          id: string
+          title: string | null
+          tool_name: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string
+          id?: string
+          title?: string | null
+          tool_name: string
+          user_id: string
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string
+          id?: string
+          title?: string | null
+          tool_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       generated_videos: {
         Row: {
           created_at: string
