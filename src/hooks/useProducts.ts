@@ -22,9 +22,9 @@ export function useProducts() {
   const fetchProducts = useCallback(async () => {
     if (!user) { setProducts([]); setLoading(false); return; }
     setLoading(true);
-    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
     if (!error && data) {
-      setProducts(data.map((p) => ({ id: p.id, name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, status: p.status as Product["status"], images: p.images ?? [], createdAt: new Date(p.created_at) })));
+      setProducts(data.map((p) => ({ id: p.id, name: p.name, description: p.description ?? "", price: Number(p.price), offerAmount: p.offer_amount ? Number(p.offer_amount) : null, category: p.category, status: p.status as Product["status"], images: p.images ?? [], createdAt: new Date(p.created_at) })));
     }
     setLoading(false);
   }, [user]);
