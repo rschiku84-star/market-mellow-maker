@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import StorefrontPage from "./pages/StorefrontPage";
 import AIStudioPage from "./pages/AIStudioPage";
+import MyVideosPage from "./pages/MyVideosPage";
 import SocialMediaPage from "./pages/SocialMediaPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
