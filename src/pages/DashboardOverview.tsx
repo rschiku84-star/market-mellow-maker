@@ -1,6 +1,7 @@
 import { Film, CreditCard, Zap, Crown } from "lucide-react";
 import { Film, CreditCard, Zap, Crown } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
