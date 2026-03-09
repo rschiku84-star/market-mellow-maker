@@ -53,12 +53,12 @@ const [status, setStatus] = useState<Product["status"]>(initialData?.status ?? "
   const handleDrop = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); uploadFiles(e.dataTransfer.files); }, [uploadFiles]);
   const removeImage = (index: number) => setImageUrls((prev) => prev.filter((_, i) => i !== index));
 
-  const handleSubmit = (e: React.FormEvent) => {
+const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !price || !category) { toast({ title: "Missing fields", description: "Please fill in all required fields.", variant: "destructive" }); return; }
-    onSubmit({ name: name.trim(), description: description.trim(), price: parseFloat(price), category, status, images: imageUrls });
+    onSubmit({ name: name.trim(), description: description.trim(), price: parseFloat(price), offerAmount: offerAmount ? parseFloat(offerAmount) : null, category, status, images: imageUrls });
     toast({ title: initialData ? "Product updated!" : "Product added!", description: `"${name}" has been saved.` });
-    if (!initialData) { setName(""); setDescription(""); setPrice(""); setCategory(""); setStatus("draft"); setImageUrls([]); }
+    if (!initialData) { setName(""); setDescription(""); setPrice(""); setOfferAmount(""); setCategory(""); setStatus("draft"); setImageUrls([]); }
   };
 
   return (
