@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      generated_videos: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string | null
+          product_name: string
+          script: string | null
+          thumbnail_url: string | null
+          user_id: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          product_name: string
+          script?: string | null
+          thumbnail_url?: string | null
+          user_id: string
+          video_url?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          product_name?: string
+          script?: string | null
+          thumbnail_url?: string | null
+          user_id?: string
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_videos_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string

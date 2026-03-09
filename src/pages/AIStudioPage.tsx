@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -42,6 +43,7 @@ const VIDEO_STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gene
 
 export default function AIStudioPage() {
   const { products } = useProductsContext();
+  const { user } = useAuth();
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedType, setSelectedType] = useState("ad-copy");
   const [output, setOutput] = useState("");
@@ -120,6 +122,7 @@ export default function AIStudioPage() {
     if (!selectedProduct) { toast({ title: "Select a product", variant: "destructive" }); return; }
     setIsGeneratingVideo(true);
     setVideoScript("");
+    let finalScript = "";
     try {
       await streamFromEdge(VIDEO_STREAM_URL, {
         product: {
@@ -129,7 +132,19 @@ export default function AIStudioPage() {
           offerAmount: selectedProduct.offerAmount,
           category: selectedProduct.category,
         },
-      }, setVideoScript);
+      }, (text) => { finalScript = text; setVideoScript(text); });
+
+      // Save to generated_videos table
+      if (finalScript && user) {
+        await supabase.from("generated_videos").insert({
+          user_id: user.id,
+          product_id: selectedProduct.id,
+          product_name: selectedProduct.name,
+          script: finalScript,
+          video_url: "/sample-marketing-reel.mp4",
+        });
+        toast({ title: "Video saved to My Videos!" });
+      }
     } catch (e) {
       console.error(e);
       toast({ title: "Error", description: "Failed to generate video script.", variant: "destructive" });
