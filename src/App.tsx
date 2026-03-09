@@ -24,6 +24,7 @@ import ProductAdPage from "./pages/ProductAdPage";
 import SocialMediaPage from "./pages/SocialMediaPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 import NotFound from "./pages/NotFound";
 import PublicProductsPage from "./pages/PublicProductsPage";
 
