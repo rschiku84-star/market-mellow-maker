@@ -2,23 +2,53 @@ import { generateScript } from "../../ai/generateScript";
 import { generateCaption } from "../../ai/generateCaption";
 import { generateHashtags } from "../../ai/generateHashtags";
 
-import { useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
+export default function ProductUploadForm() {
 
-import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import type { Product } from "@/hooks/useProducts";
+const [name, setName] = useState("");
+const [offerAmount, setOfferAmount] = useState("");
+
+const generateContent = () => {
+  const script = generateScript(name, offerAmount);
+  const caption = generateCaption(name, offerAmount);
+  const hashtags = generateHashtags(name);
+
+  alert(
+    "SCRIPT:\n" +
+      script +
+      "\n\nCAPTION:\n" +
+      caption +
+      "\n\nHASHTAGS:\n" +
+      hashtags
+  );
+};
+
+return (
+  <div style={{padding:"20px"}}>
+
+  <h2>Product Reel Generator</h2>
+
+  <input
+  placeholder="Product Name"
+  value={name}
+  onChange={(e)=>setName(e.target.value)}
+  />
+
+  <br/><br/>
+
+  <input
+  placeholder="Offer Amount"
+  value={offerAmount}
+  onChange={(e)=>setOfferAmount(e.target.value)}
+  />
+
+  <br/><br/>
+
+  <button onClick={generateContent}>
+  Generate Reel Content
+  </button>
+
+  </div>
+);
+}
