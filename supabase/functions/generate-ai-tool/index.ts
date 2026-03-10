@@ -7,9 +7,9 @@ const corsHeaders = {
 };
 
 const PLAN_LIMITS: Record<string, number | null> = {
-  free: 5,
-  pro: 50,
-  premium: null, // unlimited
+  free: 10,
+  pro: null, // unlimited
+  premium: null,
   business: null,
 };
 
