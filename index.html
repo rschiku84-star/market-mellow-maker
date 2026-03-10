@@ -1,7 +1,8 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Reel Maker</title><style>
+<title>AI Reel SaaS</title><style>
+
 body{
 background:#000;
 color:#fff;
@@ -9,14 +10,16 @@ font-family:Arial;
 text-align:center;
 padding:20px;
 }
+
 .box{
 background:#111;
 padding:20px;
 border-radius:10px;
-max-width:380px;
+max-width:400px;
 margin:auto;
 margin-top:20px;
 }
+
 input{
 width:100%;
 padding:10px;
@@ -26,6 +29,7 @@ border:none;
 background:#222;
 color:white;
 }
+
 button{
 width:100%;
 padding:12px;
@@ -36,28 +40,82 @@ background:#00c853;
 color:white;
 font-size:16px;
 }
+
 video{
 width:100%;
 margin-top:20px;
 border-radius:10px;
 }
+
 canvas{
 display:none;
 }
-</style></head><body><h1>AI Reel Maker</h1><div class="box"><input id="product" placeholder="Product Name">
-<input id="price" placeholder="Price">
-<input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+
+#app{
+display:none;
+}
+
+</style></head><body><h1>AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+
+<button onclick="login()">Login</button>
+
+</div><div id="app" class="box"><h3>AI Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+
+<button onclick="proFeature()">Generate 10 Reels (PRO)</button>
 
 <video id="video" controls></video>
 
 <a id="download" style="display:none">
 <button>Download Reel</button>
-</a><div id="caption"></div>
-<div id="hashtags"></div></div><canvas id="canvas" width="720" height="1280"></canvas>
+</a><div id="caption"></div><div id="hashtags"></div><button onclick="logout()">Logout</button>
 
-<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_4c2fcb0f1a.mp3"></audio>
+</div><canvas id="canvas" width="720" height="1280"></canvas>
 
 <script>
+
+
+function signup(){
+
+let email=document.getElementById("email").value
+let pass=document.getElementById("password").value
+
+localStorage.setItem("userEmail",email)
+localStorage.setItem("userPass",pass)
+
+alert("Signup success")
+
+}
+
+
+function login(){
+
+let email=document.getElementById("email").value
+let pass=document.getElementById("password").value
+
+let savedEmail=localStorage.getItem("userEmail")
+let savedPass=localStorage.getItem("userPass")
+
+if(email==savedEmail && pass==savedPass){
+
+document.getElementById("loginBox").style.display="none"
+document.getElementById("app").style.display="block"
+
+}else{
+
+alert("Wrong login")
+
+}
+
+}
+
+
+function logout(){
+
+location.reload()
+
+}
+
+
 
 function generate(){
 
@@ -67,8 +125,11 @@ let offer=document.getElementById("offer").value
 let file=document.getElementById("image").files[0]
 
 if(!file){
-alert("Upload image first")
+
+alert("Upload image")
+
 return
+
 }
 
 let canvas=document.getElementById("canvas")
@@ -94,6 +155,7 @@ let video=document.getElementById("video")
 video.src=url
 
 let dl=document.getElementById("download")
+
 dl.href=url
 dl.download="reel.webm"
 dl.style.display="block"
@@ -101,8 +163,6 @@ dl.style.display="block"
 }
 
 recorder.start()
-
-document.getElementById("music").play()
 
 ctx.fillStyle="black"
 ctx.fillRect(0,0,720,1280)
@@ -120,20 +180,37 @@ ctx.fillStyle="yellow"
 ctx.fillText(offer,80,1050)
 
 setTimeout(()=>{
+
 recorder.stop()
+
 },3000)
 
 }
 
 img.src=URL.createObjectURL(file)
 
+
+
 let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
+
 document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
 
-let tags="#sale #reels #trending #shopping #deal"
+
+let tags="#reels #viral #sale #shopnow #trend"
+
 document.getElementById("hashtags").innerHTML="<p>"+tags+"</p>"
 
+
 }
+
+
+
+function proFeature(){
+
+alert("This is PRO feature. Payment required.")
+
+}
+
 
 </script></body>
 </html>
