@@ -1,16 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market Mellow Maker</title>
+<title>Market Mellow Maker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+padding:30px;
+background:#f4f4f4;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+max-width:350px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#28a745;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+}
+
+</style>
+
 </head>
 
 <body>
 
-  <div id="root"></div>
+<h1>🚀 Market Mellow Maker</h1>
+<p>Create marketing reels for your shop</p>
 
-  <script type="module" src="/src/main.tsx"></script>
+<div class="card">
+
+<h3>Upload Product</h3>
+
+<input placeholder="Product Name">
+<input placeholder="Price">
+<input placeholder="Offer">
+<input type="file">
+
+<button onclick="alert('Reel generation coming soon 🚀')">
+Generate Reel
+</button>
+
+</div>
 
 </body>
 </html>
