@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Reel Maker</title>
+<title>Ultra AI Reel Maker</title>
 
 <style>
 
 body{
 background:#000;
-font-family:Arial;
 color:white;
+font-family:Arial;
 text-align:center;
 }
 
@@ -31,14 +31,14 @@ button{
 width:90%;
 padding:12px;
 margin:10px;
-background:#2e7d32;
+background:#00c853;
 color:white;
 border:none;
 border-radius:6px;
 font-size:16px;
 }
 
-#download{
+canvas{
 display:none;
 }
 
@@ -48,7 +48,7 @@ display:none;
 
 <body>
 
-<h1>🤖 AI Reel Maker</h1>
+<h1>🚀 Ultra AI Reel Maker</h1>
 
 <div class="box">
 
@@ -56,17 +56,17 @@ display:none;
 
 <input id="email" placeholder="Email">
 
-<input id="password" placeholder="Password" type="password">
+<input id="password" type="password" placeholder="Password">
 
 <button onclick="login()">Login</button>
 
 </div>
 
-<div class="box" id="reelBox" style="display:none">
+<div class="box" id="app" style="display:none">
 
-<h2>Reel Generator</h2>
+<h2>Create Reel</h2>
 
-<input id="product" placeholder="Product name">
+<input id="product" placeholder="Product Name">
 
 <input id="price" placeholder="Price">
 
@@ -74,23 +74,25 @@ display:none;
 
 <input type="file" id="image">
 
-<button onclick="generate()">Generate Reel</button>
+<button onclick="generate()">Generate AI Reel</button>
 
 <br><br>
 
-<video id="video" controls width="300"></video>
+<video id="video" controls width="320"></video>
 
 <br>
 
-<a id="download" download="reel.webm">
+<a id="download" style="display:none">
 <button>Download Reel</button>
 </a>
 
-<div id="hashtags"></div>
+<div id="caption"></div>
 
 </div>
 
-<canvas id="canvas" width="720" height="1280" style="display:none"></canvas>
+<canvas id="canvas" width="720" height="1280"></canvas>
+
+<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_4c2fcb0f1a.mp3"></audio>
 
 <script>
 
@@ -98,7 +100,7 @@ function login(){
 
 alert("Login success")
 
-document.getElementById("reelBox").style.display="block"
+document.getElementById("app").style.display="block"
 
 }
 
@@ -116,25 +118,7 @@ let img=new Image()
 
 img.onload=function(){
 
-ctx.fillStyle="black"
-ctx.fillRect(0,0,720,1280)
-
-ctx.drawImage(img,60,200,600,600)
-
-ctx.fillStyle="white"
-ctx.font="50px Arial"
-ctx.fillText(product,80,100)
-
-ctx.fillText("Price: "+price,80,950)
-
-ctx.fillStyle="yellow"
-ctx.fillText("Offer: "+offer,80,1050)
-
-let caption=product+" only "+price+" | "+offer
-
-let speech=new SpeechSynthesisUtterance(caption)
-
-speechSynthesis.speak(speech)
+let frame=0
 
 let stream=canvas.captureStream(30)
 
@@ -157,25 +141,52 @@ video.src=url
 let dl=document.getElementById("download")
 
 dl.href=url
+dl.download="ai-reel.webm"
 dl.style.display="block"
 
 }
 
 recorder.start()
 
-setTimeout(()=>{
+document.getElementById("music").play()
+
+let interval=setInterval(()=>{
+
+ctx.fillStyle="black"
+ctx.fillRect(0,0,720,1280)
+
+ctx.drawImage(img,60,200,600,600)
+
+ctx.fillStyle="white"
+ctx.font="60px Arial"
+
+ctx.fillText(product,80,200+frame)
+
+ctx.fillText("₹"+price,80,950)
+
+ctx.fillStyle="yellow"
+
+ctx.fillText(offer,80,1050)
+
+frame+=10
+
+if(frame>200){
+
+clearInterval(interval)
 
 recorder.stop()
 
-},3000)
+}
+
+},100)
 
 }
 
 img.src=URL.createObjectURL(file)
 
-let tags="#reels #viralreels #instareels #trending #shopnow"
+let caption="🔥 "+product+" just ₹"+price+" | "+offer+" | Limited offer"
 
-document.getElementById("hashtags").innerHTML="<h3>"+tags+"</h3>"
+document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
 
 }
 
