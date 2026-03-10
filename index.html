@@ -2,7 +2,10 @@
 <html>
 <head>
 <title>Market Mellow Maker</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
 
@@ -36,6 +39,7 @@ color:white;
 button{
 width:100%;
 padding:12px;
+margin-top:8px;
 background:#2e7d32;
 color:white;
 border:none;
@@ -71,9 +75,14 @@ border-radius:10px;
 <input id="name" placeholder="Product Name">
 <input id="price" placeholder="Price">
 <input id="offer" placeholder="Offer">
+
 <input type="file" id="image">
 
 <button onclick="generate()">Generate Reel</button>
+
+<button onclick="downloadPoster()" style="background:#1976d2">
+Download Poster
+</button>
 
 </div>
 
@@ -86,7 +95,9 @@ border-radius:10px;
 <img id="preview" width="200"><br><br>
 
 <h3 id="pname"></h3>
+
 <p id="pprice"></p>
+
 <p id="poffer"></p>
 
 </div>
@@ -108,16 +119,38 @@ document.getElementById("poffer").innerText="Offer: "+offer
 let file=document.getElementById("image").files[0]
 
 if(file){
+
 let reader=new FileReader()
 
 reader.onload=function(e){
+
 document.getElementById("preview").src=e.target.result
+
 }
 
 reader.readAsDataURL(file)
+
 }
 
 document.getElementById("poster").style.display="block"
+
+}
+
+function downloadPoster(){
+
+let poster=document.querySelector(".poster-box")
+
+html2canvas(poster).then(canvas=>{
+
+let link=document.createElement("a")
+
+link.download="marketing-poster.png"
+
+link.href=canvas.toDataURL()
+
+link.click()
+
+})
 
 }
 
