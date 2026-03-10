@@ -1,293 +1,149 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
+<title>AI Reel Maker SaaS</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra SaaS AI Reel Studio</title><style>
+
+<style>
 
 body{
-background:#0b0b0b;
-color:white;
 font-family:Arial;
+background:#0f172a;
+color:white;
 text-align:center;
-padding:20px;
+padding:40px;
 }
 
 h1{
-color:#00ff9c;
+font-size:32px;
 }
 
 .box{
-background:#181818;
+background:#1e293b;
 padding:20px;
-border-radius:12px;
-max-width:420px;
-margin:auto;
 margin-top:20px;
+border-radius:10px;
 }
 
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
+textarea{
+width:90%;
+height:120px;
+padding:10px;
 border-radius:8px;
-background:#262626;
-color:white;
 }
 
 button{
-width:100%;
-padding:12px;
+padding:12px 20px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-background:#00c853;
+background:#22c55e;
 color:white;
 font-size:16px;
 cursor:pointer;
 }
 
-video{
-width:100%;
+#result{
 margin-top:20px;
-border-radius:10px;
+white-space:pre-line;
 }
 
-#app{display:none;}
-#admin{display:none;}
+</style>
+</head>
 
-</style></head><body><h1>🚀 Ultra AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+<body>
 
-<button onclick="login()">Login</button>
+<h1>🔥 AI Reel Maker SaaS</h1>
 
-</div><div id="app" class="box"><h3>AI Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+<div class="box">
+<h2>Login</h2>
+<button onclick="login()">Login with Google</button>
+</div>
 
-<button onclick="aiScript()">AI Script</button>
+<div class="box">
+<h2>AI Script Generator</h2>
 
-<button onclick="voiceReel()">Auto Voice</button>
+<textarea id="idea" placeholder="Enter your reel idea"></textarea>
 
-<button onclick="upgrade()">Upgrade PRO</button>
+<br>
 
-<video id="video" controls></video>
+<button onclick="generate()">Generate Script</button>
 
-<a id="download" style="display:none">
-<button>Download Reel</button>
-</a><div id="caption"></div>
-<div id="hashtags"></div>
-<div id="script"></div><button onclick="openAdmin()">Admin</button>
+<p id="result"></p>
 
-<button onclick="logout()">Logout</button>
+</div>
 
-</div><div id="admin" class="box"><h3>Admin Dashboard</h3><p id="users"></p>
-<p id="reels"></p>
-<p id="pro"></p><button onclick="closeAdmin()">Close</button>
+<div class="box">
+<h2>Auto Voice Reel</h2>
 
-</div><canvas id="canvas" width="720" height="1280" style="display:none"></canvas>
+<button onclick="voice()">Generate Voice</button>
 
-<script>
-
-let users = localStorage.getItem("users") || 0
-let reels = localStorage.getItem("reels") || 0
-let proUsers = localStorage.getItem("proUsers") || 0
+</div>
 
 
-function signup(){
+<script type="module">
 
-let email=document.getElementById("email").value
-let pass=document.getElementById("password").value
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-localStorage.setItem("email",email)
-localStorage.setItem("pass",pass)
+const firebaseConfig = {
+apiKey: "AIzaSyCH0r1dDjoZxOvoLqdSc0",
+authDomain: "ai-reel-maker-48d49.firebaseapp.com",
+projectId: "ai-reel-maker-48d49",
+storageBucket: "ai-reel-maker-48d49.appspot.com",
+messagingSenderId: "407387852483",
+appId: "1:407387852483:web:ac65998",
+measurementId: "G-314MGJ1HXF"
+};
 
-users++
+const app = initializeApp(firebaseConfig);
 
-localStorage.setItem("users",users)
+const auth = getAuth();
 
-alert("Signup success")
+window.login = function(){
 
-}
+const provider = new GoogleAuthProvider();
 
+signInWithPopup(auth, provider)
 
-function login(){
+.then((result)=>{
 
-let email=document.getElementById("email").value
-let pass=document.getElementById("password").value
+alert("Login Success: " + result.user.email);
 
-if(email==localStorage.getItem("email") && pass==localStorage.getItem("pass")){
+})
 
-document.getElementById("loginBox").style.display="none"
-document.getElementById("app").style.display="block"
+.catch((error)=>{
 
-}else{
+alert(error.message);
 
-alert("Wrong login")
-
-}
-
-}
-
-
-function logout(){
-
-location.reload()
+});
 
 }
 
+window.generate = function(){
 
+let idea = document.getElementById("idea").value;
 
-function generate(){
+let script =
+"Hook: Stop scrolling!\n\n" +
+"Content: Today we talk about " + idea + ".\n\n" +
+"Tip: Use this trick to grow fast.\n\n" +
+"CTA: Follow for more AI reels!";
 
-let product=document.getElementById("product").value
-let price=document.getElementById("price").value
-let offer=document.getElementById("offer").value
-let file=document.getElementById("image").files[0]
-
-if(!file){
-
-alert("Upload image")
-
-return
+document.getElementById("result").innerText = script;
 
 }
 
-let canvas=document.getElementById("canvas")
-let ctx=canvas.getContext("2d")
+window.voice = function(){
 
-let img=new Image()
+let msg = new SpeechSynthesisUtterance("Your reel voice is ready");
 
-img.onload=function(){
-
-let stream=canvas.captureStream(30)
-
-let recorder=new MediaRecorder(stream)
-
-let chunks=[]
-
-recorder.ondataavailable=e=>chunks.push(e.data)
-
-recorder.onstop=e=>{
-
-let blob=new Blob(chunks,{type:"video/webm"})
-
-let url=URL.createObjectURL(blob)
-
-document.getElementById("video").src=url
-
-let dl=document.getElementById("download")
-
-dl.href=url
-dl.download="reel.webm"
-
-dl.style.display="block"
+speechSynthesis.speak(msg);
 
 }
 
-recorder.start()
+</script>
 
-ctx.fillStyle="black"
-ctx.fillRect(0,0,720,1280)
-
-ctx.drawImage(img,60,200,600,600)
-
-ctx.fillStyle="white"
-
-ctx.font="60px Arial"
-
-ctx.fillText(product,80,150)
-
-ctx.font="50px Arial"
-
-ctx.fillText("₹"+price,80,950)
-
-ctx.fillStyle="yellow"
-
-ctx.fillText(offer,80,1050)
-
-setTimeout(()=>{
-
-recorder.stop()
-
-},3000)
-
-}
-
-img.src=URL.createObjectURL(file)
-
-
-
-let caption="🔥 "+product+" only ₹"+price+" | "+offer
-
-document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
-
-
-let tags="#reels #viral #sale #trending"
-
-document.getElementById("hashtags").innerHTML="<p>"+tags+"</p>"
-
-
-reels++
-
-localStorage.setItem("reels",reels)
-
-}
-
-
-
-function aiScript(){
-
-let product=document.getElementById("product").value
-
-let script="Introducing "+product+"! Limited time offer. Grab yours now before stock ends!"
-
-document.getElementById("script").innerHTML="<p>"+script+"</p>"
-
-}
-
-
-
-function voiceReel(){
-
-let text=document.getElementById("script").innerText
-
-let speech=new SpeechSynthesisUtterance(text)
-
-speechSynthesis.speak(speech)
-
-}
-
-
-
-function upgrade(){
-
-localStorage.setItem("pro","yes")
-
-proUsers++
-
-localStorage.setItem("proUsers",proUsers)
-
-alert("You are now PRO")
-
-}
-
-
-
-function openAdmin(){
-
-document.getElementById("admin").style.display="block"
-
-document.getElementById("users").innerText="Users: "+localStorage.getItem("users")
-
-document.getElementById("reels").innerText="Reels: "+localStorage.getItem("reels")
-
-document.getElementById("pro").innerText="PRO Users: "+localStorage.getItem("proUsers")
-
-}
-
-
-function closeAdmin(){
-
-document.getElementById("admin").style.display="none"
-
-}
-
-</script></body>
+</body>
 </html>
