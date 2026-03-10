@@ -58,7 +58,7 @@ const AIToolLayout = ({ title, subtitle, toolId, placeholder, icon, inputLabel =
           {credits.loading ? (
             "Loading credits..."
           ) : credits.limit !== null ? (
-            <span>{credits.remaining} / {credits.limit} credits remaining this month</span>
+            <span>{credits.remaining} / {credits.limit} credits remaining today</span>
           ) : (
             <span>Unlimited credits ({credits.plan} plan)</span>
           )}

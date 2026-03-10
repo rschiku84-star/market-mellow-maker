@@ -3,9 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 const PLAN_LIMITS: Record<string, number | null> = {
-  free: 5,
-  pro: 50,
-  premium: null,
+  free: 10,
+  pro: null,    // unlimited
+  premium: null, // unlimited
   business: null,
 };
 
@@ -13,7 +13,7 @@ export function useCredits() {
   const { user } = useAuth();
   const [plan, setPlan] = useState<string>("free");
   const [used, setUsed] = useState(0);
-  const [limit, setLimit] = useState<number | null>(5);
+  const [limit, setLimit] = useState<number | null>(10);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
@@ -30,15 +30,15 @@ export function useCredits() {
     setPlan(userPlan);
     setLimit(PLAN_LIMITS[userPlan] ?? PLAN_LIMITS.free!);
 
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+    // Daily limit for free plan
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
 
     const { count } = await supabase
       .from("ai_generations")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
-      .gte("created_at", startOfMonth.toISOString());
+      .gte("created_at", startOfDay.toISOString());
 
     setUsed(count ?? 0);
     setLoading(false);

@@ -7,9 +7,9 @@ const corsHeaders = {
 };
 
 const PLAN_LIMITS: Record<string, number | null> = {
-  free: 5,
-  pro: 50,
-  premium: null, // unlimited
+  free: 10,
+  pro: null, // unlimited
+  premium: null,
   business: null,
 };
 
@@ -200,19 +200,18 @@ serve(async (req) => {
     const limit = PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
 
     if (limit !== null) {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
 
       const { count } = await supabase
         .from("ai_generations")
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id)
-        .gte("created_at", startOfMonth.toISOString());
+        .gte("created_at", startOfDay.toISOString());
 
       if ((count ?? 0) >= limit) {
         return new Response(
-          JSON.stringify({ error: "credit_limit", message: "You've reached your monthly generation limit. Upgrade your plan for more credits." }),
+          JSON.stringify({ error: "credit_limit", message: "You've reached your daily generation limit. Upgrade to Pro for unlimited generations." }),
           { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

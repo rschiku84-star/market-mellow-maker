@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Zap, Crown, Rocket } from "lucide-react";
+import { Check, Zap, Crown } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ const plans = [
     price: "$0",
     period: "/month",
     icon: Zap,
-    features: ["5 AI generations / month", "All 13 AI tools", "Copy & download outputs", "Content history"],
+    features: ["10 AI generations / day", "All 13 AI tools", "Copy & download outputs", "Content history"],
   },
   {
     id: "pro",
@@ -23,15 +23,7 @@ const plans = [
     period: "/month",
     icon: Crown,
     popular: true,
-    features: ["50 AI generations / month", "All 13 AI tools", "Priority support", "Early access to new tools"],
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: "$49",
-    period: "/month",
-    icon: Rocket,
-    features: ["Unlimited AI generations", "All 13 AI tools", "Priority support", "API access", "Custom branding"],
+    features: ["Unlimited AI generations", "All 13 AI tools", "Priority support", "Early access to new tools", "API access"],
   },
 ];
 
@@ -49,21 +41,16 @@ const SubscriptionPage = () => {
   return (
     <>
       <DashboardHeader title="Subscription Plan" subtitle="Manage your plan and billing" />
-      <div className="p-6 max-w-4xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="p-6 max-w-3xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {plans.map((plan, i) => {
             const isCurrent = plan.id === currentPlan;
             return (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.08 }}
-              >
+              <motion.div key={plan.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.08 }}>
                 <Card className={`relative h-full ${plan.popular ? "border-primary shadow-lg" : ""}`}>
                   {plan.popular && (
                     <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
-                      Most Popular
+                      Recommended
                     </Badge>
                   )}
                   <CardContent className="p-6 flex flex-col h-full">
