@@ -1,7 +1,9 @@
+
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker Pro</title><style>
+<title>AI Reel Maker V2</title><style>
+
 body{
 background:#0d0d0d;
 color:white;
@@ -16,6 +18,7 @@ margin:auto;
 background:#171717;
 padding:20px;
 border-radius:12px;
+margin-top:20px;
 }
 
 input{
@@ -41,26 +44,26 @@ font-size:16px;
 
 video{
 width:100%;
-margin-top:20px;
+margin-top:15px;
 border-radius:10px;
 }
 
 canvas{
 display:none;
 }
-</style></head><body><h1>🚀 AI Reel Maker</h1><div class="box" id="login"><h2>Login / Signup</h2><input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+
+</style></head><body><h1>🚀 AI Reel Maker V2</h1><div class="box" id="login"><h2>Login / Signup</h2><input id="email" placeholder="Email"><input id="pass" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
 <button onclick="login()">Login</button>
 
 </div><div class="box" id="app" style="display:none"><h2>Create Reel</h2><input id="product" placeholder="Product name">
 <input id="price" placeholder="Price">
-<input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+<input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate 3 Reels</button>
 
-<video id="video" controls></video>
+<video id="video1" controls></video>
+<video id="video2" controls></video>
+<video id="video3" controls></video>
 
-<a id="download" style="display:none">
-<button>Download Reel</button>
-</a><div id="caption"></div>
+<div id="caption"></div>
 <div id="tags"></div></div><canvas id="canvas" width="720" height="1280"></canvas>
 
 <script>
@@ -96,19 +99,10 @@ alert("Wrong login")
 
 }
 
-function generate(){
-
-let product=document.getElementById("product").value
-let price=document.getElementById("price").value
-let offer=document.getElementById("offer").value
-let file=document.getElementById("image").files[0]
+function makeReel(videoId,product,price,offer,img){
 
 let canvas=document.getElementById("canvas")
 let ctx=canvas.getContext("2d")
-
-let img=new Image()
-
-img.onload=function(){
 
 ctx.fillStyle="black"
 ctx.fillRect(0,0,720,1280)
@@ -138,13 +132,7 @@ recorder.onstop=e=>{
 let blob=new Blob(chunks,{type:"video/webm"})
 let url=URL.createObjectURL(blob)
 
-let video=document.getElementById("video")
-video.src=url
-
-let dl=document.getElementById("download")
-dl.href=url
-dl.download="reel.webm"
-dl.style.display="block"
+document.getElementById(videoId).src=url
 
 }
 
@@ -154,17 +142,34 @@ setTimeout(()=>{
 
 recorder.stop()
 
-},3000)
+},2000)
+
+}
+
+function generate(){
+
+let product=document.getElementById("product").value
+let price=document.getElementById("price").value
+let offer=document.getElementById("offer").value
+let file=document.getElementById("image").files[0]
+
+let img=new Image()
+
+img.onload=function(){
+
+makeReel("video1",product,price,offer,img)
+makeReel("video2",product+" Sale",price,offer,img)
+makeReel("video3","Buy "+product,price,offer,img)
 
 }
 
 img.src=URL.createObjectURL(file)
 
-let caption="🔥 "+product+" only ₹"+price+" | "+offer
+let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
 
 document.getElementById("caption").innerText=caption
 
-let tags="#reels #viral #trending #shopping"
+let tags="#reels #viral #shopping #trending #instareels"
 
 document.getElementById("tags").innerText=tags
 
