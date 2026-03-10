@@ -1,10 +1,8 @@
 <!DOCTYPE html><html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker V3</title><style>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI Reel Maker SaaS</title><style>
 
 body{
-background:#0d0d0d;
+background:#0f0f0f;
 color:white;
 font-family:Arial;
 text-align:center;
@@ -12,11 +10,11 @@ padding:20px;
 }
 
 .box{
-max-width:420px;
-margin:auto;
-background:#171717;
+background:#1a1a1a;
 padding:20px;
 border-radius:12px;
+max-width:420px;
+margin:auto;
 margin-top:20px;
 }
 
@@ -33,12 +31,16 @@ color:white;
 button{
 width:100%;
 padding:12px;
-margin-top:12px;
+margin-top:10px;
 border:none;
 border-radius:8px;
-background:#2e7d32;
+background:#00c853;
 color:white;
 font-size:16px;
+}
+
+button:hover{
+background:#00e676;
 }
 
 video{
@@ -51,63 +53,127 @@ canvas{
 display:none;
 }
 
-</style></head><body><h1>🚀 AI Reel Maker V3</h1><div class="box" id="login"><h2>Login / Signup</h2><input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+.plan{
+background:#222;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.counter{
+margin-top:10px;
+font-size:14px;
+color:#aaa;
+}
+
+</style></head><body><h1>🚀 AI Reel Maker</h1><div class="box" id="loginBox"><h2>Login / Signup</h2><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+
 <button onclick="login()">Login</button>
 
-</div><div class="box" id="app" style="display:none"><h2>Create Reel</h2><input id="product" placeholder="Product name">
-<input id="price" placeholder="Price">
-<input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate 5 Reels</button>
+</div><div class="box" id="appBox" style="display:none"><h2>Create Reel</h2><div class="plan">
+Free Plan • 3 Reels
+</div><div class="counter" id="counter">
+Reels used: 0 / 3
+</div><input id="product" placeholder="Product name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer text"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
 
-<video id="video1" controls></video>
-<video id="video2" controls></video>
-<video id="video3" controls></video>
-<video id="video4" controls></video>
-<video id="video5" controls></video>
+<video id="video" controls></video>
 
-<div id="caption"></div>
-<div id="tags"></div></div><canvas id="canvas" width="720" height="1280"></canvas>
+<a id="download" style="display:none">
+<button>Download Reel</button>
+</a><div id="caption"></div><div id="tags"></div><button onclick="logout()">Logout</button>
+
+</div><canvas id="canvas" width="720" height="1280"></canvas>
 
 <script>
 
+let reelCount=0
+
 function signup(){
+
 let email=document.getElementById("email").value
-let pass=document.getElementById("pass").value
+let pass=document.getElementById("password").value
+
 localStorage.setItem(email,pass)
+
 alert("Account created")
+
 }
 
 function login(){
+
 let email=document.getElementById("email").value
-let pass=document.getElementById("pass").value
+let pass=document.getElementById("password").value
+
 let saved=localStorage.getItem(email)
 
 if(saved==pass){
-document.getElementById("login").style.display="none"
-document.getElementById("app").style.display="block"
+
+document.getElementById("loginBox").style.display="none"
+document.getElementById("appBox").style.display="block"
+
 }else{
-alert("Wrong login")
-}
+
+alert("Login failed")
+
 }
 
-function makeReel(videoId,text,img,price,offer){
+}
+
+function logout(){
+
+location.reload()
+
+}
+
+function generate(){
+
+if(reelCount>=3){
+
+alert("Free limit reached")
+
+return
+
+}
+
+reelCount++
+
+document.getElementById("counter").innerText=
+"Reels used: "+reelCount+" / 3"
+
+let product=document.getElementById("product").value
+
+let price=document.getElementById("price").value
+
+let offer=document.getElementById("offer").value
+
+let file=document.getElementById("image").files[0]
 
 let canvas=document.getElementById("canvas")
+
 let ctx=canvas.getContext("2d")
 
+let img=new Image()
+
+img.onload=function(){
+
 ctx.fillStyle="black"
+
 ctx.fillRect(0,0,720,1280)
 
 ctx.drawImage(img,60,250,600,600)
 
 ctx.fillStyle="white"
+
 ctx.font="60px Arial"
-ctx.fillText(text,80,150)
+
+ctx.fillText(product,80,150)
 
 ctx.font="50px Arial"
+
 ctx.fillText("₹"+price,80,1000)
 
 ctx.fillStyle="yellow"
+
 ctx.fillText(offer,80,1100)
 
 let stream=canvas.captureStream(30)
@@ -119,35 +185,32 @@ let chunks=[]
 recorder.ondataavailable=e=>chunks.push(e.data)
 
 recorder.onstop=e=>{
+
 let blob=new Blob(chunks,{type:"video/webm"})
+
 let url=URL.createObjectURL(blob)
-document.getElementById(videoId).src=url
+
+let video=document.getElementById("video")
+
+video.src=url
+
+let dl=document.getElementById("download")
+
+dl.href=url
+
+dl.download="reel.webm"
+
+dl.style.display="block"
+
 }
 
 recorder.start()
 
 setTimeout(()=>{
+
 recorder.stop()
-},2000)
 
-}
-
-function generate(){
-
-let product=document.getElementById("product").value
-let price=document.getElementById("price").value
-let offer=document.getElementById("offer").value
-let file=document.getElementById("image").files[0]
-
-let img=new Image()
-
-img.onload=function(){
-
-makeReel("video1",product,img,price,offer)
-makeReel("video2","Buy "+product,img,price,offer)
-makeReel("video3",product+" Sale",img,price,offer)
-makeReel("video4","Limited Offer",img,price,offer)
-makeReel("video5","Best Deal",img,price,offer)
+},3000)
 
 }
 
@@ -155,11 +218,11 @@ img.src=URL.createObjectURL(file)
 
 let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
 
-document.getElementById("caption").innerText=caption
+document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
 
-let tags="#reels #viral #trending #shopping #instareels"
+let tags="#reels #viral #instagramreels #trending #shopping"
 
-document.getElementById("tags").innerText=tags
+document.getElementById("tags").innerHTML="<p>"+tags+"</p>"
 
 let speech=new SpeechSynthesisUtterance(caption)
 
