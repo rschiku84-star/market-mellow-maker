@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.generate-video-script]
 verify_jwt = false
+
+[functions.generate-ai-tool]
+verify_jwt = false
