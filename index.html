@@ -38,7 +38,7 @@ border-radius:6px;
 font-size:16px;
 }
 
-canvas{
+#download{
 display:none;
 }
 
@@ -57,8 +57,6 @@ display:none;
 <input id="email" placeholder="Email">
 
 <input id="password" placeholder="Password" type="password">
-
-<button onclick="signup()">Signup</button>
 
 <button onclick="login()">Login</button>
 
@@ -82,17 +80,19 @@ display:none;
 
 <video id="video" controls width="300"></video>
 
+<br>
+
+<a id="download" download="reel.webm">
+<button>Download Reel</button>
+</a>
+
+<div id="hashtags"></div>
+
 </div>
 
-<canvas id="canvas" width="720" height="1280"></canvas>
+<canvas id="canvas" width="720" height="1280" style="display:none"></canvas>
 
 <script>
-
-function signup(){
-
-alert("Signup success (demo)")
-
-}
 
 function login(){
 
@@ -130,6 +130,12 @@ ctx.fillText("Price: "+price,80,950)
 ctx.fillStyle="yellow"
 ctx.fillText("Offer: "+offer,80,1050)
 
+let caption=product+" only "+price+" | "+offer
+
+let speech=new SpeechSynthesisUtterance(caption)
+
+speechSynthesis.speak(speech)
+
 let stream=canvas.captureStream(30)
 
 let recorder=new MediaRecorder(stream)
@@ -140,11 +146,18 @@ recorder.ondataavailable=e=>chunks.push(e.data)
 
 recorder.onstop=e=>{
 
-let blob=new Blob(chunks,{type:"video/mp4"})
+let blob=new Blob(chunks,{type:"video/webm"})
 
 let url=URL.createObjectURL(blob)
 
-document.getElementById("video").src=url
+let video=document.getElementById("video")
+
+video.src=url
+
+let dl=document.getElementById("download")
+
+dl.href=url
+dl.style.display="block"
 
 }
 
@@ -159,6 +172,10 @@ recorder.stop()
 }
 
 img.src=URL.createObjectURL(file)
+
+let tags="#reels #viralreels #instareels #trending #shopnow"
+
+document.getElementById("hashtags").innerHTML="<h3>"+tags+"</h3>"
 
 }
 
