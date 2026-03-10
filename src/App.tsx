@@ -1,38 +1,82 @@
-import React from "react";
+import React, { useState } from "react";
 
 function App() {
+
+  const [name,setName] = useState("");
+  const [price,setPrice] = useState("");
+  const [offer,setOffer] = useState("");
+  const [image,setImage] = useState(null);
+
+  const handleSubmit = (e:any) => {
+    e.preventDefault();
+    alert("Product Saved 🚀");
+  };
+
   return (
     <div style={{fontFamily:"Arial",padding:"20px",textAlign:"center"}}>
-      
+
       <h1>🚀 Market Mellow Maker</h1>
-      <p>Create marketing videos in one click</p>
+      <p>Create marketing reels for your shop</p>
 
-      <div style={{marginTop:"40px"}}>
+      <h2 style={{marginTop:"40px"}}>Upload Product</h2>
 
-        <button style={btn}>Upload Product</button>
+      <form onSubmit={handleSubmit} style={{maxWidth:"300px",margin:"auto"}}>
 
-        <button style={btn}>Create Reel Video</button>
+        <input
+        type="text"
+        placeholder="Product Name"
+        value={name}
+        onChange={(e)=>setName(e.target.value)}
+        style={input}
+        />
 
-        <button style={btn}>AI Script Generator</button>
+        <input
+        type="text"
+        placeholder="Price"
+        value={price}
+        onChange={(e)=>setPrice(e.target.value)}
+        style={input}
+        />
 
-        <button style={btn}>Auto Post Social Media</button>
+        <input
+        type="text"
+        placeholder="Offer"
+        value={offer}
+        onChange={(e)=>setOffer(e.target.value)}
+        style={input}
+        />
 
-      </div>
+        <input
+        type="file"
+        onChange={(e)=>setImage(e.target.files?.[0] || null)}
+        style={input}
+        />
+
+        <button style={btn}>
+          Generate Video
+        </button>
+
+      </form>
 
     </div>
   );
 }
 
+const input = {
+  width:"100%",
+  padding:"10px",
+  margin:"10px 0",
+  borderRadius:"6px",
+  border:"1px solid #ccc"
+};
+
 const btn = {
-  display:"block",
-  width:"250px",
-  margin:"10px auto",
-  padding:"15px",
-  fontSize:"16px",
-  borderRadius:"10px",
-  border:"none",
+  width:"100%",
+  padding:"12px",
   background:"#4CAF50",
   color:"white",
+  border:"none",
+  borderRadius:"8px",
   cursor:"pointer"
 };
 
