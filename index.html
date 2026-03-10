@@ -1,18 +1,16 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html><html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Reel Maker Pro</title><style>
-
 body{
 background:#0d0d0d;
 color:white;
-font-family:Arial, sans-serif;
+font-family:Arial;
 text-align:center;
 padding:20px;
 }
 
-.container{
+.box{
 max-width:420px;
 margin:auto;
 background:#171717;
@@ -34,8 +32,8 @@ button{
 width:100%;
 padding:12px;
 margin-top:12px;
-border-radius:8px;
 border:none;
+border-radius:8px;
 background:#2e7d32;
 color:white;
 font-size:16px;
@@ -50,37 +48,51 @@ border-radius:10px;
 canvas{
 display:none;
 }
+</style></head><body><h1>🚀 AI Reel Maker</h1><div class="box" id="login"><h2>Login / Signup</h2><input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+<button onclick="login()">Login</button>
 
-.caption{
-margin-top:15px;
-color:#ccc;
-}
-
-.tags{
-margin-top:10px;
-color:#7CFC00;
-}
-
-</style></head><body><h1>🚀 AI Reel Maker PRO</h1><div class="container" id="loginBox"><h2>Login</h2><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="login()">Login</button>
-
-</div><div class="container" id="appBox" style="display:none"><h2>Create Reel</h2><input id="product" placeholder="Product name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+</div><div class="box" id="app" style="display:none"><h2>Create Reel</h2><input id="product" placeholder="Product name">
+<input id="price" placeholder="Price">
+<input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
 
 <video id="video" controls></video>
 
 <a id="download" style="display:none">
 <button>Download Reel</button>
-</a><div id="caption" class="caption"></div><div id="tags" class="tags"></div></div><canvas id="canvas" width="720" height="1280"></canvas>
-
-<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_4c2fcb0f1a.mp3"></audio>
+</a><div id="caption"></div>
+<div id="tags"></div></div><canvas id="canvas" width="720" height="1280"></canvas>
 
 <script>
 
+function signup(){
+
+let email=document.getElementById("email").value
+let pass=document.getElementById("pass").value
+
+localStorage.setItem(email,pass)
+
+alert("Account created")
+
+}
+
 function login(){
 
-alert("Login success")
+let email=document.getElementById("email").value
+let pass=document.getElementById("pass").value
 
-document.getElementById("loginBox").style.display="none"
-document.getElementById("appBox").style.display="block"
+let saved=localStorage.getItem(email)
+
+if(saved==pass){
+
+document.getElementById("login").style.display="none"
+document.getElementById("app").style.display="block"
+
+}else{
+
+alert("Wrong login")
+
+}
 
 }
 
@@ -91,25 +103,7 @@ let price=document.getElementById("price").value
 let offer=document.getElementById("offer").value
 let file=document.getElementById("image").files[0]
 
-if(!file){
-alert("Upload product image")
-return
-}
-
-let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
-
-let hashtags="#reels #viralreels #instareels #shopping #trending"
-
-document.getElementById("caption").innerText=caption
-
-document.getElementById("tags").innerText=hashtags
-
-let speech=new SpeechSynthesisUtterance(caption)
-
-speechSynthesis.speak(speech)
-
 let canvas=document.getElementById("canvas")
-
 let ctx=canvas.getContext("2d")
 
 let img=new Image()
@@ -117,23 +111,18 @@ let img=new Image()
 img.onload=function(){
 
 ctx.fillStyle="black"
-
 ctx.fillRect(0,0,720,1280)
 
 ctx.drawImage(img,60,250,600,600)
 
 ctx.fillStyle="white"
-
 ctx.font="60px Arial"
-
 ctx.fillText(product,80,150)
 
 ctx.font="50px Arial"
-
 ctx.fillText("₹"+price,80,1000)
 
 ctx.fillStyle="yellow"
-
 ctx.fillText(offer,80,1100)
 
 let stream=canvas.captureStream(30)
@@ -147,25 +136,19 @@ recorder.ondataavailable=e=>chunks.push(e.data)
 recorder.onstop=e=>{
 
 let blob=new Blob(chunks,{type:"video/webm"})
-
 let url=URL.createObjectURL(blob)
 
 let video=document.getElementById("video")
-
 video.src=url
 
 let dl=document.getElementById("download")
-
 dl.href=url
-dl.download="ai-reel.webm"
-
+dl.download="reel.webm"
 dl.style.display="block"
 
 }
 
 recorder.start()
-
-document.getElementById("music").play()
 
 setTimeout(()=>{
 
@@ -176,6 +159,18 @@ recorder.stop()
 }
 
 img.src=URL.createObjectURL(file)
+
+let caption="🔥 "+product+" only ₹"+price+" | "+offer
+
+document.getElementById("caption").innerText=caption
+
+let tags="#reels #viral #trending #shopping"
+
+document.getElementById("tags").innerText=tags
+
+let speech=new SpeechSynthesisUtterance(caption)
+
+speechSynthesis.speak(speech)
 
 }
 
