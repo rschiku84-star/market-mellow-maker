@@ -1,7 +1,7 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra AI Reel SaaS</title><style>
+<title>Ultra SaaS AI Reel Studio</title><style>
 
 body{
 background:#0b0b0b;
@@ -11,10 +11,14 @@ text-align:center;
 padding:20px;
 }
 
+h1{
+color:#00ff9c;
+}
+
 .box{
-background:#161616;
+background:#181818;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 max-width:420px;
 margin:auto;
 margin-top:20px;
@@ -26,7 +30,7 @@ padding:12px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-background:#222;
+background:#262626;
 color:white;
 }
 
@@ -39,6 +43,7 @@ border-radius:8px;
 background:#00c853;
 color:white;
 font-size:16px;
+cursor:pointer;
 }
 
 video{
@@ -50,32 +55,39 @@ border-radius:10px;
 #app{display:none;}
 #admin{display:none;}
 
-</style></head><body><h1>🔥 Ultra AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+</style></head><body><h1>🚀 Ultra AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
 
 <button onclick="login()">Login</button>
 
-</div><div id="app" class="box"><h3>Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+</div><div id="app" class="box"><h3>AI Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
 
-<button onclick="generate10()">🔥 Generate 10 Reels (PRO)</button>
+<button onclick="aiScript()">AI Script</button>
+
+<button onclick="voiceReel()">Auto Voice</button>
+
+<button onclick="upgrade()">Upgrade PRO</button>
 
 <video id="video" controls></video>
 
 <a id="download" style="display:none">
 <button>Download Reel</button>
-</a><div id="caption"></div><div id="hashtags"></div><button onclick="openAdmin()">Admin Panel</button>
+</a><div id="caption"></div>
+<div id="hashtags"></div>
+<div id="script"></div><button onclick="openAdmin()">Admin</button>
 
 <button onclick="logout()">Logout</button>
 
-</div><div id="admin" class="box"><h3>Admin Dashboard</h3><p id="userCount"></p><p id="reelCount"></p><button onclick="closeAdmin()">Close</button>
+</div><div id="admin" class="box"><h3>Admin Dashboard</h3><p id="users"></p>
+<p id="reels"></p>
+<p id="pro"></p><button onclick="closeAdmin()">Close</button>
 
 </div><canvas id="canvas" width="720" height="1280" style="display:none"></canvas>
 
 <script>
 
-
-let reels = localStorage.getItem("reelsMade") || 0
 let users = localStorage.getItem("users") || 0
-
+let reels = localStorage.getItem("reels") || 0
+let proUsers = localStorage.getItem("proUsers") || 0
 
 
 function signup(){
@@ -83,10 +95,11 @@ function signup(){
 let email=document.getElementById("email").value
 let pass=document.getElementById("password").value
 
-localStorage.setItem("userEmail",email)
-localStorage.setItem("userPass",pass)
+localStorage.setItem("email",email)
+localStorage.setItem("pass",pass)
 
 users++
+
 localStorage.setItem("users",users)
 
 alert("Signup success")
@@ -94,16 +107,12 @@ alert("Signup success")
 }
 
 
-
 function login(){
 
 let email=document.getElementById("email").value
 let pass=document.getElementById("password").value
 
-let savedEmail=localStorage.getItem("userEmail")
-let savedPass=localStorage.getItem("userPass")
-
-if(email==savedEmail && pass==savedPass){
+if(email==localStorage.getItem("email") && pass==localStorage.getItem("pass")){
 
 document.getElementById("loginBox").style.display="none"
 document.getElementById("app").style.display="block"
@@ -115,7 +124,6 @@ alert("Wrong login")
 }
 
 }
-
 
 
 function logout(){
@@ -149,6 +157,7 @@ let img=new Image()
 img.onload=function(){
 
 let stream=canvas.captureStream(30)
+
 let recorder=new MediaRecorder(stream)
 
 let chunks=[]
@@ -158,15 +167,16 @@ recorder.ondataavailable=e=>chunks.push(e.data)
 recorder.onstop=e=>{
 
 let blob=new Blob(chunks,{type:"video/webm"})
+
 let url=URL.createObjectURL(blob)
 
-let video=document.getElementById("video")
-video.src=url
+document.getElementById("video").src=url
 
 let dl=document.getElementById("download")
 
 dl.href=url
 dl.download="reel.webm"
+
 dl.style.display="block"
 
 }
@@ -179,13 +189,17 @@ ctx.fillRect(0,0,720,1280)
 ctx.drawImage(img,60,200,600,600)
 
 ctx.fillStyle="white"
+
 ctx.font="60px Arial"
+
 ctx.fillText(product,80,150)
 
 ctx.font="50px Arial"
+
 ctx.fillText("₹"+price,80,950)
 
 ctx.fillStyle="yellow"
+
 ctx.fillText(offer,80,1050)
 
 setTimeout(()=>{
@@ -200,37 +214,57 @@ img.src=URL.createObjectURL(file)
 
 
 
-let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
+let caption="🔥 "+product+" only ₹"+price+" | "+offer
 
 document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
 
 
-let tags="#viral #reels #trend #sale #shopnow"
+let tags="#reels #viral #sale #trending"
 
 document.getElementById("hashtags").innerHTML="<p>"+tags+"</p>"
 
 
 reels++
 
-localStorage.setItem("reelsMade",reels)
+localStorage.setItem("reels",reels)
 
 }
 
 
 
-function generate10(){
+function aiScript(){
 
-let pro=localStorage.getItem("proUser")
+let product=document.getElementById("product").value
 
-if(pro!="yes"){
+let script="Introducing "+product+"! Limited time offer. Grab yours now before stock ends!"
 
-alert("🚫 PRO feature. Upgrade required.")
-
-return
+document.getElementById("script").innerHTML="<p>"+script+"</p>"
 
 }
 
-alert("10 reels generating...")
+
+
+function voiceReel(){
+
+let text=document.getElementById("script").innerText
+
+let speech=new SpeechSynthesisUtterance(text)
+
+speechSynthesis.speak(speech)
+
+}
+
+
+
+function upgrade(){
+
+localStorage.setItem("pro","yes")
+
+proUsers++
+
+localStorage.setItem("proUsers",proUsers)
+
+alert("You are now PRO")
 
 }
 
@@ -240,12 +274,13 @@ function openAdmin(){
 
 document.getElementById("admin").style.display="block"
 
-document.getElementById("userCount").innerText="Users: "+localStorage.getItem("users")
+document.getElementById("users").innerText="Users: "+localStorage.getItem("users")
 
-document.getElementById("reelCount").innerText="Reels created: "+localStorage.getItem("reelsMade")
+document.getElementById("reels").innerText="Reels: "+localStorage.getItem("reels")
+
+document.getElementById("pro").innerText="PRO Users: "+localStorage.getItem("proUsers")
 
 }
-
 
 
 function closeAdmin(){
@@ -253,8 +288,6 @@ function closeAdmin(){
 document.getElementById("admin").style.display="none"
 
 }
-
-
 
 </script></body>
 </html>
