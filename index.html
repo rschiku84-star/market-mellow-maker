@@ -1,31 +1,31 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Reel SaaS</title><style>
+<title>Ultra AI Reel SaaS</title><style>
 
 body{
-background:#000;
-color:#fff;
+background:#0b0b0b;
+color:white;
 font-family:Arial;
 text-align:center;
 padding:20px;
 }
 
 .box{
-background:#111;
+background:#161616;
 padding:20px;
 border-radius:10px;
-max-width:400px;
+max-width:420px;
 margin:auto;
 margin-top:20px;
 }
 
 input{
 width:100%;
-padding:10px;
+padding:12px;
 margin-top:10px;
-border-radius:6px;
 border:none;
+border-radius:8px;
 background:#222;
 color:white;
 }
@@ -47,31 +47,35 @@ margin-top:20px;
 border-radius:10px;
 }
 
-canvas{
-display:none;
-}
+#app{display:none;}
+#admin{display:none;}
 
-#app{
-display:none;
-}
-
-</style></head><body><h1>AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
+</style></head><body><h1>🔥 Ultra AI Reel SaaS</h1><div id="loginBox" class="box"><h3>Login / Signup</h3><input id="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><button onclick="signup()">Signup</button>
 
 <button onclick="login()">Login</button>
 
-</div><div id="app" class="box"><h3>AI Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
+</div><div id="app" class="box"><h3>Reel Generator</h3><input id="product" placeholder="Product Name"><input id="price" placeholder="Price"><input id="offer" placeholder="Offer"><input type="file" id="image"><button onclick="generate()">Generate Reel</button>
 
-<button onclick="proFeature()">Generate 10 Reels (PRO)</button>
+<button onclick="generate10()">🔥 Generate 10 Reels (PRO)</button>
 
 <video id="video" controls></video>
 
 <a id="download" style="display:none">
 <button>Download Reel</button>
-</a><div id="caption"></div><div id="hashtags"></div><button onclick="logout()">Logout</button>
+</a><div id="caption"></div><div id="hashtags"></div><button onclick="openAdmin()">Admin Panel</button>
 
-</div><canvas id="canvas" width="720" height="1280"></canvas>
+<button onclick="logout()">Logout</button>
+
+</div><div id="admin" class="box"><h3>Admin Dashboard</h3><p id="userCount"></p><p id="reelCount"></p><button onclick="closeAdmin()">Close</button>
+
+</div><canvas id="canvas" width="720" height="1280" style="display:none"></canvas>
 
 <script>
+
+
+let reels = localStorage.getItem("reelsMade") || 0
+let users = localStorage.getItem("users") || 0
+
 
 
 function signup(){
@@ -82,9 +86,13 @@ let pass=document.getElementById("password").value
 localStorage.setItem("userEmail",email)
 localStorage.setItem("userPass",pass)
 
+users++
+localStorage.setItem("users",users)
+
 alert("Signup success")
 
 }
+
 
 
 function login(){
@@ -107,6 +115,7 @@ alert("Wrong login")
 }
 
 }
+
 
 
 function logout(){
@@ -196,20 +205,55 @@ let caption="🔥 "+product+" only ₹"+price+" | "+offer+" | Shop Now"
 document.getElementById("caption").innerHTML="<h3>"+caption+"</h3>"
 
 
-let tags="#reels #viral #sale #shopnow #trend"
+let tags="#viral #reels #trend #sale #shopnow"
 
 document.getElementById("hashtags").innerHTML="<p>"+tags+"</p>"
 
 
+reels++
+
+localStorage.setItem("reelsMade",reels)
+
+}
+
+
+
+function generate10(){
+
+let pro=localStorage.getItem("proUser")
+
+if(pro!="yes"){
+
+alert("🚫 PRO feature. Upgrade required.")
+
+return
+
+}
+
+alert("10 reels generating...")
+
 }
 
 
 
-function proFeature(){
+function openAdmin(){
 
-alert("This is PRO feature. Payment required.")
+document.getElementById("admin").style.display="block"
+
+document.getElementById("userCount").innerText="Users: "+localStorage.getItem("users")
+
+document.getElementById("reelCount").innerText="Reels created: "+localStorage.getItem("reelsMade")
 
 }
+
+
+
+function closeAdmin(){
+
+document.getElementById("admin").style.display="none"
+
+}
+
 
 
 </script></body>
