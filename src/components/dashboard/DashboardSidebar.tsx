@@ -77,7 +77,7 @@ const DashboardSidebar = () => {
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/5 border border-primary/10">
           <Sparkles className="w-4 h-4 text-primary" />
           <span className="text-xs font-medium text-foreground">
-            {loading ? "..." : limit !== null ? `${remaining}/${limit} credits` : "Unlimited"}
+            {loading ? "..." : limit !== null ? `${remaining}/${limit} today` : "Unlimited"}
           </span>
         </div>
       </div>
