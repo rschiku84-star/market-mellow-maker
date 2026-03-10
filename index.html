@@ -10,16 +10,17 @@ body{
 font-family:Arial;
 text-align:center;
 padding:30px;
-background:#f4f4f4;
+background:#111;
+color:white;
 }
 
 .card{
-background:white;
+background:#1e1e1e;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 max-width:350px;
 margin:auto;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
 input{
@@ -27,17 +28,31 @@ width:100%;
 padding:10px;
 margin:8px 0;
 border-radius:6px;
-border:1px solid #ccc;
+border:1px solid #555;
+background:#222;
+color:white;
 }
 
 button{
 width:100%;
 padding:12px;
-background:#28a745;
+background:#2e7d32;
 color:white;
 border:none;
 border-radius:8px;
 font-size:16px;
+cursor:pointer;
+}
+
+#poster{
+margin-top:30px;
+display:none;
+}
+
+.poster-box{
+background:black;
+padding:20px;
+border-radius:10px;
 }
 
 </style>
@@ -53,16 +68,60 @@ font-size:16px;
 
 <h3>Upload Product</h3>
 
-<input placeholder="Product Name">
-<input placeholder="Price">
-<input placeholder="Offer">
-<input type="file">
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<input id="offer" placeholder="Offer">
+<input type="file" id="image">
 
-<button onclick="alert('Reel generation coming soon 🚀')">
-Generate Reel
-</button>
+<button onclick="generate()">Generate Reel</button>
 
 </div>
+
+<div id="poster">
+
+<h2>Marketing Poster</h2>
+
+<div class="poster-box">
+
+<img id="preview" width="200"><br><br>
+
+<h3 id="pname"></h3>
+<p id="pprice"></p>
+<p id="poffer"></p>
+
+</div>
+
+</div>
+
+<script>
+
+function generate(){
+
+let name=document.getElementById("name").value
+let price=document.getElementById("price").value
+let offer=document.getElementById("offer").value
+
+document.getElementById("pname").innerText=name
+document.getElementById("pprice").innerText="Price: ₹"+price
+document.getElementById("poffer").innerText="Offer: "+offer
+
+let file=document.getElementById("image").files[0]
+
+if(file){
+let reader=new FileReader()
+
+reader.onload=function(e){
+document.getElementById("preview").src=e.target.result
+}
+
+reader.readAsDataURL(file)
+}
+
+document.getElementById("poster").style.display="block"
+
+}
+
+</script>
 
 </body>
 </html>
