@@ -1,9 +1,13 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Reel Maker PRO+</title>
+
+<title>AI Reel Maker SaaS</title>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <style>
 
@@ -21,6 +25,7 @@ padding:20px;
 border-radius:12px;
 max-width:350px;
 margin:auto;
+margin-top:20px;
 }
 
 input{
@@ -41,26 +46,18 @@ border:none;
 border-radius:8px;
 font-size:16px;
 cursor:pointer;
-}
-
-.generate{
 background:#2e7d32;
 color:white;
 }
 
-.download{
-background:#1976d2;
-color:white;
+video{
+width:300px;
+margin-top:20px;
+border-radius:10px;
 }
 
 canvas{
 display:none;
-}
-
-video{
-margin-top:20px;
-width:300px;
-border-radius:12px;
 }
 
 </style>
@@ -69,22 +66,37 @@ border-radius:12px;
 
 <body>
 
-<h1>🤖 AI Reel Maker PRO+</h1>
-<p>Create animated marketing reels</p>
+<h1>🤖 AI Reel Maker</h1>
 
-<div class="card">
+<div class="card" id="loginBox">
+
+<h2>Login</h2>
+
+<input id="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Signup</button>
+
+<button onclick="login()">Login</button>
+
+</div>
+
+<div class="card" id="appBox" style="display:none">
+
+<h2>Create Reel</h2>
 
 <input id="name" placeholder="Product Name">
+
 <input id="price" placeholder="Price">
+
 <input id="offer" placeholder="Offer">
 
 <input type="file" id="image">
 
-<input id="logo" type="file" placeholder="Upload Shop Logo">
+<button onclick="generateVideo()">Generate Reel</button>
 
-<button class="generate" onclick="generateVideo()">Generate Reel</button>
-
-<button class="download" onclick="downloadVideo()">Download Reel</button>
+<button onclick="downloadVideo()">Download Reel</button>
 
 </div>
 
@@ -92,9 +104,47 @@ border-radius:12px;
 
 <video id="preview" controls></video>
 
-<audio id="music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8a4a8c7c4.mp3?filename=upbeat-energetic-116199.mp3"></audio>
-
 <script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyCH0r1dDjoZxOvoLqdSc0",
+authDomain: "ai-reel-maker-48d49.firebaseapp.com",
+projectId: "ai-reel-maker-48d49",
+storageBucket: "ai-reel-maker-48d49.appspot.com",
+messagingSenderId: "407387852483",
+appId: "1:407387852483:web:509e2c8b5",
+measurementId: "G-22LF249LQ2"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
+
+function signup(){
+
+let email=document.getElementById("email").value
+let pass=document.getElementById("password").value
+
+auth.createUserWithEmailAndPassword(email,pass)
+.then(()=>alert("Signup success"))
+
+}
+
+function login(){
+
+let email=document.getElementById("email").value
+let pass=document.getElementById("password").value
+
+auth.signInWithEmailAndPassword(email,pass)
+.then(()=>{
+
+document.getElementById("loginBox").style.display="none"
+
+document.getElementById("appBox").style.display="block"
+
+})
+
+}
 
 let videoBlob=null
 
@@ -104,7 +154,6 @@ let name=document.getElementById("name").value
 let price=document.getElementById("price").value
 let offer=document.getElementById("offer").value
 let file=document.getElementById("image").files[0]
-let logoFile=document.getElementById("logo").files[0]
 
 let canvas=document.getElementById("canvas")
 let ctx=canvas.getContext("2d")
@@ -129,19 +178,9 @@ document.getElementById("preview").src=url
 
 recorder.start()
 
-document.getElementById("music").play()
-
 let img=new Image()
 
-let logo=new Image()
-
 img.onload=function(){
-
-if(logoFile){
-
-logo.src=URL.createObjectURL(logoFile)
-
-}
 
 let frame=0
 
@@ -152,15 +191,8 @@ ctx.fillRect(0,0,720,1280)
 
 ctx.drawImage(img,60,200,600,600)
 
-if(logo.src){
-
-ctx.drawImage(logo,550,20,120,120)
-
-}
-
 ctx.fillStyle="white"
-ctx.font="bold 60px Arial"
-
+ctx.font="60px Arial"
 ctx.fillText(name,80,900)
 
 ctx.font="50px Arial"
@@ -176,8 +208,6 @@ if(frame>150){
 clearInterval(interval)
 
 recorder.stop()
-
-document.getElementById("music").pause()
 
 }
 
