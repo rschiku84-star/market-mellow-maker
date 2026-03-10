@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Market Mellow Maker</title>
-
+<title>AI Reel Maker</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -10,20 +9,19 @@
 <style>
 
 body{
+background:#0f0f0f;
+color:white;
 font-family:Arial;
 text-align:center;
-padding:30px;
-background:#111;
-color:white;
+padding:20px;
 }
 
 .card{
-background:#1e1e1e;
+background:#1c1c1c;
 padding:20px;
 border-radius:12px;
 max-width:350px;
 margin:auto;
-box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
 input{
@@ -31,8 +29,8 @@ width:100%;
 padding:10px;
 margin:8px 0;
 border-radius:6px;
-border:1px solid #555;
-background:#222;
+border:none;
+background:#2a2a2a;
 color:white;
 }
 
@@ -40,23 +38,45 @@ button{
 width:100%;
 padding:12px;
 margin-top:8px;
-background:#2e7d32;
-color:white;
 border:none;
 border-radius:8px;
 font-size:16px;
 cursor:pointer;
 }
 
-#poster{
+.generate{
+background:#2e7d32;
+color:white;
+}
+
+.download{
+background:#1976d2;
+color:white;
+}
+
+#reel{
 margin-top:30px;
 display:none;
 }
 
-.poster-box{
+.reel-box{
+width:300px;
+height:520px;
 background:black;
+margin:auto;
+border-radius:14px;
 padding:20px;
+}
+
+.reel-box img{
+width:100%;
 border-radius:10px;
+}
+
+.caption{
+margin-top:10px;
+font-size:14px;
+color:#ccc;
 }
 
 </style>
@@ -65,40 +85,37 @@ border-radius:10px;
 
 <body>
 
-<h1>🚀 Market Mellow Maker</h1>
-<p>Create marketing reels for your shop</p>
+<h1>🤖 AI Reel Maker</h1>
+<p>Create Instagram marketing reels</p>
 
 <div class="card">
-
-<h3>Upload Product</h3>
 
 <input id="name" placeholder="Product Name">
 <input id="price" placeholder="Price">
 <input id="offer" placeholder="Offer">
-
 <input type="file" id="image">
 
-<button onclick="generate()">Generate Reel</button>
+<button class="generate" onclick="generate()">Generate Reel</button>
 
-<button onclick="downloadPoster()" style="background:#1976d2">
-Download Poster
-</button>
+<button class="download" onclick="downloadReel()">Download Reel Poster</button>
 
 </div>
 
-<div id="poster">
+<div id="reel">
 
-<h2>Marketing Poster</h2>
+<h2>Reel Preview</h2>
 
-<div class="poster-box">
+<div class="reel-box" id="poster">
 
-<img id="preview" width="200"><br><br>
+<img id="preview">
 
-<h3 id="pname"></h3>
+<h2 id="pname"></h2>
 
 <p id="pprice"></p>
 
 <p id="poffer"></p>
+
+<p class="caption" id="caption"></p>
 
 </div>
 
@@ -113,8 +130,20 @@ let price=document.getElementById("price").value
 let offer=document.getElementById("offer").value
 
 document.getElementById("pname").innerText=name
-document.getElementById("pprice").innerText="Price: ₹"+price
-document.getElementById("poffer").innerText="Offer: "+offer
+document.getElementById("pprice").innerText="Only ₹"+price
+document.getElementById("poffer").innerText="🔥 "+offer
+
+let captions=[
+"Limited time deal!",
+"Best price today!",
+"Shop now before stock ends!",
+"Trending product 🔥",
+"Special offer today!"
+]
+
+let random=captions[Math.floor(Math.random()*captions.length)]
+
+document.getElementById("caption").innerText=random
 
 let file=document.getElementById("image").files[0]
 
@@ -132,19 +161,19 @@ reader.readAsDataURL(file)
 
 }
 
-document.getElementById("poster").style.display="block"
+document.getElementById("reel").style.display="block"
 
 }
 
-function downloadPoster(){
+function downloadReel(){
 
-let poster=document.querySelector(".poster-box")
+let poster=document.getElementById("poster")
 
 html2canvas(poster).then(canvas=>{
 
 let link=document.createElement("a")
 
-link.download="marketing-poster.png"
+link.download="ai-reel.png"
 
 link.href=canvas.toDataURL()
 
