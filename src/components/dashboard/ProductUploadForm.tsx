@@ -1,54 +1,64 @@
+
+import { useState } from "react";
 import { generateScript } from "../../ai/generateScript";
 import { generateCaption } from "../../ai/generateCaption";
 import { generateHashtags } from "../../ai/generateHashtags";
-
-import { useState } from "react";
+import { generateReel } from "../../ai/generateReel";
 
 export default function ProductUploadForm() {
 
-const [name, setName] = useState("");
-const [offerAmount, setOfferAmount] = useState("");
+const [name,setName] = useState("");
+const [offer,setOffer] = useState("");
 
 const generateContent = () => {
-  const script = generateScript(name, offerAmount);
-  const caption = generateCaption(name, offerAmount);
-  const hashtags = generateHashtags(name);
 
-  alert(
-    "SCRIPT:\n" +
-      script +
-      "\n\nCAPTION:\n" +
-      caption +
-      "\n\nHASHTAGS:\n" +
-      hashtags
-  );
+const script = generateScript(name,offer);
+const caption = generateCaption(name,offer);
+const hashtags = generateHashtags(name);
+const reel = generateReel(name,offer,"product-image");
+
+alert(
+
+"SCRIPT:\n"+script+
+
+"\n\nCAPTION:\n"+caption+
+
+"\n\nHASHTAGS:\n"+hashtags.join(" ") +
+
+"\n\nREEL:\n"+JSON.stringify(reel,null,2)
+
+);
+
 };
 
 return (
-  <div style={{padding:"20px"}}>
 
-  <h2>Product Reel Generator</h2>
+<div style={{padding:"20px"}}>
 
-  <input
-  placeholder="Product Name"
-  value={name}
-  onChange={(e)=>setName(e.target.value)}
-  />
+<h2>AI Reel Generator</h2>
 
-  <br/><br/>
+<input
+placeholder="Product Name"
+value={name}
+onChange={(e)=>setName(e.target.value)}
+/>
 
-  <input
-  placeholder="Offer Amount"
-  value={offerAmount}
-  onChange={(e)=>setOfferAmount(e.target.value)}
-  />
+<br/><br/>
 
-  <br/><br/>
+<input
+placeholder="Offer"
+value={offer}
+onChange={(e)=>setOffer(e.target.value)}
+/>
 
-  <button onClick={generateContent}>
-  Generate Reel Content
-  </button>
+<br/><br/>
 
-  </div>
+<button onClick={generateContent}>
+Generate Reel Content
+</button>
+
+</div>
+
 );
+
 }
