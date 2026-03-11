@@ -3,109 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Reel Maker PRO</title>
+    <title>All-In-One Shop Video AI</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
-        :root { --bg: #0b0f2a; --card: #111a44; --accent: #90ab3e; --orange: #b65b00; }
-        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: white; text-align: center; padding: 20px; margin: 0; }
-        .box { background: var(--card); padding: 20px; border-radius: 20px; max-width: 400px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
-        input, select { width: 100%; padding: 14px; border-radius: 12px; border: none; margin: 10px 0; background: #1a1a2e; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .gen { background: var(--accent); color: white; }
-        .pro { background: var(--orange); color: white; }
-        #status { font-size: 13px; color: #aaa; margin: 10px 0; }
-        #result-area { display: none; margin-top: 20px; }
-        video { width: 100%; border-radius: 15px; border: 2px solid #333; }
-        .product-list { margin-top: 30px; text-align: left; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; font-size: 14px; }
-        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333; }
+        :root { --primary: #12192c; --card: #1c2541; --accent: #00d4ff; --gold: #ffcc00; }
+        body { background: var(--primary); font-family: 'Poppins', sans-serif; color: white; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        
+        h2 { color: var(--accent); margin-bottom: 5px; }
+        p.subtitle { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+
+        label { display: block; text-align: left; font-size: 13px; margin: 10px 0 5px 5px; color: #ddd; }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0b1121; color: white; box-sizing: border-box; font-size: 14px; }
+        
+        .btn-group { margin-top: 20px; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-bottom: 10px; }
+        .create-btn { background: var(--accent); color: #000; }
+        .pay-btn { background: var(--gold); color: #000; }
+
+        /* Video Preview Styling */
+        #preview-box { 
+            position: relative; width: 100%; height: 550px; background: #000; 
+            border-radius: 20px; overflow: hidden; margin-top: 25px; display: none;
+            border: 3px solid var(--accent);
+        }
+        #p-img { width: 100%; height: 100%; object-fit: cover; animation: moveBg 12s infinite alternate; }
+        
+        /* Overlays */
+        .badge { position: absolute; top: 20px; left: 20px; background: #ff004c; padding: 6px 15px; border-radius: 8px; font-weight: 800; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .offer-circle { position: absolute; top: 20px; right: 20px; width: 70px; height: 70px; background: var(--gold); color: #000; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; line-height: 1; }
+        .bottom-bar { position: absolute; bottom: 40px; width: 100%; background: rgba(0, 212, 255, 0.85); color: #000; padding: 15px 0; font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        @keyframes moveBg { from { transform: scale(1) translate(0,0); } to { transform: scale(1.2) translate(-5px, -5px); } }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>🎬 AI Reel Maker Pro</h2>
-    <input id="topic" type="text" placeholder="Try 'Nature', 'Space', or 'Gym'">
-    
-    <select id="music-select">
-        <option value="https://www.bensound.com/bensound-music/bensound-evolution.mp3">Cinematic</option>
-        <option value="https://www.bensound.com/bensound-music/bensound-lofifibuzz.mp3">Lofi Chill</option>
-        <option value="https://www.bensound.com/bensound-music/bensound-adventure.mp3">Energetic</option>
+<div class="container">
+    <h2>🏪 Local Shop AI</h2>
+    <p class="subtitle">Dukan ki photo daalein aur viral reel banayein</p>
+
+    <label>Dukan ki Category Chunein:</label>
+    <select id="shop-type">
+        <option value="Clothes">👗 Fashion/Clothes</option>
+        <option value="Mobile">📱 Mobile & Electronics</option>
+        <option value="Jewelry">💎 Jewelry Shop</option>
+        <option value="Grocery">🛒 Grocery/Kirana</option>
+        <option value="Food">🍔 Restaurant/Cafe</option>
     </select>
 
-    <button class="gen" id="gen-btn" onclick="generateVideo()">🚀 Create Viral Reel</button>
-    <p id="status"></p>
+    <label>Product ki Photo Upload Karein:</label>
+    <input type="file" id="upload" accept="image/*" onchange="loadImg(event)">
 
-    <div id="result-area">
-        <video id="video-player" controls loop></video>
-        <audio id="bg-music" loop></audio>
-        <button class="pro" style="background: #0057ff;" onclick="downloadReel()">📥 Download Video</button>
+    <label>Price (MRP):</label>
+    <input type="text" id="price" placeholder="Example: ₹999">
+
+    <label>Discount/Offer:</label>
+    <input type="text" id="off" placeholder="Example: 50% OFF">
+
+    <div class="btn-group">
+        <button class="create-btn" onclick="buildReel()">🎬 Create Shop Reel</button>
+        <button class="pay-btn" onclick="openPay()">⭐ Upgrade to Pro (₹199)</button>
     </div>
 
-    <button class="pro" onclick="payNow()">⭐ Upgrade to PRO (₹499)</button>
-
-    <div class="product-list">
-        <strong>🛒 Creator Shop</strong>
-        <div class="item"><span>100+ Viral Hooks</span> <b>₹99</b></div>
-        <div class="item"><span>Luxury Reel Bundle</span> <b>₹249</b></div>
+    <div id="preview-box">
+        <img id="p-img" src="">
+        <div class="badge" id="v-price"></div>
+        <div class="offer-circle"><span id="v-off"></span><br><small>OFF</small></div>
+        <div class="bottom-bar" id="v-tag">LIMITED STOCK</div>
+        
+        <audio id="v-music" loop src="https://www.bensound.com/bensound-music/bensound-energy.mp3"></audio>
     </div>
 </div>
 
 <script>
-    // --- API KEYS ---
-    const PEXELS_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; // Aapki key set kar di hai
-    const RZP_KEY = "rzp_test_SPotf8L7S7I5pS";
+    const RZP_ID = "rzp_test_SPotf8L7S7I5pS";
 
-    async function generateVideo() {
-        const topic = document.getElementById("topic").value;
-        const status = document.getElementById("status");
-        const btn = document.getElementById("gen-btn");
-
-        if(!topic) { alert("Pehle topic likhein!"); return; }
-
-        status.innerText = "✨ AI is fetching clips for: " + topic;
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(`https://api.pexels.com/videos/search?query=${topic}&per_page=1`, {
-                headers: { Authorization: PEXELS_KEY }
-            });
-            const data = await res.json();
-
-            if(data.videos.length > 0) {
-                const videoUrl = data.videos[0].video_files[0].link;
-                const videoPlayer = document.getElementById("video-player");
-                const bgMusic = document.getElementById("bg-music");
-
-                videoPlayer.src = videoUrl;
-                bgMusic.src = document.getElementById("music-select").value;
-
-                document.getElementById("result-area").style.display = "block";
-                videoPlayer.play();
-                bgMusic.play();
-                status.innerText = "✅ Reel Ready!";
-            } else {
-                status.innerText = "❌ No video found. Try another word.";
-            }
-        } catch (e) {
-            status.innerText = "❌ Error connecting to AI.";
-        } finally {
-            btn.disabled = false;
-        }
+    function loadImg(e) {
+        const img = document.getElementById('p-img');
+        img.src = URL.createObjectURL(e.target.files[0]);
     }
 
-    function payNow() {
+    function buildReel() {
+        const price = document.getElementById('price').value;
+        const off = document.getElementById('off').value;
+        const type = document.getElementById('shop-type').value;
+
+        if(!document.getElementById('p-img').src) { 
+            alert("Bhai, pehle photo toh upload karo!"); return; 
+        }
+
+        // Set Values
+        document.getElementById('v-price').innerText = price;
+        document.getElementById('v-off').innerText = off.replace(/% OFF/g, '');
+        document.getElementById('v-tag').innerText = "🔥 BEST " + type.toUpperCase() + " DEAL 🔥";
+
+        // Show & Play
+        document.getElementById('preview-box').style.display = "block";
+        document.getElementById('v-music').play();
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function openPay() {
         var options = {
-            "key": RZP_KEY,
-            "amount": "49900",
-            "name": "AI Reel Maker",
-            "handler": function (res) { alert("Payment Success! ID: " + res.razorpay_payment_id); }
+            "key": RZP_ID,
+            "amount": "19900", // ₹199 for local shops
+            "name": "Local Shop AI Pro",
+            "description": "Remove Watermark & High Quality",
+            "handler": function (response){
+                alert("Payment Done! ID: " + response.razorpay_payment_id);
+            },
+            "theme": { "color": "#00d4ff" }
         };
         new Razorpay(options).open();
-    }
-
-    function downloadReel() {
-        const v = document.getElementById("video-player");
-        const a = document.createElement('a'); a.href = v.src; a.download = 'AI_Reel.mp4'; a.click();
     }
 </script>
 
