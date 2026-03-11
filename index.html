@@ -1,6 +1,5 @@
 <!DOCTYPE html><html>
-<head><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🚀 AI Reel Maker</title><style>
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>🚀 Ultra AI Reel Maker</title><style>
 
 body{
 font-family:Arial;
@@ -12,16 +11,27 @@ padding:20px;
 
 .box{
 background:#0f172a;
-padding:20px;
+padding:25px;
 border-radius:12px;
 max-width:420px;
 margin:auto;
 }
 
+h2{
+margin-bottom:5px;
+}
+
+.badge{
+background:#16a34a;
+padding:6px 12px;
+border-radius:6px;
+font-size:12px;
+}
+
 input{
 width:90%;
 padding:12px;
-margin:10px;
+margin:12px;
 border-radius:8px;
 border:none;
 background:#1e293b;
@@ -43,13 +53,6 @@ cursor:pointer;
 .download{background:#2563eb;color:white;}
 .pay{background:#b45309;color:white;font-weight:bold;}
 
-.badge{
-background:#15803d;
-padding:5px 10px;
-border-radius:6px;
-font-size:12px;
-}
-
 #result{
 margin-top:20px;
 background:#020617;
@@ -59,77 +62,125 @@ text-align:left;
 white-space:pre-line;
 }
 
-</style></head><body><div class="box"><h2>🚀 AI Reel Maker</h2><span class="badge">FREE PLAN</span>
+</style></head><body><div class="box"><h2>🚀 Ultra AI Reel Maker</h2><span class="badge">FREE PLAN</span>
 
 <br><br>
 
-<input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generate()">Generate Reel</button>
+<input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generate()">🎬 Generate AI Reel</button>
 
-<button class="copy" onclick="copyScript()">Copy Script</button>
+<button class="copy" onclick="copyScript()">📋 Copy Script</button>
 
-<button class="download" onclick="downloadScript()">Download Script</button>
+<button class="download" onclick="downloadScript()">📥 Download Script</button>
 
 <button class="pay" onclick="pay()">💳 Upgrade PRO</button>
 
 <div id="result">
-Your reel script will appear here...
+Your AI reel script will appear here...
 </div></div><script>
+
+let freeLimit=5
+let used=0
 
 function generate(){
 
-let topic=document.getElementById("topic").value;
+if(used>=freeLimit){
 
-if(topic===""){
-alert("Topic likho");
-return;
+alert("Free limit finished. Upgrade PRO.")
+
+return
+
 }
 
-let script="🎬 Topic: "+topic+"\n\n";
+let topic=document.getElementById("topic").value
 
-script+="🔥 Hook: Stop scrolling! "+topic+"\n\n";
+if(topic===""){
 
-script+="🎥 Reel Idea:\n";
-script+="1. Intro about "+topic+"\n";
-script+="2. Ek interesting fact\n";
-script+="3. Ek powerful tip\n\n";
+alert("Enter topic")
 
-script+="📢 Caption:\nThis reel will blow your mind 🔥\n\n";
+return
 
-script+="🏷 Hashtags:\n#reels #viral #instagram #trending";
+}
 
-document.getElementById("result").innerText=script;
+used++
+
+let hooks=[
+"Stop scrolling!",
+"You won't believe this!",
+"This is going viral!",
+"Secret revealed!",
+"Watch this before it's deleted!"
+]
+
+let captions=[
+"This reel will blow your mind 🔥",
+"Save this reel for later!",
+"Watch till the end 😲",
+"This is trending right now!"
+]
+
+let hashtags=[
+"#reels #viral #instagram",
+"#reelstrending #explore",
+"#contentcreator #viralreels"
+]
+
+let hook=hooks[Math.floor(Math.random()*hooks.length)]
+
+let caption=captions[Math.floor(Math.random()*captions.length)]
+
+let tag=hashtags[Math.floor(Math.random()*hashtags.length)]
+
+let script="🎬 Topic: "+topic+"\n\n"
+
+script+="🔥 Hook: "+hook+" "+topic+"\n\n"
+
+script+="🎥 Reel Script:\n"
+
+script+="1️⃣ Start with a strong intro about "+topic+"\n"
+
+script+="2️⃣ Show an interesting fact or visual\n"
+
+script+="3️⃣ Give a quick tip related to "+topic+"\n"
+
+script+="4️⃣ End with call to action (Follow for more)\n\n"
+
+script+="📢 Caption:\n"+caption+"\n\n"
+
+script+="🏷 Hashtags:\n"+tag
+
+document.getElementById("result").innerText=script
 
 }
 
 function copyScript(){
 
-let text=document.getElementById("result").innerText;
+let text=document.getElementById("result").innerText
 
-navigator.clipboard.writeText(text);
+navigator.clipboard.writeText(text)
 
-alert("Script copied");
+alert("Script copied")
 
 }
 
 function downloadScript(){
 
-let text=document.getElementById("result").innerText;
+let text=document.getElementById("result").innerText
 
-let blob=new Blob([text],{type:"text/plain"});
+let blob=new Blob([text],{type:"text/plain"})
 
-let link=document.createElement("a");
+let link=document.createElement("a")
 
-link.href=URL.createObjectURL(blob);
+link.href=URL.createObjectURL(blob)
 
-link.download="reel-script.txt";
+link.download="ai-reel-script.txt"
 
-link.click();
+link.click()
 
 }
 
 function pay(){
 
-window.open("https://rzp.io/l/YOUR_LINK","_blank");
+window.open("https://rzp.io/l/YOUR_RAZORPAY_LINK","_blank")
 
 }
 
