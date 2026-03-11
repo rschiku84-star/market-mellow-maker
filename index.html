@@ -1,7 +1,7 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker SaaS</title><style>
+<title>AI Reel Maker</title><style>
 body{
 background:#0b0f2a;
 font-family:Arial;
@@ -36,8 +36,6 @@ font-size:16px;
 color:white;
 }
 
-.login{background:#00a83e;}
-.signup{background:#3b4bff;}
 .gen{background:#00a83e;}
 .download{background:#0057ff;}
 .pro{background:#b65b00;}
@@ -47,11 +45,7 @@ width:100%;
 border-radius:12px;
 margin-top:15px;
 }
-</style></head><body><div id="auth" class="box"><h2>Login / Signup</h2><input id="email" placeholder="Email">
-<input id="pass" placeholder="Password" type="password"><button class="login" onclick="login()">Login</button>
-<button class="signup" onclick="signup()">Signup</button>
-
-<p id="authMsg"></p></div><div id="app" class="box" style="display:none;"><h2>🚀 AI Reel Maker</h2><input id="topic" placeholder="Enter reel topic"><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel</button>
+</style></head><body><div class="box"><h2>🚀 AI Reel Maker</h2><input id="topic" placeholder="Enter reel topic"><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel</button>
 
 <button class="download" onclick="downloadVideo()">Download Video</button>
 
@@ -64,37 +58,6 @@ margin-top:15px;
 
 </div><script>
 
-function signup(){
-
-let email=document.getElementById("email").value;
-let pass=document.getElementById("pass").value;
-
-localStorage.setItem("userEmail",email);
-localStorage.setItem("userPass",pass);
-
-document.getElementById("authMsg").innerText="Signup success. Login now.";
-
-}
-
-function login(){
-
-let email=document.getElementById("email").value;
-let pass=document.getElementById("pass").value;
-
-if(email===localStorage.getItem("userEmail") &&
-pass===localStorage.getItem("userPass")){
-
-document.getElementById("auth").style.display="none";
-document.getElementById("app").style.display="block";
-
-}else{
-
-document.getElementById("authMsg").innerText="Wrong login";
-
-}
-
-}
-
 function makeReel(){
 
 let topic=document.getElementById("topic").value;
@@ -105,7 +68,7 @@ document.getElementById("script").innerText=
 "\nEnding: Follow for more reels.";
 
 document.getElementById("hashtags").innerText=
-"#reels #viralreels #instagramreels #ai #viral #trending";
+"#reels #viralreels #instagramreels #trending #ai #viral";
 
 let video=document.getElementById("video");
 
@@ -137,7 +100,7 @@ let a=document.createElement("a");
 
 a.href=video;
 
-a.download="reel-video.mp4";
+a.download="ai-reel.mp4";
 
 a.click();
 
