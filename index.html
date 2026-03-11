@@ -1,188 +1,163 @@
-<!DOCTYPE html><html>
-<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>🚀 Ultra AI Reel Maker</title><style>
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Reel Maker</title>
 
+<style>
 body{
+background:#07122c;
 font-family:Arial;
-background:#020617;
 color:white;
 text-align:center;
 padding:20px;
 }
 
 .box{
-background:#0f172a;
-padding:25px;
-border-radius:12px;
-max-width:420px;
+background:#0c1b3f;
+padding:20px;
+border-radius:15px;
+max-width:400px;
 margin:auto;
-}
-
-h2{
-margin-bottom:5px;
-}
-
-.badge{
-background:#16a34a;
-padding:6px 12px;
-border-radius:6px;
-font-size:12px;
 }
 
 input{
 width:90%;
 padding:12px;
-margin:12px;
-border-radius:8px;
+border-radius:10px;
 border:none;
-background:#1e293b;
-color:white;
+margin:10px 0;
 }
 
 button{
 width:90%;
-padding:12px;
-margin:8px;
+padding:14px;
 border:none;
-border-radius:8px;
+border-radius:12px;
+margin:8px;
 font-size:16px;
 cursor:pointer;
 }
 
-.generate{background:#16a34a;color:white;}
-.copy{background:#4f46e5;color:white;}
-.download{background:#2563eb;color:white;}
-.pay{background:#b45309;color:white;font-weight:bold;}
+.gen{background:#0dbb4f;color:white;}
+.copy{background:#4c5cff;color:white;}
+.download{background:#1e63ff;color:white;}
+.pay{background:#c46a00;color:white;}
 
-#result{
+video{
+width:100%;
 margin-top:20px;
-background:#020617;
-padding:15px;
 border-radius:10px;
-text-align:left;
-white-space:pre-line;
 }
 
-</style></head><body><div class="box"><h2>🚀 Ultra AI Reel Maker</h2><span class="badge">FREE PLAN</span>
+</style>
+</head>
 
-<br><br>
+<body>
 
-<input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generate()">🎬 Generate AI Reel</button>
+<div class="box">
 
-<button class="copy" onclick="copyScript()">📋 Copy Script</button>
+<h2>🚀 AI Reel Maker</h2>
 
-<button class="download" onclick="downloadScript()">📥 Download Script</button>
+<input id="topic" placeholder="Enter reel topic">
 
-<button class="pay" onclick="pay()">💳 Upgrade PRO</button>
+<button class="gen" onclick="makeVideo()">Generate Reel Video</button>
 
-<div id="result">
-Your AI reel script will appear here...
-</div></div><script>
+<button class="copy" onclick="copyScript()">Copy Script</button>
 
-let freeLimit=5
-let used=0
+<button class="download" onclick="downloadVideo()">Download Video</button>
 
-function generate(){
+<button class="pay" onclick="upgrade()">💳 Upgrade PRO</button>
 
-if(used>=freeLimit){
+<p id="script"></p>
 
-alert("Free limit finished. Upgrade PRO.")
+<video id="video" controls></video>
 
-return
+</div>
+
+<script>
+
+let videoUrl="";
+
+async function makeVideo(){
+
+let topic=document.getElementById("topic").value;
+
+document.getElementById("script").innerText="Generating video...";
+
+const response=await fetch("https://api.replicate.com/v1/predictions",{
+method:"POST",
+headers:{
+"Authorization":"Token r8_W67DzWgLIfPv1q41HuKIlh0OT78I2gm07CwUH",
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+version:"83c9b8b3b2dba6b14b1d8ef5b5b1c2e90d3f0e6e5a9fbb9d1b0a3c8e2d3e4a1b",
+input:{
+prompt:topic
+}
+})
+});
+
+let data=await response.json();
+
+let id=data.id;
+
+checkVideo(id);
 
 }
 
-let topic=document.getElementById("topic").value
+async function checkVideo(id){
 
-if(topic===""){
+let res=await fetch("https://api.replicate.com/v1/predictions/"+id,{
+headers:{
+"Authorization":"Token r8_W67DzWgLIfPv1q41HuKIlh0OT78I2gm07CwUH"
+}
+});
 
-alert("Enter topic")
+let data=await res.json();
 
-return
+if(data.status=="succeeded"){
+
+videoUrl=data.output[0];
+
+document.getElementById("video").src=videoUrl;
+
+document.getElementById("script").innerText="Video Ready 🎉";
+
+}else{
+
+setTimeout(()=>checkVideo(id),3000);
 
 }
-
-used++
-
-let hooks=[
-"Stop scrolling!",
-"You won't believe this!",
-"This is going viral!",
-"Secret revealed!",
-"Watch this before it's deleted!"
-]
-
-let captions=[
-"This reel will blow your mind 🔥",
-"Save this reel for later!",
-"Watch till the end 😲",
-"This is trending right now!"
-]
-
-let hashtags=[
-"#reels #viral #instagram",
-"#reelstrending #explore",
-"#contentcreator #viralreels"
-]
-
-let hook=hooks[Math.floor(Math.random()*hooks.length)]
-
-let caption=captions[Math.floor(Math.random()*captions.length)]
-
-let tag=hashtags[Math.floor(Math.random()*hashtags.length)]
-
-let script="🎬 Topic: "+topic+"\n\n"
-
-script+="🔥 Hook: "+hook+" "+topic+"\n\n"
-
-script+="🎥 Reel Script:\n"
-
-script+="1️⃣ Start with a strong intro about "+topic+"\n"
-
-script+="2️⃣ Show an interesting fact or visual\n"
-
-script+="3️⃣ Give a quick tip related to "+topic+"\n"
-
-script+="4️⃣ End with call to action (Follow for more)\n\n"
-
-script+="📢 Caption:\n"+caption+"\n\n"
-
-script+="🏷 Hashtags:\n"+tag
-
-document.getElementById("result").innerText=script
 
 }
 
 function copyScript(){
 
-let text=document.getElementById("result").innerText
+navigator.clipboard.writeText(videoUrl);
 
-navigator.clipboard.writeText(text)
-
-alert("Script copied")
+alert("Video link copied");
 
 }
 
-function downloadScript(){
+function downloadVideo(){
 
-let text=document.getElementById("result").innerText
+if(videoUrl==""){
+alert("Generate video first");
+return;
+}
 
-let blob=new Blob([text],{type:"text/plain"})
-
-let link=document.createElement("a")
-
-link.href=URL.createObjectURL(blob)
-
-link.download="ai-reel-script.txt"
-
-link.click()
+window.open(videoUrl);
 
 }
 
-function pay(){
+function upgrade(){
 
-window.open("https://rzp.io/l/YOUR_RAZORPAY_LINK","_blank")
+window.location.href="https://rzp.io/l/abc123";
 
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
