@@ -1,78 +1,171 @@
-const generateBtn = document.querySelector("button");
-const video = document.querySelector("video");
-const downloadBtn = document.querySelectorAll("button")[1];
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Reel Maker PRO</title>
+<style>
+body{
+font-family:Arial;
+background:#0d2b45;
+color:white;
+text-align:center;
+padding:20px;
+}
 
-generateBtn.onclick = async () => {
+.box{
+background:#163a5f;
+padding:20px;
+border-radius:10px;
+max-width:400px;
+margin:auto;
+}
 
-const fileInput = document.querySelector("input[type=file]");
-const text = document.querySelectorAll("input")[1].value;
+input{
+width:90%;
+padding:10px;
+margin:10px;
+border-radius:6px;
+border:none;
+}
 
-if (!fileInput.files[0]) {
-alert("Upload image first");
+button{
+width:90%;
+padding:12px;
+margin:10px;
+border:none;
+border-radius:6px;
+font-size:16px;
+}
+
+.generate{
+background:#22c55e;
+color:white;
+}
+
+.download{
+background:#22c55e;
+color:white;
+}
+
+.pay{
+background:#f59e0b;
+color:white;
+}
+
+video{
+width:100%;
+margin-top:15px;
+border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>AI Reel Maker PRO</h2>
+
+<div class="box">
+
+<input type="file" id="image">
+
+<input type="text" id="text" placeholder="Enter Caption">
+
+<input type="text" placeholder="Optional">
+
+<button class="generate" onclick="makeVideo()">Generate Reel</button>
+
+<video id="video" controls></video>
+
+<button class="download" onclick="downloadVideo()">Download Reel</button>
+
+<button class="pay">Pay ₹199 Unlock</button>
+
+</div>
+
+<script>
+
+let videoURL="";
+
+async function makeVideo(){
+
+const file=document.getElementById("image").files[0];
+const caption=document.getElementById("text").value;
+
+if(!file){
+alert("Upload image");
 return;
 }
 
-const img = document.createElement("img");
-img.src = URL.createObjectURL(fileInput.files[0]);
+const img=new Image();
+img.src=URL.createObjectURL(file);
 
 await img.decode();
 
-const canvas = document.createElement("canvas");
-canvas.width = 720;
-canvas.height = 1280;
+const canvas=document.createElement("canvas");
+canvas.width=720;
+canvas.height=1280;
 
-const ctx = canvas.getContext("2d");
+const ctx=canvas.getContext("2d");
 
-const stream = canvas.captureStream(30);
-const recorder = new MediaRecorder(stream);
+const stream=canvas.captureStream(30);
+const recorder=new MediaRecorder(stream);
 
-let chunks = [];
+let chunks=[];
 
-recorder.ondataavailable = e => chunks.push(e.data);
+recorder.ondataavailable=e=>chunks.push(e.data);
 
-recorder.onstop = () => {
+recorder.onstop=()=>{
 
-const blob = new Blob(chunks,{type:"video/mp4"});
-const url = URL.createObjectURL(blob);
+const blob=new Blob(chunks,{type:"video/mp4"});
+videoURL=URL.createObjectURL(blob);
 
-video.src = url;
-
-downloadBtn.onclick = () => {
-
-const a = document.createElement("a");
-a.href = url;
-a.download = "ai-reel.mp4";
-a.click();
-
-};
+document.getElementById("video").src=videoURL;
 
 };
 
 recorder.start();
 
-let frame = 0;
+let frame=0;
 
-const draw = () => {
+function draw(){
 
-ctx.fillStyle = "black";
+ctx.fillStyle="black";
 ctx.fillRect(0,0,720,1280);
 
 ctx.drawImage(img,0,0,720,900);
 
 ctx.fillStyle="white";
 ctx.font="60px Arial";
-ctx.fillText(text,40,1000);
+ctx.fillText(caption,50,1050);
 
 frame++;
 
-if(frame < 900){
+if(frame<900){
 requestAnimationFrame(draw);
 }else{
 recorder.stop();
 }
 
-};
+}
 
 draw();
 
-};
+}
+
+function downloadVideo(){
+
+if(!videoURL){
+alert("Generate reel first");
+return;
+}
+
+const a=document.createElement("a");
+a.href=videoURL;
+a.download="ai-reel.mp4";
+a.click();
+
+}
+
+</script>
+
+</body>
+</html>
