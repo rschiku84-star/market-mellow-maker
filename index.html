@@ -46,18 +46,18 @@ width:100%;
 border-radius:12px;
 margin-top:15px;
 }
-</style></head><body><div class="box"><h2>🚀 AI Reel Maker PRO</h2><input id="topic" placeholder="Enter reel topic"><button class="gen" onclick="makeReel()">Generate Reel Video</button>
+</style></head><body><div class="box"><h2>🚀 AI Reel Maker PRO</h2><input id="topic" placeholder="Enter reel topic"><br><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel Video</button>
 
 <button class="copy" onclick="copyScript()">Copy Script</button>
 
-<a id="downloadLink" download="reel.mp4">
-<button class="download">Download Video</button>
-</a><button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
+<button class="download" onclick="downloadVideo()">Download Video</button>
+
+<button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
 
 <p id="script"></p>
 <p id="hashtags"></p><video id="video" controls></video>
 
-<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="music"></audio>
 
 </div><script>
 
@@ -79,10 +79,33 @@ video.src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.
 
 video.play();
 
+let musicFile=document.getElementById("musicUpload").files[0];
+
+if(musicFile){
+
+let musicURL=URL.createObjectURL(musicFile);
+
 let music=document.getElementById("music");
 
-music.currentTime=0;
+music.src=musicURL;
+
 music.play();
+
+}
+
+}
+
+function downloadVideo(){
+
+let video=document.getElementById("video").src;
+
+let a=document.createElement("a");
+
+a.href=video;
+
+a.download="reel-video.mp4";
+
+a.click();
 
 }
 
@@ -103,4 +126,4 @@ window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
 }
 
 </script></body>
-</html>document.getElementById
+</html>
