@@ -1,82 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral AI Studio</title>
+    <title>AI Studio - Payment Fixed</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --accent: #00f2ff; --bg: #0d0d0d; }
-        body { background: var(--bg); font-family: 'Inter', sans-serif; color: white; padding: 20px; text-align: center; }
-        .app-container { max-width: 450px; margin: auto; background: #1a1a1a; padding: 25px; border-radius: 25px; border: 1px solid #333; }
-        textarea, select { width: 100%; padding: 15px; border-radius: 12px; background: #000; color: #00f2ff; border: 1px solid #444; margin-bottom: 15px; }
-        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; background: var(--accent); color: #000; text-transform: uppercase; }
-        #video-preview { width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; position: relative; display: none; overflow: hidden; border: 2px solid var(--accent); }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        .overlay { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 15px; font-size: 14px; box-sizing: border-box; }
-        #status-msg { font-size: 12px; color: var(--accent); margin-top: 10px; }
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
+        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; text-align: center; padding: 15px; }
+        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-gen { background: var(--neon); color: #000; }
+        .btn-pay { background: var(--gold); color: #000; border: 2px solid #fff; animation: glow 1.5s infinite; }
+        @keyframes glow { 0% { box-shadow: 0 0 5px var(--gold); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 5px var(--gold); } }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; background: #222; color: #fff; border: 1px solid #444; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <h2>🚀 AI Viral Studio</h2>
-    <textarea id="storyInput" rows="4" placeholder="Apni story likhein... (e.g. Car in the city)"></textarea>
+<div class="card">
+    <h2 style="color: var(--neon);">🚀 Viral AI & Shop</h2>
     
-    <select id="voiceSet">
-        <option value="Hindi Male">Hindi Male Voice</option>
-        <option value="Hindi Female">Hindi Female Voice</option>
-    </select>
+    <textarea id="mainText" rows="3" placeholder="Apni Story ya Product ka naam likhein..."></textarea>
+    
+    <button class="btn btn-gen" onclick="generateContent()">🎬 Create Viral Reel</button>
 
-    <button class="btn" onclick="makeMagic()">🎬 Generate Viral Reel</button>
-    <div id="status-msg"></div>
+    <hr style="border: 0.5px solid #333; margin: 20px 0;">
 
-    <div id="video-preview">
-        <video id="outputVideo" loop playsinline muted></video>
-        <div class="overlay" id="textOverlay"></div>
+    <div id="payment-area">
+        <p style="font-size: 14px; color: var(--gold);">⭐ Unlock Pro Features & High Quality</p>
+        <button class="btn btn-pay" onclick="payNow()">💳 PAY & UPGRADE (₹199)</button>
     </div>
+
+    <div id="status" style="margin-top: 15px; font-size: 12px; color: #888;"></div>
 </div>
 
 <script>
-    const MY_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+    // 1. PAYMENT FUNCTION (Razorpay Integration)
+    function payNow() {
+        const options = {
+            "key": "rzp_test_SPotf8L7S7I5pS", // Aapki Test Key
+            "amount": "19900", // ₹199.00 (paise mein)
+            "currency": "INR",
+            "name": "Manik AI Studio",
+            "description": "Pro Membership Activation",
+            "image": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+            "handler": function (response) {
+                alert("Payment Success! Payment ID: " + response.razorpay_payment_id);
+                document.getElementById('status').innerText = "✅ PRO ACTIVE: " + response.razorpay_payment_id;
+                document.getElementById('payment-area').innerHTML = "<b style='color:var(--neon)'>🌟 PRO MODE ACTIVATED</b>";
+            },
+            "prefill": {
+                "name": "Manik Chaudhary",
+                "email": "manik@example.com"
+            },
+            "theme": { "color": "#00f2ff" }
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
 
-    async function makeMagic() {
-        const input = document.getElementById('storyInput').value;
-        const msg = document.getElementById('status-msg');
-        if(!input) return alert("Kuch toh likho!");
-
-        msg.innerText = "⏳ AI is finding the best clips...";
+    // 2. VIDEO GENERATION (Simple placeholder for testing)
+    async function generateContent() {
+        const text = document.getElementById('mainText').value;
+        if(!text) return alert("Pehle kuch likhein!");
         
-        // Simple Logic: Puri story se keyword nikalna
-        let query = "nature"; 
-        const keywords = ["car", "mountain", "bike", "forest", "city", "gym", "ocean", "technology"];
-        keywords.forEach(word => { if(input.toLowerCase().includes(word)) query = word; });
-
-        try {
-            const res = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1&orientation=portrait`, {
-                headers: { Authorization: MY_KEY }
-            });
-            const data = await res.json();
-
-            if(data.videos.length > 0) {
-                const v = document.getElementById('outputVideo');
-                v.src = data.videos[0].video_files[0].link;
-                document.getElementById('video-preview').style.display = 'block';
-                v.play();
-                
-                // Voiceover
-                responsiveVoice.speak(input, document.getElementById('voiceSet').value);
-                document.getElementById('textOverlay').innerText = input;
-                msg.innerText = "✅ Reel Generated! (Video: " + query + ")";
-            } else {
-                msg.innerText = "❌ No video found. Try simpler words.";
-            }
-        } catch(e) {
-            msg.innerText = "❌ Connection Error. Check API Key.";
-        }
+        document.getElementById('status').innerText = "⏳ Generating... (Payment check karein)";
+        // Yahan aapka Pexels wala logic aayega
     }
 </script>
+
 </body>
 </html>
-
