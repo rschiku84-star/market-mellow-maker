@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker PRO</title>
-
-<style>
+<title>Ultra AI Reel Maker</title><style>
 
 body{
 font-family:Arial;
@@ -55,6 +52,12 @@ background:#3b82f6;
 color:white;
 }
 
+.pay{
+background:#f59e0b;
+color:black;
+font-weight:bold;
+}
+
 .clear{
 background:#ef4444;
 color:white;
@@ -69,30 +72,17 @@ text-align:left;
 white-space:pre-line;
 }
 
-</style>
-</head>
-
-<body>
-
-<div class="box">
-
-<h2>🎬 AI Reel Maker PRO</h2>
-
-<input type="text" id="topic" placeholder="Enter Reel Topic">
-
-<button class="generate" onclick="generateReel()">Generate Reel</button>
+</style></head><body><div class="box"><h2>🚀 Ultra AI Reel Maker</h2><input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generateReel()">Generate Reel</button>
 
 <button class="download" onclick="downloadScript()">Download Script</button>
+
+<button class="pay" onclick="payment()">💳 Unlock PRO</button>
 
 <button class="clear" onclick="clearText()">Clear</button>
 
 <div id="result">
 Your reel script will appear here...
-</div>
-
-</div>
-
-<script>
+</div></div><script>
 
 function generateReel(){
 
@@ -106,17 +96,17 @@ return;
 let hooks=[
 "Stop scrolling! This will change your view about ",
 "You won't believe this about ",
-"Here is something crazy about ",
 "Top secret about ",
-"3 things you must know about "
+"3 things you must know about ",
+"This viral trick about "
 ];
 
 let captions=[
 "This is going viral 🔥",
 "Everyone is talking about this!",
 "Save this reel for later!",
-"Don't miss this trick!",
-"Watch till the end!"
+"Watch till the end!",
+"This trick will blow your mind!"
 ];
 
 let hashtags=[
@@ -136,8 +126,8 @@ script+="🔥 Hook:\n";
 script+=hook+topic+"\n\n";
 
 script+="🎥 Content:\n";
-script+="1️⃣ Point about "+topic+"\n";
-script+="2️⃣ Interesting fact about "+topic+"\n";
+script+="1️⃣ Interesting point about "+topic+"\n";
+script+="2️⃣ Hidden fact about "+topic+"\n";
 script+="3️⃣ Quick tip related to "+topic+"\n\n";
 
 script+="📢 Caption:\n";
@@ -169,11 +159,17 @@ link.click();
 }
 
 function clearText(){
+
 document.getElementById("result").innerText="Your reel script will appear here...";
 document.getElementById("topic").value="";
+
 }
 
-</script>
+function payment(){
 
-</body>
+window.location.href="https://your-payment-link.com";
+
+}
+
+</script></body>
 </html>
