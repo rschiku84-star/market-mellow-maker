@@ -1,92 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>AI Reel Maker PRO</title>
-
-<style>
-
-body{
-background:#0b0f2a;
-font-family:sans-serif;
-color:white;
-text-align:center;
-padding:20px;
-}
-
-.box{
-background:#111a44;
-padding:20px;
-border-radius:15px;
-max-width:400px;
-margin:auto;
-}
-
-input{
-width:90%;
-padding:12px;
-border-radius:10px;
-border:none;
-margin-bottom:15px;
-}
-
-button{
-width:90%;
-padding:14px;
-margin:6px;
-border:none;
-border-radius:12px;
-font-size:16px;
-color:white;
-}
-
-.gen{background:#00a83e;}
-.copy{background:#3b4bff;}
-.download{background:#0057ff;}
-.pro{background:#b65b00;}
-
-video{
-width:100%;
-border-radius:12px;
-margin-top:15px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="box">
-
-<h2>🚀 AI Reel Maker PRO</h2>
-
-<input id="topic" placeholder="Enter reel topic">
-
-<button class="gen" onclick="makeReel()">Generate Reel Video</button>
-
-<button class="copy" onclick="copyScript()">Copy Script</button>
-
-<a id="downloadLink" download="reel.mp4">
-<button class="download">Download Video</button>
-</a>
-
-<button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
-
-<p id="script"></p>
-
-<p id="hashtags"></p>
-
-<video id="video" controls></video>
-
-<audio id="music" src="music.mp3"></audio>
-
-</div>
-
 <script>
 
-let recorder;
-let chunks=[];
-
-async function makeReel(){
+function makeReel(){
 
 let topic=document.getElementById("topic").value;
 
@@ -98,42 +12,23 @@ document.getElementById("script").innerText=
 document.getElementById("hashtags").innerText=
 "#reels #viralreels #instagramreels #ai #trending #viral";
 
+let video=document.getElementById("video");
+
+video.src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+video.play();
+
+setTimeout(()=>{
+video.pause();
+},30000);
+
 let music=document.getElementById("music");
+
 music.currentTime=0;
 music.play();
 
-let stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
-
-let video=document.getElementById("video");
-
-video.srcObject=stream;
-
-recorder=new MediaRecorder(stream);
-
-recorder.ondataavailable=e=>chunks.push(e.data);
-
-recorder.onstop=e=>{
-
-let blob=new Blob(chunks,{type:"video/mp4"});
-
-let url=URL.createObjectURL(blob);
-
-video.srcObject=null;
-
-video.src=url;
-
-document.getElementById("downloadLink").href=url;
-
-};
-
-recorder.start();
-
 setTimeout(()=>{
-
-recorder.stop();
-
 music.pause();
-
 },30000);
 
 }
@@ -155,6 +50,3 @@ window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
 }
 
 </script>
-
-</body>
-</html>
