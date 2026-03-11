@@ -1,10 +1,9 @@
 <!DOCTYPE html><html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>10X AI Reel Maker</title><style>
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>20X AI Reel SaaS</title><style>
+
 body{
 font-family:Arial;
-background:#0f172a;
+background:#020617;
 color:white;
 text-align:center;
 padding:20px;
@@ -37,44 +36,54 @@ cursor:pointer;
 }
 
 .generate{background:#22c55e;color:white;}
-.download{background:#3b82f6;color:white;}
 .copy{background:#6366f1;color:white;}
+.download{background:#3b82f6;color:white;}
 .pay{background:#f59e0b;color:black;font-weight:bold;}
+
+.badge{
+background:#22c55e;
+padding:5px 10px;
+border-radius:6px;
+font-size:12px;
+}
 
 #result{
 margin-top:20px;
-background:#020617;
+background:#0f172a;
 padding:15px;
 border-radius:10px;
 text-align:left;
 white-space:pre-line;
 }
-</style></head><body><div class="box"><h2>🚀 10X AI Reel Maker</h2><input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button class="copy" onclick="copyScript()">Copy Script</button>
+</style></head><body><div class="box"><h2>🚀 20X AI Reel SaaS</h2><span class="badge">FREE PLAN</span>
 
-<button class="download" onclick="downloadScript()">Download</button>
+<input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generate()">Generate Reel</button>
 
-<button class="pay" onclick="payment()">💳 Unlock PRO</button>
+<button class="copy" onclick="copy()">Copy Script</button>
+
+<button class="download" onclick="download()">Download</button>
+
+<button class="pay" onclick="pay()">💳 Upgrade PRO</button>
 
 <div id="result">
 Your reel script will appear here...
 </div></div><script>
 
-let freeLimit=3;
+let limit=5;
 let used=0;
 
-function generateReel(){
+function generate(){
 
-if(used>=freeLimit){
-alert("Free limit finished. Please unlock PRO.");
+if(used>=limit){
+alert("Free limit finished. Upgrade PRO.");
 return;
 }
 
 let topic=document.getElementById("topic").value;
 
 if(topic===""){
-alert("Enter topic first");
+alert("Enter topic");
 return;
 }
 
@@ -83,43 +92,58 @@ used++;
 let hooks=[
 "Stop scrolling!",
 "You won't believe this!",
-"Top secret revealed!",
-"This viral trick!",
-"3 things about"
+"This trick is viral!",
+"Secret revealed!",
+"3 facts about"
 ];
 
 let captions=[
-"This is going viral 🔥",
+"This is blowing up 🔥",
 "Save this reel!",
-"Watch till the end!",
-"This will blow your mind!"
+"Watch till end!",
+"This is crazy!"
 ];
 
-let hashtags=[
-"#viralreel #instagramreels #trend",
-"#reelideas #viralcontent #explore",
-"#instagrowth #contentcreator #reels"
+let tags=[
+"#reels #viral #trend",
+"#instagramreels #explore",
+"#contentcreator #viralvideo"
 ];
 
 let hook=hooks[Math.floor(Math.random()*hooks.length)];
 let caption=captions[Math.floor(Math.random()*captions.length)];
-let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)];
+let tag=tags[Math.floor(Math.random()*tags.length)];
 
 let script="🎬 Topic: "+topic+"\n\n";
+
 script+="🔥 Hook: "+hook+" "+topic+"\n\n";
+
 script+="🎥 Content:\n";
-script+="1. First point about "+topic+"\n";
-script+="2. Interesting fact about "+topic+"\n";
-script+="3. Quick tip about "+topic+"\n\n";
-script+="📢 Caption: "+caption+"\n\n";
-script+="🏷 Hashtags: "+hashtag+"\n\n";
-script+="👉 Follow for more reels!";
+script+="1. Intro about "+topic+"\n";
+script+="2. Interesting fact\n";
+script+="3. Quick tip\n\n";
+
+script+="📢 Caption:\n"+caption+"\n\n";
+
+script+="🏷 Hashtags:\n"+tag+"\n\n";
+
+script+="👉 Follow for more!";
 
 document.getElementById("result").innerText=script;
 
 }
 
-function downloadScript(){
+function copy(){
+
+let text=document.getElementById("result").innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Copied");
+
+}
+
+function download(){
 
 let text=document.getElementById("result").innerText;
 
@@ -135,17 +159,7 @@ link.click();
 
 }
 
-function copyScript(){
-
-let text=document.getElementById("result").innerText;
-
-navigator.clipboard.writeText(text);
-
-alert("Script copied!");
-
-}
-
-function payment(){
+function pay(){
 
 window.location.href="https://your-payment-link.com";
 
