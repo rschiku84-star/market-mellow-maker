@@ -3,73 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Studio - Payment Fixed</title>
+    <title>Dabix AI Studio - Final</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
         :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
-        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; text-align: center; padding: 15px; }
-        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,242,255,0.2); }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .btn-gen { background: var(--neon); color: #000; }
-        .btn-pay { background: var(--gold); color: #000; border: 2px solid #fff; animation: glow 1.5s infinite; }
-        @keyframes glow { 0% { box-shadow: 0 0 5px var(--gold); } 50% { box-shadow: 0 0 20px var(--gold); } 100% { box-shadow: 0 0 5px var(--gold); } }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; background: #222; color: #fff; border: 1px solid #444; box-sizing: border-box; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: white; text-align: center; padding: 15px; margin: 0; }
+        .master-card { max-width: 480px; margin: auto; background: #111; padding: 25px; border-radius: 35px; border: 1px solid #333; box-shadow: 0 20px 60px rgba(0,242,255,0.1); }
+        
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .nav-btn { flex: 1; padding: 14px; border-radius: 15px; background: #222; color: #777; border: 1px solid #444; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .nav-active { background: var(--neon); color: #000; border: none; box-shadow: 0 0 15px var(--neon); }
+
+        textarea, input, select { width: 100%; padding: 15px; border-radius: 15px; background: #1a1a1a; color: white; margin-bottom: 15px; border: 1px solid #444; box-sizing: border-box; }
+        
+        .glow-btn { width: 100%; padding: 20px; border: none; border-radius: 18px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; letter-spacing: 1px; }
+        .pay-btn { background: var(--gold); margin-top: 15px; border: 2px solid #fff; }
+
+        #preview-box { position: relative; width: 100%; height: 500px; background: #000; border-radius: 25px; margin-top: 25px; display: none; overflow: hidden; border: 2px solid var(--neon); }
+        video, img { width: 100%; height: 100%; object-fit: cover; }
+        .text-overlay { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 40px 20px 20px; font-size: 18px; font-weight: bold; box-sizing: border-box; }
+        .shop-badge { position: absolute; top: 20px; left: 20px; background: #ff0044; padding: 8px 18px; border-radius: 10px; font-weight: 900; z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        
+        #dl-link { display: none; margin-top: 15px; color: var(--neon); text-decoration: none; font-weight: bold; border: 1px solid var(--neon); padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 style="color: var(--neon);">🚀 Viral AI & Shop</h2>
+<div class="master-card">
+    <h2 style="margin-top:0">✨ Dabix AI Studio</h2>
     
-    <textarea id="mainText" rows="3" placeholder="Apni Story ya Product ka naam likhein..."></textarea>
-    
-    <button class="btn btn-gen" onclick="generateContent()">🎬 Create Viral Reel</button>
-
-    <hr style="border: 0.5px solid #333; margin: 20px 0;">
-
-    <div id="payment-area">
-        <p style="font-size: 14px; color: var(--gold);">⭐ Unlock Pro Features & High Quality</p>
-        <button class="btn btn-pay" onclick="payNow()">💳 PAY & UPGRADE (₹199)</button>
+    <div class="nav-tabs">
+        <button id="tab1" class="nav-btn nav-active" onclick="setMode('ai')">Influencer AI</button>
+        <button id="tab2" class="nav-btn" onclick="setMode('shop')">Local Shop Mode</button>
     </div>
 
-    <div id="status" style="margin-top: 15px; font-size: 12px; color: #888;"></div>
+    <textarea id="mainInput" rows="4" placeholder="Apni story ya product detail likhein..."></textarea>
+    
+    <div id="shopPanel" style="display:none;">
+        <input type="file" id="uFile" accept="image/*" onchange="handleFile(event)">
+        <input type="text" id="uPrice" placeholder="Offer Price (e.g. ₹499 Only)">
+    </div>
+
+    <button class="glow-btn" onclick="createMagic()">🚀 GENERATE VIRAL CONTENT</button>
+    <div id="msg" style="margin: 10px 0; font-size: 13px; color: var(--neon);"></div>
+
+    <div id="preview-box">
+        <video id="v-play" loop playsinline></video>
+        <img id="p-img" style="display:none;">
+        <div class="shop-badge" id="v-price" style="display:none;"></div>
+        <div class="text-overlay" id="v-cap"></div>
+    </div>
+
+    <a id="dl-link" href="#" download="Dabix_AI_Reel.mp4">📥 DOWNLOAD REEL</a>
+    <button class="glow-btn pay-btn" onclick="openPay()">👑 UNLOCK PRO (₹199)</button>
 </div>
 
 <script>
-    // 1. PAYMENT FUNCTION (Razorpay Integration)
-    function payNow() {
-        const options = {
-            "key": "rzp_test_SPotf8L7S7I5pS", // Aapki Test Key
-            "amount": "19900", // ₹199.00 (paise mein)
-            "currency": "INR",
-            "name": "Manik AI Studio",
-            "description": "Pro Membership Activation",
-            "image": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
-            "handler": function (response) {
-                alert("Payment Success! Payment ID: " + response.razorpay_payment_id);
-                document.getElementById('status').innerText = "✅ PRO ACTIVE: " + response.razorpay_payment_id;
-                document.getElementById('payment-area').innerHTML = "<b style='color:var(--neon)'>🌟 PRO MODE ACTIVATED</b>";
-            },
-            "prefill": {
-                "name": "Manik Chaudhary",
-                "email": "manik@example.com"
-            },
-            "theme": { "color": "#00f2ff" }
-        };
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
+    let currentMode = 'ai';
+    const API_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+
+    function setMode(m) {
+        currentMode = m;
+        document.getElementById('tab1').className = m === 'ai' ? 'nav-btn nav-active' : 'nav-btn';
+        document.getElementById('tab2').className = m === 'shop' ? 'nav-btn nav-active' : 'nav-btn';
+        document.getElementById('shopPanel').style.display = m === 'shop' ? 'block' : 'none';
     }
 
-    // 2. VIDEO GENERATION (Simple placeholder for testing)
-    async function generateContent() {
-        const text = document.getElementById('mainText').value;
-        if(!text) return alert("Pehle kuch likhein!");
+    function handleFile(e) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const img = document.getElementById('p-img');
+            img.src = reader.result;
+            img.style.display = 'block';
+            document.getElementById('v-play').style.display = 'none';
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    async function createMagic() {
+        const input = document.getElementById('mainInput').value;
+        const msg = document.getElementById('msg');
+        if(!input) return alert("Bhai, kuch toh likho!");
         
-        document.getElementById('status').innerText = "⏳ Generating... (Payment check karein)";
-        // Yahan aapka Pexels wala logic aayega
+        msg.innerText = "⚡ AI is working on your viral reel...";
+        document.getElementById('preview-box').style.display = 'block';
+
+        if(currentMode === 'ai') {
+            // Smart Keyword Extraction
+            const words = ["car", "mountain", "forest", "city", "gym", "bike", "nature", "ocean", "technology"];
+            let query = "nature"; 
+            words.forEach(w => { if(input.toLowerCase().includes(w)) query = w; });
+
+            try {
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1&orientation=portrait`, {
+                    headers: { Authorization: API_KEY }
+                });
+                const data = await res.json();
+                if(data.videos && data.videos.length > 0) {
+                    const vid = document.getElementById('v-play');
+                    vid.src = data.videos[0].video_files[0].link;
+                    vid.style.display = 'block';
+                    document.getElementById('p-img').style.display = 'none';
+                    vid.play();
+                    
+                    // Voice & Overlay
+                    responsiveVoice.speak(input, "Hindi Male");
+                    document.getElementById('v-cap').innerText = input;
+                    document.getElementById('v-price').style.display = 'none';
+                    document.getElementById('dl-link').style.display = 'block';
+                    document.getElementById('dl-link').href = vid.src;
+                    msg.innerText = "✅ Viral Reel Generated!";
+                }
+            } catch (e) { msg.innerText = "❌ Connection Error!"; }
+        } else {
+            // Shop Mode Logic
+            document.getElementById('v-price').innerText = document.getElementById('uPrice').value;
+            document.getElementById('v-price').style.display = 'block';
+            document.getElementById('v-cap').innerText = input;
+            document.getElementById('dl-link').style.display = 'block';
+            msg.innerText = "✅ Shop Post Ready!";
+        }
+    }
+
+    function openPay() {
+        new Razorpay({
+            "key": "rzp_test_SPotf8L7S7I5pS",
+            "amount": "19900",
+            "name": "Dabix AI Pro",
+            "handler": function(res){ alert("Payment Successful! ID: " + res.razorpay_payment_id); }
+        }).open();
     }
 </script>
-
 </body>
 </html>
