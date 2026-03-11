@@ -1,47 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Reel Maker</title>
-
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
 body{
 font-family:Arial;
-background:#111;
-color:white;
 text-align:center;
-padding:30px;
+background:#0f172a;
+color:white;
+padding:40px;
 }
 
 .container{
-max-width:500px;
+background:#1e293b;
+padding:30px;
+border-radius:10px;
+max-width:400px;
 margin:auto;
 }
 
-input,button{
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:6px;
+input{
+width:90%;
+padding:10px;
+margin:10px;
+border-radius:5px;
 border:none;
 }
 
 button{
-background:#4CAF50;
+padding:12px 20px;
+background:#22c55e;
+border:none;
 color:white;
+border-radius:6px;
+cursor:pointer;
 font-size:16px;
 }
 
-footer{
-margin-top:40px;
-}
-
-a{
-color:#00d9ff;
-text-decoration:none;
-margin:10px;
+.pay{
+background:#f59e0b;
 }
 </style>
 </head>
@@ -50,56 +48,54 @@ margin:10px;
 
 <div class="container">
 
-<h1>AI Reel Maker</h1>
-
-<p>Create product reels instantly using AI.</p>
-
-<input type="file" id="image">
+<h2>AI Reel Maker</h2>
 
 <input type="text" placeholder="Product Name">
 
-<input type="text" placeholder="Price">
+<input type="number" placeholder="Price">
 
-<input type="text" placeholder="Offer Text">
-
-<button onclick="generate()">Generate Reel (Demo)</button>
+<input type="file">
 
 <br><br>
 
-<button onclick="pay()">Pay ₹199 to Download HD Reel</button>
+<button onclick="generate()">Generate Reel</button>
+
+<br><br>
+
+<button class="pay" onclick="pay()">Pay ₹199 & Download</button>
 
 </div>
-
-<footer>
-
-<br>
-
-<a href="privacy-policy.html">Privacy Policy</a> |
-<a href="terms.html">Terms</a> |
-<a href="contact.html">Contact</a>
-
-</footer>
 
 <script>
 
 function generate(){
-alert("Demo reel generated! Pay to download HD reel.");
+alert("Reel Generated (Demo)");
 }
 
 function pay(){
 
 var options = {
-"key": "RAZORPAY_KEY_ID",
+
+"key": "rzp_test_SPotf8L",
+
 "amount": "19900",
+
 "currency": "INR",
+
 "name": "AI Reel Maker",
+
 "description": "Reel Download",
+
 handler: function (response){
-alert("Payment Successful!");
+
+alert("Payment Successful");
+
 }
+
 };
 
 var rzp = new Razorpay(options);
+
 rzp.open();
 
 }
@@ -107,4 +103,5 @@ rzp.open();
 </script>
 
 </body>
+
 </html>
