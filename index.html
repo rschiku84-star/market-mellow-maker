@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Reel Maker PRO</title>
 
 <style>
@@ -74,11 +75,11 @@ border-radius:8px;
 
 <input type="text" placeholder="Optional">
 
-<button class="generate" onclick="makeVideo()">Generate Reel</button>
+<button class="generate">Generate Reel</button>
 
 <video id="video" controls></video>
 
-<button class="download" onclick="downloadVideo()">Download Reel</button>
+<button class="download">Download Reel</button>
 
 <button class="pay">Pay ₹199 Unlock</button>
 
@@ -86,12 +87,15 @@ border-radius:8px;
 
 <script>
 
+const generateBtn=document.querySelector(".generate");
+const video=document.getElementById("video");
+const downloadBtn=document.querySelector(".download");
+
 let videoURL="";
 
-async function makeVideo(){
+generateBtn.onclick=async()=>{
 
 const file=document.getElementById("image").files[0];
-const caption=document.getElementById("text").value;
 
 if(!file){
 alert("Upload image");
@@ -100,6 +104,7 @@ return;
 
 const img=new Image();
 img.src=URL.createObjectURL(file);
+
 await img.decode();
 
 const canvas=document.createElement("canvas");
@@ -120,7 +125,7 @@ recorder.onstop=()=>{
 const blob=new Blob(chunks,{type:"video/webm"});
 videoURL=URL.createObjectURL(blob);
 
-document.getElementById("video").src=videoURL;
+video.src=videoURL;
 
 };
 
@@ -133,32 +138,32 @@ function draw(){
 ctx.fillStyle="black";
 ctx.fillRect(0,0,720,1280);
 
-let zoom=1+(frame*0.0005);
+const zoom=1+(frame*0.0005);
 
-let w=720*zoom;
-let h=900*zoom;
+const w=720*zoom;
+const h=900*zoom;
 
 ctx.drawImage(img,(720-w)/2,(900-h)/2,w,h);
-
-ctx.fillStyle="white";
-ctx.font="60px Arial";
-ctx.fillText(caption,40,1050);
 
 frame++;
 
 if(frame<900){
+
 requestAnimationFrame(draw);
+
 }else{
+
 recorder.stop();
+
 }
 
 }
 
 draw();
 
-}
+};
 
-function downloadVideo(){
+downloadBtn.onclick=()=>{
 
 if(!videoURL){
 alert("Generate reel first");
@@ -170,7 +175,13 @@ a.href=videoURL;
 a.download="ai-reel.webm";
 a.click();
 
-}
+};
+
+document.querySelector(".pay").onclick=()=>{
+
+window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
+
+};
 
 </script>
 
