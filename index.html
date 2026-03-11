@@ -1,199 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AI Reel Maker</title>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
+
 body{
-font-family:Arial;
 background:#0f172a;
-color:white;
+font-family:sans-serif;
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
 height:100vh;
-margin:0;
+color:white;
 }
 
 .box{
 background:#1e293b;
 padding:30px;
 border-radius:10px;
+width:300px;
 text-align:center;
-width:320px;
 }
 
 input{
-width:90%;
+width:100%;
 padding:10px;
-margin:8px;
+margin:8px 0;
+border-radius:5px;
 border:none;
-border-radius:6px;
 }
 
 button{
-padding:10px 20px;
-background:#22c55e;
+width:100%;
+padding:10px;
+margin-top:10px;
 border:none;
-color:white;
-border-radius:6px;
+border-radius:5px;
 cursor:pointer;
 }
 
-.hidden{
-display:none;
+.generate{
+background:#22c55e;
+color:white;
 }
 
-.small{
-font-size:13px;
-color:#cbd5f5;
+.pay{
+background:#f59e0b;
+color:white;
 }
+
 </style>
+
 </head>
 
 <body>
 
-<div class="box" id="loginBox">
+<div class="box">
 
 <h2>AI Reel Maker</h2>
 
-<input id="email" placeholder="Enter Email">
+<input id="product" placeholder="Product Name">
 
-<button onclick="login()">Start Free Trial</button>
+<input id="price" placeholder="Price">
 
-<p class="small">Free trial: 3 reels</p>
-
-<button onclick="pay()">Upgrade ₹199 / Month</button>
-
-</div>
-
-
-<div class="box hidden" id="appBox">
-
-<h3>Create Reel</h3>
-
-<input placeholder="Product Name">
-<input type="number" placeholder="Price">
 <input type="file">
 
-<br><br>
+<button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button onclick="generate()">Generate Reel</button>
-
-<p id="trialText" class="small"></p>
+<button class="pay" onclick="payNow()">Pay ₹199 & Download</button>
 
 </div>
-
-
 
 <script>
 
-let trialLimit = 3;
+let trialCount = localStorage.getItem("trial") || 0;
 
-function login(){
+function generateReel(){
 
-let email=document.getElementById("email").value;
+trialCount++;
 
-if(email){
+localStorage.setItem("trial",trialCount);
 
-localStorage.setItem("user",email);
+if(trialCount <= 3){
 
-if(!localStorage.getItem("trial")){
-localStorage.setItem("trial",trialLimit);
-}
-
-checkAccess();
-
-}
-
-}
-
-function checkAccess(){
-
-let paid = localStorage.getItem("paid");
-
-if(paid=="yes" || localStorage.getItem("trial")>0){
-
-document.getElementById("loginBox").classList.add("hidden");
-document.getElementById("appBox").classList.remove("hidden");
-
-updateTrialText();
-
-}
-
-}
-
-function updateTrialText(){
-
-let trial = localStorage.getItem("trial");
-
-if(localStorage.getItem("paid")=="yes"){
-
-document.getElementById("trialText").innerText="Unlimited Access";
+alert("Free Trial Reel Generated ✅");
 
 }else{
 
-document.getElementById("trialText").innerText="Free reels left: "+trial;
+alert("Free trial finished. Please pay ₹199");
 
 }
 
 }
 
-function generate(){
-
-let paid = localStorage.getItem("paid");
-
-let trial = localStorage.getItem("trial");
-
-if(paid=="yes"){
-
-alert("Reel Generated!");
-
-}else{
-
-if(trial>0){
-
-trial--;
-
-localStorage.setItem("trial",trial);
-
-alert("Reel Generated (Trial)");
-
-updateTrialText();
-
-}else{
-
-alert("Trial finished. Please upgrade.");
-
-}
-
-}
-
-}
-
-function pay(){
+function payNow(){
 
 var options = {
 
-"key": "rzp_test_YOURKEYHERE",
+key: "rzp_test_xxxxxxxx",
 
-"amount": "19900",
+amount: 19900,
 
-"currency": "INR",
+currency: "INR",
 
-"name": "AI Reel Maker",
+name: "AI Reel Maker",
 
-"description": "Monthly Access",
+description: "Monthly Plan",
 
-handler: function (){
+handler: function (response){
 
-localStorage.setItem("paid","yes");
-
-alert("Payment Successful");
-
-checkAccess();
+alert("Payment Successful ✅");
 
 }
 
@@ -204,8 +127,6 @@ var rzp = new Razorpay(options);
 rzp.open();
 
 }
-
-checkAccess();
 
 </script>
 
