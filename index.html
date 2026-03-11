@@ -3,96 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viral AI Content Studio</title>
+    <title>Viral AI Studio</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --bg: #0a0a0a; }
-        body { background: var(--bg); font-family: sans-serif; color: white; margin: 0; padding: 15px; text-align: center; }
-        .app-card { max-width: 450px; margin: auto; background: #121212; padding: 25px; border-radius: 30px; border: 1px solid #333; }
-        .tab-box { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; }
-        .active-tab { background: var(--neon); color: #000; border: none; font-weight: bold; }
-        textarea, select { width: 100%; padding: 14px; border-radius: 12px; background: #1a1a1a; color: white; margin-bottom: 15px; border: 1px solid #444; }
-        .action-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; }
-        #output-frame { position: relative; width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
-        #v-play { width: 100%; height: 100%; object-fit: cover; }
-        .overlay-text { position: absolute; bottom: 30px; width: 100%; background: rgba(0,0,0,0.8); padding: 15px; font-size: 16px; box-sizing: border-box; }
-        #log { font-size: 13px; color: var(--neon); margin: 10px 0; }
+        :root { --accent: #00f2ff; --bg: #0d0d0d; }
+        body { background: var(--bg); font-family: 'Inter', sans-serif; color: white; padding: 20px; text-align: center; }
+        .app-container { max-width: 450px; margin: auto; background: #1a1a1a; padding: 25px; border-radius: 25px; border: 1px solid #333; }
+        textarea, select { width: 100%; padding: 15px; border-radius: 12px; background: #000; color: #00f2ff; border: 1px solid #444; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; background: var(--accent); color: #000; text-transform: uppercase; }
+        #video-preview { width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; position: relative; display: none; overflow: hidden; border: 2px solid var(--accent); }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .overlay { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 15px; font-size: 14px; box-sizing: border-box; }
+        #status-msg { font-size: 12px; color: var(--accent); margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="app-card">
-    <h2>✨ Viral AI Studio</h2>
-    <div class="tab-box">
-        <button id="tab-ai" class="tab active-tab" onclick="switchMode('ai')">Influencer AI</button>
-        <button id="tab-shop" class="tab" onclick="switchMode('shop')">Shop Mode</button>
-    </div>
-
-    <textarea id="userInput" rows="4" placeholder="Apni puri story likhein (e.g. Ek bacha pahadi par thar chala raha hai...)"></textarea>
+<div class="app-container">
+    <h2>🚀 AI Viral Studio</h2>
+    <textarea id="storyInput" rows="4" placeholder="Apni story likhein... (e.g. Car in the city)"></textarea>
     
-    <select id="voiceChoice">
+    <select id="voiceSet">
         <option value="Hindi Male">Hindi Male Voice</option>
         <option value="Hindi Female">Hindi Female Voice</option>
     </select>
 
-    <button class="action-btn" onclick="startGeneration()">🚀 CREATE VIRAL REEL</button>
-    <div id="log"></div>
+    <button class="btn" onclick="makeMagic()">🎬 Generate Viral Reel</button>
+    <div id="status-msg"></div>
 
-    <div id="output-frame">
-        <video id="v-play" loop playsinline></video>
-        <div class="overlay-text" id="v-caption"></div>
+    <div id="video-preview">
+        <video id="outputVideo" loop playsinline muted></video>
+        <div class="overlay" id="textOverlay"></div>
     </div>
 </div>
 
 <script>
-    // AAPKI API KEY: hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav
-    const API_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+    const MY_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
 
-    async function startGeneration() {
-        const text = document.getElementById('userInput').value;
-        const log = document.getElementById('log');
-        if(!text) return alert("Pehle story likhein!");
+    async function makeMagic() {
+        const input = document.getElementById('storyInput').value;
+        const msg = document.getElementById('status-msg');
+        if(!input) return alert("Kuch toh likho!");
 
-        log.innerText = "⏳ AI Story dhoond raha hai...";
+        msg.innerText = "⏳ AI is finding the best clips...";
         
-        // SMART SEARCH: Story mein se common words dhoondna
-        const commonWords = ["mountain", "car", "thar", "nature", "forest", "city", "gym", "bike", "kids", "animals"];
-        let searchQuery = "nature"; // Default agar kuch na mile
-        
-        const wordsInStory = text.toLowerCase().split(' ');
-        for(let word of wordsInStory) {
-            if(commonWords.includes(word)) {
-                searchQuery = word;
-                break;
-            }
-        }
+        // Simple Logic: Puri story se keyword nikalna
+        let query = "nature"; 
+        const keywords = ["car", "mountain", "bike", "forest", "city", "gym", "ocean", "technology"];
+        keywords.forEach(word => { if(input.toLowerCase().includes(word)) query = word; });
 
         try {
-            const response = await fetch(`https://api.pexels.com/videos/search?query=${searchQuery}&per_page=5&orientation=portrait`, {
-                headers: { Authorization: API_KEY }
+            const res = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1&orientation=portrait`, {
+                headers: { Authorization: MY_KEY }
             });
-            const data = await response.json();
-            
-            if(data.videos && data.videos.length > 0) {
-                const vid = document.getElementById('v-play');
-                // Randomly ek video choose karna list mein se
-                const randomIndex = Math.floor(Math.random() * data.videos.length);
-                vid.src = data.videos[randomIndex].video_files[0].link;
+            const data = await res.json();
+
+            if(data.videos.length > 0) {
+                const v = document.getElementById('outputVideo');
+                v.src = data.videos[0].video_files[0].link;
+                document.getElementById('video-preview').style.display = 'block';
+                v.play();
                 
-                document.getElementById('output-frame').style.display = 'block';
-                vid.play();
-                
-                // Puri story bolne ke liye Voiceover
-                responsiveVoice.speak(text, document.getElementById('voiceChoice').value);
-                document.getElementById('v-caption').innerText = text.substring(0, 100) + "...";
-                log.innerText = "✅ Reel Ready! Search Query: " + searchQuery;
+                // Voiceover
+                responsiveVoice.speak(input, document.getElementById('voiceSet').value);
+                document.getElementById('textOverlay').innerText = input;
+                msg.innerText = "✅ Reel Generated! (Video: " + query + ")";
             } else {
-                log.innerText = "❌ No clips found. Try using words like 'Mountain' or 'Car'.";
+                msg.innerText = "❌ No video found. Try simpler words.";
             }
-        } catch (err) {
-            log.innerText = "❌ Error: API Key check karein.";
+        } catch(e) {
+            msg.innerText = "❌ Connection Error. Check API Key.";
         }
     }
 </script>
