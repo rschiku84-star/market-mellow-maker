@@ -7,35 +7,40 @@
 <style>
 
 body{
-font-family: Arial;
-background:#0d2b45;
+font-family:Arial;
+background:#0f172a;
 color:white;
 text-align:center;
 padding:20px;
 }
 
 .box{
-background:#163a5f;
+background:#1e293b;
 padding:20px;
-border-radius:10px;
-max-width:400px;
+border-radius:12px;
+max-width:420px;
 margin:auto;
+}
+
+h2{
+margin-bottom:20px;
 }
 
 input{
 width:90%;
-padding:10px;
+padding:12px;
 margin:10px;
-border-radius:6px;
+border-radius:8px;
 border:none;
+font-size:16px;
 }
 
 button{
 width:90%;
 padding:12px;
-margin:10px;
+margin:8px;
 border:none;
-border-radius:6px;
+border-radius:8px;
 font-size:16px;
 cursor:pointer;
 }
@@ -50,11 +55,18 @@ background:#3b82f6;
 color:white;
 }
 
+.clear{
+background:#ef4444;
+color:white;
+}
+
 #result{
 margin-top:20px;
-background:#0f172a;
+background:#020617;
 padding:15px;
-border-radius:8px;
+border-radius:10px;
+text-align:left;
+white-space:pre-line;
 }
 
 </style>
@@ -68,9 +80,11 @@ border-radius:8px;
 
 <input type="text" id="topic" placeholder="Enter Reel Topic">
 
-<button class="generate" onclick="generateReel()">Generate Reel Idea</button>
+<button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button class="download" onclick="downloadText()">Download Script</button>
+<button class="download" onclick="downloadScript()">Download Script</button>
+
+<button class="clear" onclick="clearText()">Clear</button>
 
 <div id="result">
 Your reel script will appear here...
@@ -85,26 +99,60 @@ function generateReel(){
 let topic=document.getElementById("topic").value;
 
 if(topic===""){
-alert("Please enter a topic");
+alert("Enter reel topic first");
 return;
 }
 
+let hooks=[
+"Stop scrolling! This will change your view about ",
+"You won't believe this about ",
+"Here is something crazy about ",
+"Top secret about ",
+"3 things you must know about "
+];
+
+let captions=[
+"This is going viral 🔥",
+"Everyone is talking about this!",
+"Save this reel for later!",
+"Don't miss this trick!",
+"Watch till the end!"
+];
+
+let hashtags=[
+"#viralreel #reelsinstagram #trend",
+"#instareels #viralcontent #growth",
+"#contentcreator #reelideas #explore",
+"#socialmediatips #viralvideo #instagramgrowth"
+];
+
+let hook=hooks[Math.floor(Math.random()*hooks.length)];
+let caption=captions[Math.floor(Math.random()*captions.length)];
+let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)];
+
 let script="🎬 Reel Topic: "+topic+"\n\n";
 
-script+="Hook: Did you know about "+topic+"?\n\n";
+script+="🔥 Hook:\n";
+script+=hook+topic+"\n\n";
 
-script+="Content:\n";
-script+="• Point 1 about "+topic+"\n";
-script+="• Point 2 about "+topic+"\n";
-script+="• Point 3 about "+topic+"\n\n";
+script+="🎥 Content:\n";
+script+="1️⃣ Point about "+topic+"\n";
+script+="2️⃣ Interesting fact about "+topic+"\n";
+script+="3️⃣ Quick tip related to "+topic+"\n\n";
 
-script+="CTA: Follow for more amazing reels!";
+script+="📢 Caption:\n";
+script+=caption+"\n\n";
+
+script+="🏷 Hashtags:\n";
+script+=hashtag+"\n\n";
+
+script+="👉 CTA:\nFollow for more viral reels!";
 
 document.getElementById("result").innerText=script;
 
 }
 
-function downloadText(){
+function downloadScript(){
 
 let text=document.getElementById("result").innerText;
 
@@ -118,6 +166,11 @@ link.download="reel-script.txt";
 
 link.click();
 
+}
+
+function clearText(){
+document.getElementById("result").innerText="Your reel script will appear here...";
+document.getElementById("topic").value="";
 }
 
 </script>
