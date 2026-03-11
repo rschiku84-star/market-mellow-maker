@@ -1,116 +1,141 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html lang="hi">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker</title><style>
-body{
-background:#0b0f2a;
-font-family:Arial;
-color:white;
-text-align:center;
-padding:20px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Reel Maker</title>
+    <style>
+        body {
+            background: #0b0f2a;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
 
-.box{
-background:#111a44;
-padding:20px;
-border-radius:15px;
-max-width:420px;
-margin:auto;
-}
+        .box {
+            background: #111a44;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 420px;
+            margin: auto;
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+        }
 
-input{
-width:90%;
-padding:12px;
-border-radius:10px;
-border:none;
-margin:8px;
-}
+        input {
+            width: 90%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            margin: 8px 0;
+            outline: none;
+        }
 
-button{
-width:90%;
-padding:14px;
-margin:6px;
-border:none;
-border-radius:12px;
-font-size:16px;
-color:white;
-}
+        button {
+            width: 90%;
+            padding: 14px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.gen{background:#00a83e;}
-.download{background:#0057ff;}
-.pro{background:#b65b00;}
+        .gen { background: #90ab3e; }
+        .gen:hover { background: #7a9134; }
+        
+        .download { background: #0057ff; }
+        .download:hover { background: #0046cc; }
 
-video{
-width:100%;
-border-radius:12px;
-margin-top:15px;
-}
-</style></head><body><div class="box"><h2>🚀 AI Reel Maker</h2><input id="topic" placeholder="Enter reel topic"><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel</button>
+        .pro { background: #b65b00; }
+        .pro:hover { background: #944a00; }
 
-<button class="download" onclick="downloadVideo()">Download Video</button>
+        video {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+            display: none; /* Pehle hidden rahega */
+        }
 
-<button class="pro" onclick="upgrade()">Upgrade PRO</button>
+        #script, #hashtags {
+            margin-top: 15px;
+            font-size: 14px;
+            text-align: left;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
 
-<p id="script"></p>
-<p id="hashtags"></p><video id="video" controls></video>
+<div class="box">
+    <h2>🎬 AI Reel Maker</h2>
+    <input id="topic" placeholder="Enter reel topic (e.g. Space, Nature)">
+    
+    <button class="gen" onclick="makeReel()">Generate Reel</button>
+    <button class="download" onclick="downloadVideo()">Download Video</button>
+    <button class="pro" onclick="upgrade()">Upgrade PRO</button>
 
-<audio id="music"></audio>
+    <div id="result-area">
+        <p id="script"></p>
+        <p id="hashtags"></p>
+        <video id="video" controls></video>
+    </div>
+</div>
 
-</div><script>
+<script>
+    function makeReel() {
+        let topic = document.getElementById("topic").value;
+        if (!topic) {
+            alert("Please enter a topic first!");
+            return;
+        }
 
-function makeReel(){
+        // Script generation
+        document.getElementById("script").innerText = 
+            "Hook: Viral reel about " + topic + "\n" +
+            "Story: Amazing facts about " + topic + "\n" +
+            "Ending: Follow for more reels!";
 
-let topic=document.getElementById("topic").value;
+        // Hashtags
+        document.getElementById("hashtags").innerText = 
+            "#reels #viralreels #instagramreels #trending #ai #viral #" + topic.replace(/\s+/g, '');
 
-document.getElementById("script").innerText=
-"Hook: Viral reel about "+topic+
-"\nStory: Amazing facts about "+topic+
-"\nEnding: Follow for more reels.";
+        // Video Logic
+        let video = document.getElementById("video");
+        video.style.display = "block";
+        // Sample video link
+        video.src = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+        video.play();
+    }
 
-document.getElementById("hashtags").innerText=
-"#reels #viralreels #instagramreels #trending #ai #viral";
+    // DOWNLOAD FUNCTION
+    function downloadVideo() {
+        let video = document.getElementById("video");
+        if (!video.src) {
+            alert("Pehle video generate karein!");
+            return;
+        }
+        let link = document.createElement('a');
+        link.href = video.src;
+        link.download = 'AI_Reel.mp4';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
-let video=document.getElementById("video");
+    // UPGRADE / PAYMENT FUNCTION
+    function upgrade() {
+        // Yahan aap apna payment link daal sakte hain
+        let paymentURL = "https://rzp.io/l/your_link"; // Example Link
+        alert("Redirecting to Secure Payment Gateway...");
+        window.open(paymentURL, "_blank");
+    }
+</script>
 
-video.src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
-
-video.play();
-
-let musicFile=document.getElementById("musicUpload").files[0];
-
-if(musicFile){
-
-let musicURL=URL.createObjectURL(musicFile);
-
-let music=document.getElementById("music");
-
-music.src=musicURL;
-
-music.play();
-
-}
-
-}
-
-function downloadVideo(){
-
-let video=document.getElementById("video").src;
-
-let a=document.createElement("a");
-
-a.href=video;
-
-a.download="ai-reel.mp4";
-
-a.click();
-
-}
-
-function upgrade(){
-
-window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
-
-}
-
-</script></body>
+</body>
 </html>
+
