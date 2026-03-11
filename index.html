@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Studio & Shop Maker</title>
+    <title>AI Viral Studio & Shop</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; --card: #111; }
-        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; margin: 0; padding: 15px; text-align: center; }
-        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 0 40px rgba(0,242,255,0.1); }
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
+        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; text-align: center; padding: 15px; }
+        .container { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; }
         
         .mode-switch { display: flex; gap: 10px; margin-bottom: 20px; }
-        .mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; font-weight: bold; }
+        .mode-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; font-weight: bold; }
         .active-mode { background: var(--neon); color: #000; border: none; }
 
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #1a1a1a; color: white; margin-bottom: 12px; box-sizing: border-box; }
+        textarea, input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #444; background: #1a1a1a; color: white; margin-bottom: 12px; box-sizing: border-box; }
         
-        .main-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; }
+        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; }
         .pay-btn { background: var(--gold); margin-top: 10px; }
 
-        #output-screen { position: relative; width: 100%; height: 550px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
-        #v-play, #p-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
+        #output-screen { position: relative; width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
+        #v-play, #p-img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Overlays */
-        .shop-overlay { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 15px; font-weight: bold; border-radius: 5px; z-index: 10; }
-        .discount-tag { position: absolute; top: 20px; right: 20px; background: var(--gold); color: #000; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; z-index: 10; }
-        .caption-overlay { position: absolute; bottom: 40px; width: 100%; text-align: center; background: rgba(0,0,0,0.6); padding: 10px; font-size: 18px; font-weight: bold; z-index: 10; color: var(--neon); }
+        .caption-overlay { position: absolute; bottom: 40px; width: 100%; text-align: center; background: rgba(0,0,0,0.7); padding: 15px; font-size: 18px; font-weight: bold; color: white; }
+        .shop-tag { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 12px; border-radius: 5px; font-weight: bold; }
 
-        .kit-box { background: #1a1a1a; padding: 15px; border-radius: 15px; margin-top: 15px; text-align: left; display: none; }
+        #status { font-size: 12px; color: var(--neon); margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 id="title">🚀 AI Viral Studio</h2>
+    <h2>🚀 AI Viral Studio</h2>
     
     <div class="mode-switch">
-        <button class="mode-btn active-mode" onclick="setMode('ai')">Social Media AI</button>
-        <button class="mode-btn" onclick="setMode('shop')">Local Shop Mode</button>
+        <button id="btn-ai" class="mode-btn active-mode" onclick="setMode('ai')">Social Media AI</button>
+        <button id="btn-shop" class="mode-btn" onclick="setMode('shop')">Local Shop Mode</button>
     </div>
 
-    <textarea id="mainInput" rows="3" placeholder="Enter Topic or Script..."></textarea>
+    <textarea id="mainInput" rows="3" placeholder="Enter Topic (e.g. Nature, Thar Car, Gym)"></textarea>
     
     <div id="shopInputs" style="display:none;">
         <input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
-        <input type="text" id="price" placeholder="MRP (e.g. ₹999)">
-        <input type="text" id="off" placeholder="Offer (e.g. 50% OFF)">
+        <input type="text" id="price" placeholder="Price (₹999)">
     </div>
 
     <div id="aiInputs">
@@ -56,21 +53,15 @@
         </select>
     </div>
 
-    <button class="main-btn" onclick="generateNow()">🎬 Create Viral Video</button>
-    <button class="main-btn pay-btn" onclick="payNow()">⭐ Unlock Pro (₹199)</button>
+    <button class="main-btn" onclick="createReel()">🎬 CREATE VIRAL VIDEO</button>
+    <div id="status"></div>
+    <button class="main-btn pay-btn" onclick="payNow()">⭐ UNLOCK PRO (₹199)</button>
 
     <div id="output-screen">
-        <video id="v-play" loop></video>
+        <video id="v-play" loop playsinline></video>
         <img id="p-img" style="display:none;">
-        <div class="shop-overlay" id="v-price" style="display:none;"></div>
-        <div class="discount-tag" id="v-off" style="display:none;"></div>
+        <div class="shop-tag" id="v-price" style="display:none;"></div>
         <div class="caption-overlay" id="v-caption"></div>
-    </div>
-
-    <div class="kit-box" id="kit">
-        <strong style="color:var(--neon)">Viral Kit:</strong>
-        <p id="h-tags" style="font-size: 12px; color:#aaa;"></p>
-        <button class="mode-btn active-mode" style="width:100%" onclick="downloadVid()">📥 Download Reel</button>
     </div>
 </div>
 
@@ -80,69 +71,68 @@
 
     function setMode(mode) {
         currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
-        event.target.classList.add('active-mode');
+        document.getElementById('btn-ai').classList.toggle('active-mode', mode === 'ai');
+        document.getElementById('btn-shop').classList.toggle('active-mode', mode === 'shop');
         document.getElementById('shopInputs').style.display = mode === 'shop' ? 'block' : 'none';
         document.getElementById('aiInputs').style.display = mode === 'ai' ? 'block' : 'none';
-        document.getElementById('title').innerText = mode === 'shop' ? "🏪 Shop Video Maker" : "🚀 AI Viral Studio";
     }
 
     function previewImg(e) {
-        const img = document.getElementById('p-img');
-        img.src = URL.createObjectURL(e.target.files[0]);
-        img.style.display = 'block';
-        document.getElementById('v-play').style.display = 'none';
+        const reader = new FileReader();
+        reader.onload = () => {
+            document.getElementById('p-img').src = reader.result;
+            document.getElementById('p-img').style.display = 'block';
+            document.getElementById('v-play').style.display = 'none';
+        };
+        reader.readAsDataURL(e.target.files[0]);
     }
 
-    async function generateNow() {
+    async function createReel() {
         const input = document.getElementById('mainInput').value;
-        const screen = document.getElementById('output-screen');
-        const kit = document.getElementById('kit');
-        
-        if(!input) return alert("Kuch toh likho!");
-        screen.style.display = 'block';
-        kit.style.display = 'block';
+        const status = document.getElementById('status');
+        if(!input) return alert("Please enter a topic first!");
+
+        status.innerText = "⏳ AI is searching & creating...";
+        document.getElementById('output-screen').style.display = 'block';
 
         if(currentMode === 'ai') {
-            const res = await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`, {
-                headers: { Authorization: PEXELS_KEY }
-            });
-            const data = await res.json();
-            const vid = document.getElementById('v-play');
-            vid.src = data.videos[0].video_files[0].link;
-            vid.style.display = 'block';
-            document.getElementById('p-img').style.display = 'none';
-            vid.play();
-            
-            // Voiceover
-            responsiveVoice.speak(input, document.getElementById('voiceType').value);
-            document.getElementById('v-caption').innerText = input.substring(0, 40) + "...";
-            document.getElementById('v-price').style.display = 'none';
-            document.getElementById('v-off').style.display = 'none';
+            try {
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`, {
+                    headers: { Authorization: PEXELS_KEY }
+                });
+                const data = await res.json();
+                
+                if(data.videos.length > 0) {
+                    const vid = document.getElementById('v-play');
+                    vid.src = data.videos[0].video_files[0].link;
+                    vid.style.display = 'block';
+                    document.getElementById('p-img').style.display = 'none';
+                    vid.play();
+                    
+                    // Voiceover & Captions
+                    responsiveVoice.speak(input, document.getElementById('voiceType').value);
+                    document.getElementById('v-caption').innerText = input;
+                    status.innerText = "✅ Reel Generated!";
+                } else {
+                    status.innerText = "❌ No video found for this topic.";
+                }
+            } catch (err) {
+                status.innerText = "❌ Connection Error.";
+            }
         } else {
-            // Shop Mode Logic
-            document.getElementById('v-price').innerText = document.getElementById('price').value;
-            document.getElementById('v-off').innerText = document.getElementById('off').value;
+            // Shop Mode
+            document.getElementById('v-price').innerText = "SPECIAL: " + document.getElementById('price').value;
             document.getElementById('v-price').style.display = 'block';
-            document.getElementById('v-off').style.display = 'block';
-            document.getElementById('v-caption').innerText = "SPECIAL OFFER!";
+            document.getElementById('v-caption').innerText = input;
+            status.innerText = "✅ Shop Reel Ready!";
         }
-
-        document.getElementById('h-tags').innerText = "#Viral #Trending #ShopAI #AIContent #" + input.split(' ')[0];
-    }
-
-    function downloadVid() {
-        const link = document.createElement('a');
-        link.href = currentMode === 'ai' ? document.getElementById('v-play').src : document.getElementById('p-img').src;
-        link.download = 'Reel.mp4';
-        link.click();
     }
 
     function payNow() {
         new Razorpay({
             "key": "rzp_test_SPotf8L7S7I5pS",
             "amount": "19900",
-            "name": "AI Studio Pro",
+            "name": "AI Viral Studio Pro",
             "handler": function(res){ alert("Payment Success!"); }
         }).open();
     }
