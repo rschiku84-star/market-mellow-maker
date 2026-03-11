@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>AI Reel Maker</title>
+
 <style>
+
 body{
 background:#0f2747;
 font-family:Arial;
@@ -11,15 +13,17 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+margin:0;
 }
 
 .container{
 background:#132f54;
 padding:30px;
 border-radius:15px;
-width:300px;
+width:320px;
 text-align:center;
 color:white;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
 input{
@@ -60,41 +64,58 @@ margin-top:15px;
 display:none;
 }
 
-img{
+video{
 width:100%;
 border-radius:10px;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
+
 <h2>AI Reel Maker</h2>
 
 <input type="text" id="name" placeholder="Product Name">
+
 <input type="text" id="price" placeholder="Price">
 
 <input type="file" id="image">
 
 <button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button class="pay">Pay ₹199 & Unlimited</button>
+<button class="pay" onclick="payNow()">Pay ₹199 & Unlimited</button>
 
 <div id="loading">Generating Reel...</div>
 
 <div id="result">
-<h4>Your Reel Preview</h4>
-<img id="preview">
+
+<h4>Your Reel</h4>
+
+<video id="video" controls></video>
+
 <br><br>
-<a id="download" download="reel.jpg">
-<button>Download</button>
+
+<a id="downloadVideo" download="reel.webm">
+
+<button>Download Reel</button>
+
 </a>
+
 </div>
 
 </div>
 
 <script>
+
+function payNow(){
+
+window.open("https://rzp.io/l/demo123","_blank")
+
+}
 
 function generateReel(){
 
@@ -107,23 +128,71 @@ return
 
 document.getElementById("loading").style.display="block"
 
-setTimeout(()=>{
-
 let reader=new FileReader()
 
 reader.onload=function(e){
 
-document.getElementById("preview").src=e.target.result
-document.getElementById("download").href=e.target.result
+let canvas=document.createElement("canvas")
+let ctx=canvas.getContext("2d")
+
+let img=new Image()
+
+img.onload=function(){
+
+canvas.width=720
+canvas.height=1280
+
+ctx.fillStyle="#000"
+ctx.fillRect(0,0,720,1280)
+
+ctx.drawImage(img,60,200,600,600)
+
+ctx.fillStyle="white"
+ctx.font="40px Arial"
+
+let name=document.getElementById("name").value
+let price=document.getElementById("price").value
+
+ctx.fillText(name,100,900)
+ctx.fillText("Price: "+price,100,960)
+
+let stream=canvas.captureStream(30)
+
+let recorder=new MediaRecorder(stream)
+
+let chunks=[]
+
+recorder.ondataavailable=e=>chunks.push(e.data)
+
+recorder.onstop=function(){
+
+let blob=new Blob(chunks,{type:"video/webm"})
+
+let url=URL.createObjectURL(blob)
+
+document.getElementById("video").src=url
+
+document.getElementById("downloadVideo").href=url
 
 document.getElementById("loading").style.display="none"
+
 document.getElementById("result").style.display="block"
 
 }
 
-reader.readAsDataURL(file)
+recorder.start()
 
-},2000)
+setTimeout(()=>{
+recorder.stop()
+},3000)
+
+}
+
+img.src=e.target.result
+
+}
+
+reader.readAsDataURL(file)
 
 }
 
