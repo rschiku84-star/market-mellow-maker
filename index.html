@@ -1,142 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Viral Studio & Shop</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-    <style>
-        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
-        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; text-align: center; padding: 15px; }
-        .container { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; }
-        
-        .mode-switch { display: flex; gap: 10px; margin-bottom: 20px; }
-        .mode-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; font-weight: bold; }
-        .active-mode { background: var(--neon); color: #000; border: none; }
+<meta charset="UTF-8">
+<title>AI Viral Studio</title>
 
-        textarea, input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #444; background: #1a1a1a; color: white; margin-bottom: 12px; box-sizing: border-box; }
-        
-        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; }
-        .pay-btn { background: var(--gold); margin-top: 10px; }
+<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
 
-        #output-screen { position: relative; width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
-        #v-play, #p-img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .caption-overlay { position: absolute; bottom: 40px; width: 100%; text-align: center; background: rgba(0,0,0,0.7); padding: 15px; font-size: 18px; font-weight: bold; color: white; }
-        .shop-tag { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 12px; border-radius: 5px; font-weight: bold; }
+<style>
+body{
+background:#0f172a;
+color:white;
+font-family:Arial;
+text-align:center;
+}
 
-        #status { font-size: 12px; color: var(--neon); margin-top: 5px; }
-    </style>
+input,select{
+padding:10px;
+width:80%;
+margin:10px;
+border-radius:8px;
+border:none;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:10px;
+background:#06b6d4;
+color:white;
+font-size:16px;
+margin:10px;
+}
+
+#output-screen{
+margin-top:20px;
+display:none;
+}
+
+video{
+width:90%;
+border-radius:12px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>🚀 AI Viral Studio</h2>
-    
-    <div class="mode-switch">
-        <button id="btn-ai" class="mode-btn active-mode" onclick="setMode('ai')">Social Media AI</button>
-        <button id="btn-shop" class="mode-btn" onclick="setMode('shop')">Local Shop Mode</button>
-    </div>
+<h2>🚀 AI Viral Studio</h2>
 
-    <textarea id="mainInput" rows="3" placeholder="Enter Topic (e.g. Nature, Thar Car, Gym)"></textarea>
-    
-    <div id="shopInputs" style="display:none;">
-        <input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
-        <input type="text" id="price" placeholder="Price (₹999)">
-    </div>
+<input id="mainInput" placeholder="Enter topic (dog, nature, motivation)">
 
-    <div id="aiInputs">
-        <select id="voiceType">
-            <option value="Hindi Male">Male Voice (Hindi)</option>
-            <option value="Hindi Female">Female Voice (Hindi)</option>
-        </select>
-    </div>
+<br>
 
-    <button class="main-btn" onclick="createReel()">🎬 CREATE VIRAL VIDEO</button>
-    <div id="status"></div>
-    <button class="main-btn pay-btn" onclick="payNow()">⭐ UNLOCK PRO (₹199)</button>
+<select id="voiceType">
+<option>Hindi Male</option>
+<option>Hindi Female</option>
+</select>
 
-    <div id="output-screen">
-        <video id="v-play" loop playsinline></video>
-        <img id="p-img" style="display:none;">
-        <div class="shop-tag" id="v-price" style="display:none;"></div>
-        <div class="caption-overlay" id="v-caption"></div>
-    </div>
+<br>
+
+<button onclick="createReel()">🎬 CREATE VIRAL VIDEO</button>
+
+<div id="status"></div>
+
+<div id="output-screen">
+<video id="v-play" controls loop></video>
+<div id="v-caption"></div>
 </div>
 
 <script>
-    let currentMode = 'ai';
-    const PEXELS_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
 
-    function setMode(mode) {
-        currentMode = mode;
-        document.getElementById('btn-ai').classList.toggle('active-mode', mode === 'ai');
-        document.getElementById('btn-shop').classList.toggle('active-mode', mode === 'shop');
-        document.getElementById('shopInputs').style.display = mode === 'shop' ? 'block' : 'none';
-        document.getElementById('aiInputs').style.display = mode === 'ai' ? 'block' : 'none';
-    }
+const PEXELS_KEY = "YOUR_PEXELS_API_KEY";
 
-    function previewImg(e) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            document.getElementById('p-img').src = reader.result;
-            document.getElementById('p-img').style.display = 'block';
-            document.getElementById('v-play').style.display = 'none';
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    }
+async function createReel(){
 
-    async function createReel() {
-        const input = document.getElementById('mainInput').value;
-        const status = document.getElementById('status');
-        if(!input) return alert("Please enter a topic first!");
+const input=document.getElementById("mainInput").value;
+const status=document.getElementById("status");
 
-        status.innerText = "⏳ AI is searching & creating...";
-        document.getElementById('output-screen').style.display = 'block';
+if(!input){
+alert("Enter topic first");
+return;
+}
 
-        if(currentMode === 'ai') {
-            try {
-                const res = await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`, {
-                    headers: { Authorization: PEXELS_KEY }
-                });
-                const data = await res.json();
-                
-                if(data.videos.length > 0) {
-                    const vid = document.getElementById('v-play');
-                    vid.src = data.videos[0].video_files[0].link;
-                    vid.style.display = 'block';
-                    document.getElementById('p-img').style.display = 'none';
-                    vid.play();
-                    
-                    // Voiceover & Captions
-                    responsiveVoice.speak(input, document.getElementById('voiceType').value);
-                    document.getElementById('v-caption').innerText = input;
-                    status.innerText = "✅ Reel Generated!";
-                } else {
-                    status.innerText = "❌ No video found for this topic.";
-                }
-            } catch (err) {
-                status.innerText = "❌ Connection Error.";
-            }
-        } else {
-            // Shop Mode
-            document.getElementById('v-price').innerText = "SPECIAL: " + document.getElementById('price').value;
-            document.getElementById('v-price').style.display = 'block';
-            document.getElementById('v-caption').innerText = input;
-            status.innerText = "✅ Shop Reel Ready!";
-        }
-    }
+status.innerText="⏳ AI searching video...";
 
-    function payNow() {
-        new Razorpay({
-            "key": "rzp_test_SPotf8L7S7I5pS",
-            "amount": "19900",
-            "name": "AI Viral Studio Pro",
-            "handler": function(res){ alert("Payment Success!"); }
-        }).open();
-    }
+try{
+
+const res=await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`,{
+headers:{
+Authorization:PEXELS_KEY
+}
+});
+
+if(!res.ok){
+throw new Error("API error");
+}
+
+const data=await res.json();
+
+if(data.videos.length===0){
+status.innerText="❌ No video found";
+return;
+}
+
+const video=data.videos[0].video_files.find(f=>f.quality==="sd");
+
+const vid=document.getElementById("v-play");
+
+vid.src=video.link;
+
+document.getElementById("output-screen").style.display="block";
+
+vid.play();
+
+document.getElementById("v-caption").innerText=input;
+
+responsiveVoice.speak(input);
+
+status.innerText="✅ Viral Reel Generated";
+
+}catch(err){
+
+status.innerText="❌ Connection Error";
+
+}
+
+}
+
 </script>
+
 </body>
 </html>
-
