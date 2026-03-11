@@ -2,28 +2,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Reel Maker</title>
+<title>AI Reel Maker Pro</title>
 
 <style>
 
 body{
-background:#0f2747;
-font-family:Arial;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
 margin:0;
+font-family:Arial;
+background:#0b1f3a;
+color:white;
+}
+
+header{
+text-align:center;
+padding:20px;
+font-size:22px;
+font-weight:bold;
+background:#08172c;
 }
 
 .container{
+max-width:380px;
+margin:auto;
+padding:20px;
+}
+
+.card{
 background:#132f54;
-padding:30px;
-border-radius:15px;
-width:320px;
-text-align:center;
-color:white;
-box-shadow:0 0 20px rgba(0,0,0,0.4);
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
 input{
@@ -45,28 +53,42 @@ cursor:pointer;
 }
 
 .generate{
-background:#4CAF50;
+background:#2ecc71;
 color:white;
 }
 
 .pay{
-background:#FFA500;
+background:#ffa502;
 color:white;
 }
 
 #loading{
 display:none;
+text-align:center;
 margin-top:10px;
-}
-
-#result{
-margin-top:15px;
-display:none;
 }
 
 video{
 width:100%;
+margin-top:15px;
 border-radius:10px;
+}
+
+.section{
+margin-top:30px;
+}
+
+.example{
+background:#132f54;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+}
+
+footer{
+text-align:center;
+padding:20px;
+opacity:0.7;
 }
 
 </style>
@@ -75,9 +97,13 @@ border-radius:10px;
 
 <body>
 
+<header>
+AI Reel Maker PRO
+</header>
+
 <div class="container">
 
-<h2>AI Reel Maker</h2>
+<div class="card">
 
 <input type="text" id="name" placeholder="Product Name">
 
@@ -89,25 +115,45 @@ border-radius:10px;
 
 <button class="pay" onclick="payNow()">Pay ₹199 & Unlimited</button>
 
-<div id="loading">Generating Reel...</div>
-
-<div id="result">
-
-<h4>Your Reel</h4>
+<div id="loading">Generating AI Reel...</div>
 
 <video id="video" controls></video>
 
-<br><br>
-
 <a id="downloadVideo" download="reel.webm">
-
 <button>Download Reel</button>
-
 </a>
 
 </div>
 
+
+<div class="section">
+
+<h3>How it works</h3>
+
+<div class="example">1️⃣ Upload product image</div>
+<div class="example">2️⃣ Enter product name & price</div>
+<div class="example">3️⃣ AI generates reel</div>
+<div class="example">4️⃣ Download & post on Instagram</div>
+
 </div>
+
+
+<div class="section">
+
+<h3>Example Use</h3>
+
+<div class="example">Clothing shop reels</div>
+<div class="example">Electronics product ads</div>
+<div class="example">Local shop promotion</div>
+
+</div>
+
+</div>
+
+<footer>
+AI Reel Maker © 2026
+</footer>
+
 
 <script>
 
@@ -171,12 +217,9 @@ let blob=new Blob(chunks,{type:"video/webm"})
 let url=URL.createObjectURL(blob)
 
 document.getElementById("video").src=url
-
 document.getElementById("downloadVideo").href=url
 
 document.getElementById("loading").style.display="none"
-
-document.getElementById("result").style.display="block"
 
 }
 
