@@ -1,28 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Reel Maker</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Reel Maker</title>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <style>
 body{
-font-family: Arial;
+font-family:Arial;
 background:#111;
 color:white;
 text-align:center;
-padding:40px;
+padding:30px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:6px;
+border:none;
 }
 
 button{
-padding:15px 25px;
-font-size:18px;
 background:#4CAF50;
-border:none;
 color:white;
-border-radius:8px;
+font-size:16px;
 }
 
 footer{
-margin-top:60px;
+margin-top:40px;
 }
 
 a{
@@ -35,23 +48,63 @@ margin:10px;
 
 <body>
 
+<div class="container">
+
 <h1>AI Reel Maker</h1>
 
-<p>Create professional product reels using AI.</p>
+<p>Create product reels instantly using AI.</p>
 
-<p>Upload your product image, add price and offer text, and generate a vertical reel video instantly.</p>
+<input type="file" id="image">
 
-<button>Generate Reel</button>
+<input type="text" placeholder="Product Name">
 
-<footer>
+<input type="text" placeholder="Price">
+
+<input type="text" placeholder="Offer Text">
+
+<button onclick="generate()">Generate Reel (Demo)</button>
 
 <br><br>
 
+<button onclick="pay()">Pay ₹199 to Download HD Reel</button>
+
+</div>
+
+<footer>
+
+<br>
+
 <a href="privacy-policy.html">Privacy Policy</a> |
-<a href="terms.html">Terms & Conditions</a> |
-<a href="contact.html">Contact Us</a>
+<a href="terms.html">Terms</a> |
+<a href="contact.html">Contact</a>
 
 </footer>
+
+<script>
+
+function generate(){
+alert("Demo reel generated! Pay to download HD reel.");
+}
+
+function pay(){
+
+var options = {
+"key": "RAZORPAY_KEY_ID",
+"amount": "19900",
+"currency": "INR",
+"name": "AI Reel Maker",
+"description": "Reel Download",
+handler: function (response){
+alert("Payment Successful!");
+}
+};
+
+var rzp = new Razorpay(options);
+rzp.open();
+
+}
+
+</script>
 
 </body>
 </html>
