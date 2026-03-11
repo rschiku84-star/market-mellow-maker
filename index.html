@@ -2,110 +2,146 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI Viral Studio</title>
+<title>AI Viral Studio PRO</title>
 
 <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
+
 body{
-background:#0f172a;
+background:#020617;
 color:white;
 font-family:Arial;
 text-align:center;
 }
 
+h1{
+color:#22d3ee;
+}
+
 input,select{
-padding:10px;
-width:80%;
-margin:10px;
-border-radius:8px;
+padding:12px;
+width:85%;
+border-radius:10px;
 border:none;
+margin:10px;
 }
 
 button{
-padding:12px 20px;
+padding:14px 25px;
+border-radius:12px;
 border:none;
-border-radius:10px;
 background:#06b6d4;
 color:white;
 font-size:16px;
 margin:10px;
 }
 
+#paybtn{
+background:#facc15;
+color:black;
+}
+
 #output-screen{
-margin-top:20px;
 display:none;
+margin-top:20px;
+}
+
+#videoBox{
+position:relative;
+width:360px;
+margin:auto;
 }
 
 video{
-width:90%;
+width:100%;
 border-radius:12px;
 }
+
+#caption{
+position:absolute;
+bottom:15px;
+left:10px;
+right:10px;
+background:rgba(0,0,0,0.6);
+padding:8px;
+border-radius:8px;
+font-size:18px;
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>🚀 AI Viral Studio</h2>
+<h1>🚀 AI Viral Studio PRO</h1>
 
-<input id="mainInput" placeholder="Enter topic (dog, nature, motivation)">
+<input id="topic" placeholder="Enter viral topic (nature, dog, motivation)">
 
 <br>
 
-<select id="voiceType">
+<select id="voice">
 <option>Hindi Male</option>
 <option>Hindi Female</option>
 </select>
 
 <br>
 
-<button onclick="createReel()">🎬 CREATE VIRAL VIDEO</button>
+<button onclick="createReel()">🎬 CREATE VIRAL REEL</button>
+
+<button id="paybtn" onclick="payNow()">⭐ UNLOCK PRO ₹199</button>
 
 <div id="status"></div>
 
 <div id="output-screen">
-<video id="v-play" controls loop></video>
-<div id="v-caption"></div>
+
+<div id="videoBox">
+
+<video id="video" loop controls></video>
+
+<div id="caption"></div>
+
+</div>
+
+<br>
+
+<button onclick="downloadVideo()">📥 Download Video</button>
+
 </div>
 
 <script>
 
-const PEXELS_KEY = "YOUR_PEXELS_API_KEY";
+const PEXELS_KEY="YOUR_PEXELS_API_KEY";
 
 async function createReel(){
 
-const input=document.getElementById("mainInput").value;
+const topic=document.getElementById("topic").value;
 const status=document.getElementById("status");
 
-if(!input){
-alert("Enter topic first");
+if(!topic){
+alert("Enter topic");
 return;
 }
 
-status.innerText="⏳ AI searching video...";
+status.innerText="⏳ AI searching viral video...";
 
 try{
 
-const res=await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`,{
-headers:{
-Authorization:PEXELS_KEY
-}
+const res=await fetch(`https://api.pexels.com/videos/search?query=${topic}&per_page=1`,{
+headers:{Authorization:PEXELS_KEY}
 });
-
-if(!res.ok){
-throw new Error("API error");
-}
 
 const data=await res.json();
 
-if(data.videos.length===0){
+if(data.videos.length==0){
 status.innerText="❌ No video found";
 return;
 }
 
-const video=data.videos[0].video_files.find(f=>f.quality==="sd");
+const video=data.videos[0].video_files.find(v=>v.quality==="sd");
 
-const vid=document.getElementById("v-play");
+const vid=document.getElementById("video");
 
 vid.src=video.link;
 
@@ -113,13 +149,13 @@ document.getElementById("output-screen").style.display="block";
 
 vid.play();
 
-document.getElementById("v-caption").innerText=input;
+document.getElementById("caption").innerText=topic;
 
-responsiveVoice.speak(input);
+responsiveVoice.speak(topic,document.getElementById("voice").value);
 
 status.innerText="✅ Viral Reel Generated";
 
-}catch(err){
+}catch(e){
 
 status.innerText="❌ Connection Error";
 
@@ -127,7 +163,48 @@ status.innerText="❌ Connection Error";
 
 }
 
+function downloadVideo(){
+
+const url=document.getElementById("video").src;
+
+const a=document.createElement("a");
+
+a.href=url;
+
+a.download="viral-reel.mp4";
+
+a.click();
+
+}
+
+function payNow(){
+
+var options={
+
+key:"rzp_test_123456",
+
+amount:"19900",
+
+name:"AI Viral Studio PRO",
+
+description:"Unlock PRO Features",
+
+handler:function(){
+
+alert("Payment Success");
+
+}
+
+};
+
+var rzp=new Razorpay(options);
+
+rzp.open();
+
+}
+
 </script>
 
 </body>
+
 </html>
