@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Reel Maker PRO</title>
 
 <style>
 
 body{
-font-family:Arial;
+font-family: Arial;
 background:#0d2b45;
 color:white;
 text-align:center;
@@ -37,6 +37,7 @@ margin:10px;
 border:none;
 border-radius:6px;
 font-size:16px;
+cursor:pointer;
 }
 
 .generate{
@@ -45,18 +46,14 @@ color:white;
 }
 
 .download{
-background:#22c55e;
+background:#3b82f6;
 color:white;
 }
 
-.pay{
-background:#f59e0b;
-color:white;
-}
-
-video{
-width:100%;
-margin-top:15px;
+#result{
+margin-top:20px;
+background:#0f172a;
+padding:15px;
 border-radius:8px;
 }
 
@@ -65,123 +62,63 @@ border-radius:8px;
 
 <body>
 
-<h2>AI Reel Maker PRO</h2>
-
 <div class="box">
 
-<input type="file" id="image">
+<h2>🎬 AI Reel Maker PRO</h2>
 
-<input type="text" id="text" placeholder="Enter Caption">
+<input type="text" id="topic" placeholder="Enter Reel Topic">
 
-<input type="text" placeholder="Optional">
+<button class="generate" onclick="generateReel()">Generate Reel Idea</button>
 
-<button class="generate">Generate Reel</button>
+<button class="download" onclick="downloadText()">Download Script</button>
 
-<video id="video" controls></video>
-
-<button class="download">Download Reel</button>
-
-<button class="pay">Pay ₹199 Unlock</button>
+<div id="result">
+Your reel script will appear here...
+</div>
 
 </div>
 
 <script>
 
-const generateBtn=document.querySelector(".generate");
-const video=document.getElementById("video");
-const downloadBtn=document.querySelector(".download");
+function generateReel(){
 
-let videoURL="";
+let topic=document.getElementById("topic").value;
 
-generateBtn.onclick=async()=>{
-
-const file=document.getElementById("image").files[0];
-
-if(!file){
-alert("Upload image");
+if(topic===""){
+alert("Please enter a topic");
 return;
 }
 
-const img=new Image();
-img.src=URL.createObjectURL(file);
+let script="🎬 Reel Topic: "+topic+"\n\n";
 
-await img.decode();
+script+="Hook: Did you know about "+topic+"?\n\n";
 
-const canvas=document.createElement("canvas");
-canvas.width=720;
-canvas.height=1280;
+script+="Content:\n";
+script+="• Point 1 about "+topic+"\n";
+script+="• Point 2 about "+topic+"\n";
+script+="• Point 3 about "+topic+"\n\n";
 
-const ctx=canvas.getContext("2d");
+script+="CTA: Follow for more amazing reels!";
 
-const stream=canvas.captureStream(30);
-const recorder=new MediaRecorder(stream);
-
-let chunks=[];
-
-recorder.ondataavailable=e=>chunks.push(e.data);
-
-recorder.onstop=()=>{
-
-const blob=new Blob(chunks,{type:"video/webm"});
-videoURL=URL.createObjectURL(blob);
-
-video.src=videoURL;
-
-};
-
-recorder.start();
-
-let frame=0;
-
-function draw(){
-
-ctx.fillStyle="black";
-ctx.fillRect(0,0,720,1280);
-
-const zoom=1+(frame*0.0005);
-
-const w=720*zoom;
-const h=900*zoom;
-
-ctx.drawImage(img,(720-w)/2,(900-h)/2,w,h);
-
-frame++;
-
-if(frame<900){
-
-requestAnimationFrame(draw);
-
-}else{
-
-recorder.stop();
+document.getElementById("result").innerText=script;
 
 }
 
+function downloadText(){
+
+let text=document.getElementById("result").innerText;
+
+let blob=new Blob([text],{type:"text/plain"});
+
+let link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+
+link.download="reel-script.txt";
+
+link.click();
+
 }
-
-draw();
-
-};
-
-downloadBtn.onclick=()=>{
-
-if(!videoURL){
-alert("Generate reel first");
-return;
-}
-
-const a=document.createElement("a");
-a.href=videoURL;
-a.download="ai-reel.webm";
-a.click();
-
-};
-
-document.querySelector(".pay").onclick=()=>{
-
-window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
-
-};
 
 </script>
 
