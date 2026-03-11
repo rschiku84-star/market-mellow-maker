@@ -1,9 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI Reel Maker PRO</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b2545;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.container{
+background:#132f4c;
+padding:20px;
+border-radius:10px;
+max-width:400px;
+margin:auto;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:10px;
+border-radius:5px;
+border:none;
+}
+
+button{
+padding:12px;
+margin:10px;
+border:none;
+border-radius:6px;
+background:#22c55e;
+color:white;
+font-size:16px;
+cursor:pointer;
+width:90%;
+}
+
+video{
+width:100%;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>AI Reel Maker PRO</h2>
+
+<div class="container">
+
+<input type="file" id="image">
+
+<input type="text" id="name" placeholder="Product Name">
+
+<input type="text" id="price" placeholder="Price">
+
+<button onclick="generateReel()">Generate Reel</button>
+
+<video id="video" controls></video>
+
+<a id="downloadVideo" download="reel.webm">
+<button>Download Reel</button>
+</a>
+
+<p id="loading" style="display:none">Generating Reel...</p>
+
+</div>
+
+<script>
+
 function generateReel(){
 
 let file=document.getElementById("image").files[0]
 
 if(!file){
-alert("Upload image")
+alert("Upload image first")
 return
 }
 
@@ -25,20 +104,7 @@ img.onload=function(){
 
 let stream=canvas.captureStream(30)
 
-let audio=new Audio("music.mp3")
-let audioCtx=new AudioContext()
-let dest=audioCtx.createMediaStreamDestination()
-
-let source=audioCtx.createMediaElementSource(audio)
-source.connect(dest)
-source.connect(audioCtx.destination)
-
-let combinedStream=new MediaStream([
-...stream.getTracks(),
-...dest.stream.getTracks()
-])
-
-let recorder=new MediaRecorder(combinedStream)
+let recorder=new MediaRecorder(stream)
 
 let chunks=[]
 
@@ -57,8 +123,6 @@ document.getElementById("loading").style.display="none"
 }
 
 recorder.start()
-
-audio.play()
 
 let frame=0
 
@@ -82,10 +146,9 @@ ctx.fillText("Price "+price,100,1000)
 
 frame++
 
-if(frame>900){   // 30 seconds
+if(frame>900){
 clearInterval(anim)
 recorder.stop()
-audio.pause()
 }
 
 },33)
@@ -99,3 +162,8 @@ img.src=e.target.result
 reader.readAsDataURL(file)
 
 }
+
+</script>
+
+</body>
+</html>
