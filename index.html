@@ -3,123 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-In-One Shop Video AI</title>
+    <title>AI Studio & Shop Maker</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --primary: #12192c; --card: #1c2541; --accent: #00d4ff; --gold: #ffcc00; }
-        body { background: var(--primary); font-family: 'Poppins', sans-serif; color: white; margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; --card: #111; }
+        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; margin: 0; padding: 15px; text-align: center; }
+        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 0 40px rgba(0,242,255,0.1); }
         
-        h2 { color: var(--accent); margin-bottom: 5px; }
-        p.subtitle { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+        .mode-switch { display: flex; gap: 10px; margin-bottom: 20px; }
+        .mode-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; font-weight: bold; }
+        .active-mode { background: var(--neon); color: #000; border: none; }
 
-        label { display: block; text-align: left; font-size: 13px; margin: 10px 0 5px 5px; color: #ddd; }
-        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0b1121; color: white; box-sizing: border-box; font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #1a1a1a; color: white; margin-bottom: 12px; box-sizing: border-box; }
         
-        .btn-group { margin-top: 20px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-bottom: 10px; }
-        .create-btn { background: var(--accent); color: #000; }
-        .pay-btn { background: var(--gold); color: #000; }
+        .main-btn { width: 100%; padding: 16px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; }
+        .pay-btn { background: var(--gold); margin-top: 10px; }
 
-        /* Video Preview Styling */
-        #preview-box { 
-            position: relative; width: 100%; height: 550px; background: #000; 
-            border-radius: 20px; overflow: hidden; margin-top: 25px; display: none;
-            border: 3px solid var(--accent);
-        }
-        #p-img { width: 100%; height: 100%; object-fit: cover; animation: moveBg 12s infinite alternate; }
+        #output-screen { position: relative; width: 100%; height: 550px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
+        #v-play, #p-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
         
         /* Overlays */
-        .badge { position: absolute; top: 20px; left: 20px; background: #ff004c; padding: 6px 15px; border-radius: 8px; font-weight: 800; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .offer-circle { position: absolute; top: 20px; right: 20px; width: 70px; height: 70px; background: var(--gold); color: #000; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; line-height: 1; }
-        .bottom-bar { position: absolute; bottom: 40px; width: 100%; background: rgba(0, 212, 255, 0.85); color: #000; padding: 15px 0; font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        @keyframes moveBg { from { transform: scale(1) translate(0,0); } to { transform: scale(1.2) translate(-5px, -5px); } }
+        .shop-overlay { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 15px; font-weight: bold; border-radius: 5px; z-index: 10; }
+        .discount-tag { position: absolute; top: 20px; right: 20px; background: var(--gold); color: #000; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; z-index: 10; }
+        .caption-overlay { position: absolute; bottom: 40px; width: 100%; text-align: center; background: rgba(0,0,0,0.6); padding: 10px; font-size: 18px; font-weight: bold; z-index: 10; color: var(--neon); }
+
+        .kit-box { background: #1a1a1a; padding: 15px; border-radius: 15px; margin-top: 15px; text-align: left; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏪 Local Shop AI</h2>
-    <p class="subtitle">Dukan ki photo daalein aur viral reel banayein</p>
-
-    <label>Dukan ki Category Chunein:</label>
-    <select id="shop-type">
-        <option value="Clothes">👗 Fashion/Clothes</option>
-        <option value="Mobile">📱 Mobile & Electronics</option>
-        <option value="Jewelry">💎 Jewelry Shop</option>
-        <option value="Grocery">🛒 Grocery/Kirana</option>
-        <option value="Food">🍔 Restaurant/Cafe</option>
-    </select>
-
-    <label>Product ki Photo Upload Karein:</label>
-    <input type="file" id="upload" accept="image/*" onchange="loadImg(event)">
-
-    <label>Price (MRP):</label>
-    <input type="text" id="price" placeholder="Example: ₹999">
-
-    <label>Discount/Offer:</label>
-    <input type="text" id="off" placeholder="Example: 50% OFF">
-
-    <div class="btn-group">
-        <button class="create-btn" onclick="buildReel()">🎬 Create Shop Reel</button>
-        <button class="pay-btn" onclick="openPay()">⭐ Upgrade to Pro (₹199)</button>
+    <h2 id="title">🚀 AI Viral Studio</h2>
+    
+    <div class="mode-switch">
+        <button class="mode-btn active-mode" onclick="setMode('ai')">Social Media AI</button>
+        <button class="mode-btn" onclick="setMode('shop')">Local Shop Mode</button>
     </div>
 
-    <div id="preview-box">
-        <img id="p-img" src="">
-        <div class="badge" id="v-price"></div>
-        <div class="offer-circle"><span id="v-off"></span><br><small>OFF</small></div>
-        <div class="bottom-bar" id="v-tag">LIMITED STOCK</div>
-        
-        <audio id="v-music" loop src="https://www.bensound.com/bensound-music/bensound-energy.mp3"></audio>
+    <textarea id="mainInput" rows="3" placeholder="Enter Topic or Script..."></textarea>
+    
+    <div id="shopInputs" style="display:none;">
+        <input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
+        <input type="text" id="price" placeholder="MRP (e.g. ₹999)">
+        <input type="text" id="off" placeholder="Offer (e.g. 50% OFF)">
+    </div>
+
+    <div id="aiInputs">
+        <select id="voiceType">
+            <option value="Hindi Male">Male Voice (Hindi)</option>
+            <option value="Hindi Female">Female Voice (Hindi)</option>
+        </select>
+    </div>
+
+    <button class="main-btn" onclick="generateNow()">🎬 Create Viral Video</button>
+    <button class="main-btn pay-btn" onclick="payNow()">⭐ Unlock Pro (₹199)</button>
+
+    <div id="output-screen">
+        <video id="v-play" loop></video>
+        <img id="p-img" style="display:none;">
+        <div class="shop-overlay" id="v-price" style="display:none;"></div>
+        <div class="discount-tag" id="v-off" style="display:none;"></div>
+        <div class="caption-overlay" id="v-caption"></div>
+    </div>
+
+    <div class="kit-box" id="kit">
+        <strong style="color:var(--neon)">Viral Kit:</strong>
+        <p id="h-tags" style="font-size: 12px; color:#aaa;"></p>
+        <button class="mode-btn active-mode" style="width:100%" onclick="downloadVid()">📥 Download Reel</button>
     </div>
 </div>
 
 <script>
-    const RZP_ID = "rzp_test_SPotf8L7S7I5pS";
+    let currentMode = 'ai';
+    const PEXELS_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
 
-    function loadImg(e) {
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active-mode'));
+        event.target.classList.add('active-mode');
+        document.getElementById('shopInputs').style.display = mode === 'shop' ? 'block' : 'none';
+        document.getElementById('aiInputs').style.display = mode === 'ai' ? 'block' : 'none';
+        document.getElementById('title').innerText = mode === 'shop' ? "🏪 Shop Video Maker" : "🚀 AI Viral Studio";
+    }
+
+    function previewImg(e) {
         const img = document.getElementById('p-img');
         img.src = URL.createObjectURL(e.target.files[0]);
+        img.style.display = 'block';
+        document.getElementById('v-play').style.display = 'none';
     }
 
-    function buildReel() {
-        const price = document.getElementById('price').value;
-        const off = document.getElementById('off').value;
-        const type = document.getElementById('shop-type').value;
+    async function generateNow() {
+        const input = document.getElementById('mainInput').value;
+        const screen = document.getElementById('output-screen');
+        const kit = document.getElementById('kit');
+        
+        if(!input) return alert("Kuch toh likho!");
+        screen.style.display = 'block';
+        kit.style.display = 'block';
 
-        if(!document.getElementById('p-img').src) { 
-            alert("Bhai, pehle photo toh upload karo!"); return; 
+        if(currentMode === 'ai') {
+            const res = await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1`, {
+                headers: { Authorization: PEXELS_KEY }
+            });
+            const data = await res.json();
+            const vid = document.getElementById('v-play');
+            vid.src = data.videos[0].video_files[0].link;
+            vid.style.display = 'block';
+            document.getElementById('p-img').style.display = 'none';
+            vid.play();
+            
+            // Voiceover
+            responsiveVoice.speak(input, document.getElementById('voiceType').value);
+            document.getElementById('v-caption').innerText = input.substring(0, 40) + "...";
+            document.getElementById('v-price').style.display = 'none';
+            document.getElementById('v-off').style.display = 'none';
+        } else {
+            // Shop Mode Logic
+            document.getElementById('v-price').innerText = document.getElementById('price').value;
+            document.getElementById('v-off').innerText = document.getElementById('off').value;
+            document.getElementById('v-price').style.display = 'block';
+            document.getElementById('v-off').style.display = 'block';
+            document.getElementById('v-caption').innerText = "SPECIAL OFFER!";
         }
 
-        // Set Values
-        document.getElementById('v-price').innerText = price;
-        document.getElementById('v-off').innerText = off.replace(/% OFF/g, '');
-        document.getElementById('v-tag').innerText = "🔥 BEST " + type.toUpperCase() + " DEAL 🔥";
-
-        // Show & Play
-        document.getElementById('preview-box').style.display = "block";
-        document.getElementById('v-music').play();
-        
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        document.getElementById('h-tags').innerText = "#Viral #Trending #ShopAI #AIContent #" + input.split(' ')[0];
     }
 
-    function openPay() {
-        var options = {
-            "key": RZP_ID,
-            "amount": "19900", // ₹199 for local shops
-            "name": "Local Shop AI Pro",
-            "description": "Remove Watermark & High Quality",
-            "handler": function (response){
-                alert("Payment Done! ID: " + response.razorpay_payment_id);
-            },
-            "theme": { "color": "#00d4ff" }
-        };
-        new Razorpay(options).open();
+    function downloadVid() {
+        const link = document.createElement('a');
+        link.href = currentMode === 'ai' ? document.getElementById('v-play').src : document.getElementById('p-img').src;
+        link.download = 'Reel.mp4';
+        link.click();
+    }
+
+    function payNow() {
+        new Razorpay({
+            "key": "rzp_test_SPotf8L7S7I5pS",
+            "amount": "19900",
+            "name": "AI Studio Pro",
+            "handler": function(res){ alert("Payment Success!"); }
+        }).open();
     }
 </script>
-
 </body>
 </html>
 
