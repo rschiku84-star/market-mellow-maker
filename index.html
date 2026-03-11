@@ -2,7 +2,9 @@
 <html>
 <head>
 <title>AI Reel Maker PRO</title>
+
 <style>
+
 body{
 font-family:Arial;
 background:#0d2b45;
@@ -56,6 +58,7 @@ width:100%;
 margin-top:15px;
 border-radius:8px;
 }
+
 </style>
 </head>
 
@@ -97,7 +100,6 @@ return;
 
 const img=new Image();
 img.src=URL.createObjectURL(file);
-
 await img.decode();
 
 const canvas=document.createElement("canvas");
@@ -115,7 +117,7 @@ recorder.ondataavailable=e=>chunks.push(e.data);
 
 recorder.onstop=()=>{
 
-const blob=new Blob(chunks,{type:"video/mp4"});
+const blob=new Blob(chunks,{type:"video/webm"});
 videoURL=URL.createObjectURL(blob);
 
 document.getElementById("video").src=videoURL;
@@ -131,11 +133,16 @@ function draw(){
 ctx.fillStyle="black";
 ctx.fillRect(0,0,720,1280);
 
-ctx.drawImage(img,0,0,720,900);
+let zoom=1+(frame*0.0005);
+
+let w=720*zoom;
+let h=900*zoom;
+
+ctx.drawImage(img,(720-w)/2,(900-h)/2,w,h);
 
 ctx.fillStyle="white";
 ctx.font="60px Arial";
-ctx.fillText(caption,50,1050);
+ctx.fillText(caption,40,1050);
 
 frame++;
 
@@ -160,7 +167,7 @@ return;
 
 const a=document.createElement("a");
 a.href=videoURL;
-a.download="ai-reel.mp4";
+a.download="ai-reel.webm";
 a.click();
 
 }
