@@ -1,5 +1,6 @@
 <!DOCTYPE html><html>
-<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>20X AI Reel SaaS</title><style>
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Reel Maker SaaS</title><style>
 
 body{
 font-family:Arial;
@@ -56,13 +57,15 @@ text-align:left;
 white-space:pre-line;
 }
 
-</style></head><body><div class="box"><h2>🚀 20X AI Reel SaaS</h2><span class="badge">FREE PLAN</span>
+</style></head><body><div class="box"><h2>🚀 AI Reel Maker</h2><span class="badge">FREE PLAN</span>
+
+<br><br>
 
 <input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generate()">Generate Reel</button>
 
-<button class="copy" onclick="copy()">Copy Script</button>
+<button class="copy" onclick="copyScript()">Copy Script</button>
 
-<button class="download" onclick="download()">Download</button>
+<button class="download" onclick="downloadScript()">Download Script</button>
 
 <button class="pay" onclick="pay()">💳 Upgrade PRO</button>
 
@@ -83,7 +86,7 @@ return;
 let topic=document.getElementById("topic").value;
 
 if(topic===""){
-alert("Enter topic");
+alert("Enter topic first");
 return;
 }
 
@@ -133,17 +136,17 @@ document.getElementById("result").innerText=script;
 
 }
 
-function copy(){
+function copyScript(){
 
 let text=document.getElementById("result").innerText;
 
 navigator.clipboard.writeText(text);
 
-alert("Copied");
+alert("Script copied");
 
 }
 
-function download(){
+function downloadScript(){
 
 let text=document.getElementById("result").innerText;
 
@@ -161,7 +164,7 @@ link.click();
 
 function pay(){
 
-window.location.href="https://your-payment-link.com";
+window.location.href="YOUR_RAZORPAY_LINK";
 
 }
 
