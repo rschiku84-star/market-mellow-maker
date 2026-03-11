@@ -6,8 +6,9 @@
 
 <style>
 body{
-background:#0f1b3d;
 font-family:Arial;
+background:#0f172a;
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -15,76 +16,140 @@ height:100vh;
 }
 
 .box{
-background:#1e2a4a;
+background:#1e293b;
 padding:30px;
 border-radius:10px;
 text-align:center;
-width:300px;
-color:white;
+width:320px;
 }
 
 input{
 width:90%;
 padding:10px;
-margin:10px 0;
-border-radius:5px;
+margin:8px;
 border:none;
+border-radius:6px;
 }
 
 button{
 padding:10px 20px;
+background:#22c55e;
 border:none;
-border-radius:5px;
+color:white;
+border-radius:6px;
 cursor:pointer;
 }
 
-.pay{
-background:#ff9800;
-color:white;
+.hidden{
+display:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="box" id="loginBox">
 
 <h2>AI Reel Maker</h2>
 
-<input type="text" placeholder="Product Name">
-<input type="number" placeholder="Price">
+<input id="email" placeholder="Email">
+
+<br>
+
+<button onclick="login()">Login</button>
 
 <br><br>
 
-<button class="pay" onclick="payNow()">Pay ₹199 & Download</button>
+<button onclick="pay()">Pay ₹199 / Month</button>
 
 </div>
 
+
+<div class="box hidden" id="appBox">
+
+<h2>Welcome</h2>
+
+<input placeholder="Product Name">
+<input type="number" placeholder="Price">
+<input type="file">
+
+<br><br>
+
+<button onclick="generate()">Generate Reel</button>
+
+</div>
+
+
 <script>
 
-function payNow(){
+function login(){
+
+let email=document.getElementById("email").value;
+
+if(email){
+
+localStorage.setItem("user",email);
+
+checkAccess();
+
+}
+
+}
+
+function checkAccess(){
+
+if(localStorage.getItem("paid")=="yes"){
+
+document.getElementById("loginBox").classList.add("hidden");
+
+document.getElementById("appBox").classList.remove("hidden");
+
+}
+
+}
+
+function pay(){
 
 var options = {
-"key": "rzp_test_SPotf8L", 
+
+"key": "rzp_test_SPotf8L",
+
 "amount": "19900",
+
 "currency": "INR",
+
 "name": "AI Reel Maker",
-"description": "Reel Download",
-"handler": function (response){
+
+"description": "Monthly Access",
+
+handler: function (){
+
+localStorage.setItem("paid","yes");
+
+checkAccess();
 
 alert("Payment Successful");
 
-window.location.href="https://rschiku84-star.github.io/market-mellow-maker/";
-
 }
+
 };
 
-var rzp1 = new Razorpay(options);
-rzp1.open();
+var rzp = new Razorpay(options);
+
+rzp.open();
 
 }
+
+function generate(){
+
+alert("AI Reel Generated (Demo)");
+
+}
+
+checkAccess();
 
 </script>
 
 </body>
+
 </html>
