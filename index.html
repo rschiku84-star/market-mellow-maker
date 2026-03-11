@@ -3,150 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Reel Maker - Pro</title>
+    <title>AI Reel Maker PRO</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
-        :root {
-            --bg-color: #0b0f2a;
-            --box-bg: #111a44;
-            --accent: #90ab3e;
-            --blue: #0057ff;
-            --orange: #b65b00;
-        }
-        body {
-            background: var(--bg-color);
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-        }
-        .box {
-            background: var(--box-bg);
-            padding: 25px;
-            border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-            margin: 40px auto;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            background: #1c2555;
-            color: white;
-            outline: none;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-        .gen { background: var(--accent); }
-        .download { background: var(--blue); }
-        .pro { background: var(--orange); }
-        
-        #result-area {
-            display: none;
-            margin-top: 20px;
-            text-align: left;
-        }
-        .info-card {
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--accent);
-        }
-        video {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 10px;
-        }
+        :root { --bg: #0b0f2a; --card: #111a44; --accent: #90ab3e; --orange: #b65b00; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: white; text-align: center; padding: 20px; margin: 0; }
+        .box { background: var(--card); padding: 20px; border-radius: 20px; max-width: 400px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        input, select { width: 100%; padding: 14px; border-radius: 12px; border: none; margin: 10px 0; background: #1a1a2e; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .gen { background: var(--accent); color: white; }
+        .pro { background: var(--orange); color: white; }
+        #status { font-size: 13px; color: #aaa; margin: 10px 0; }
+        #result-area { display: none; margin-top: 20px; }
+        video { width: 100%; border-radius: 15px; border: 2px solid #333; }
+        .product-list { margin-top: 30px; text-align: left; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; font-size: 14px; }
+        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #333; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>🎬 AI Reel Maker</h2>
-    <input id="topic" type="text" placeholder="Enter reel topic...">
+    <h2>🎬 AI Reel Maker Pro</h2>
+    <input id="topic" type="text" placeholder="Try 'Nature', 'Space', or 'Gym'">
     
-    <button class="gen" onclick="makeReel()">Generate Reel</button>
-    
+    <select id="music-select">
+        <option value="https://www.bensound.com/bensound-music/bensound-evolution.mp3">Cinematic</option>
+        <option value="https://www.bensound.com/bensound-music/bensound-lofifibuzz.mp3">Lofi Chill</option>
+        <option value="https://www.bensound.com/bensound-music/bensound-adventure.mp3">Energetic</option>
+    </select>
+
+    <button class="gen" id="gen-btn" onclick="generateVideo()">🚀 Create Viral Reel</button>
+    <p id="status"></p>
+
     <div id="result-area">
-        <div class="info-card">
-            <strong>Script:</strong><br>
-            <span id="script-text"></span>
-        </div>
-        <div class="info-card">
-            <strong>Hashtags:</strong><br>
-            <span id="hashtag-text" style="color: #4da3ff;"></span>
-        </div>
-        <video id="video-player" controls></video>
-        <button class="download" onclick="downloadVideo()">Download Video</button>
+        <video id="video-player" controls loop></video>
+        <audio id="bg-music" loop></audio>
+        <button class="pro" style="background: #0057ff;" onclick="downloadReel()">📥 Download Video</button>
     </div>
 
     <button class="pro" onclick="payNow()">⭐ Upgrade to PRO (₹499)</button>
+
+    <div class="product-list">
+        <strong>🛒 Creator Shop</strong>
+        <div class="item"><span>100+ Viral Hooks</span> <b>₹99</b></div>
+        <div class="item"><span>Luxury Reel Bundle</span> <b>₹249</b></div>
+    </div>
 </div>
 
 <script>
-    // --- RAZORPAY SETUP ---
-    // Maine aapki Key yahan daal di hai
-    const RZP_KEY_ID = "rzp_test_SPotf8L7S7I5pS"; 
+    // --- API KEYS ---
+    const PEXELS_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; // Aapki key set kar di hai
+    const RZP_KEY = "rzp_test_SPotf8L7S7I5pS";
+
+    async function generateVideo() {
+        const topic = document.getElementById("topic").value;
+        const status = document.getElementById("status");
+        const btn = document.getElementById("gen-btn");
+
+        if(!topic) { alert("Pehle topic likhein!"); return; }
+
+        status.innerText = "✨ AI is fetching clips for: " + topic;
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`https://api.pexels.com/videos/search?query=${topic}&per_page=1`, {
+                headers: { Authorization: PEXELS_KEY }
+            });
+            const data = await res.json();
+
+            if(data.videos.length > 0) {
+                const videoUrl = data.videos[0].video_files[0].link;
+                const videoPlayer = document.getElementById("video-player");
+                const bgMusic = document.getElementById("bg-music");
+
+                videoPlayer.src = videoUrl;
+                bgMusic.src = document.getElementById("music-select").value;
+
+                document.getElementById("result-area").style.display = "block";
+                videoPlayer.play();
+                bgMusic.play();
+                status.innerText = "✅ Reel Ready!";
+            } else {
+                status.innerText = "❌ No video found. Try another word.";
+            }
+        } catch (e) {
+            status.innerText = "❌ Error connecting to AI.";
+        } finally {
+            btn.disabled = false;
+        }
+    }
 
     function payNow() {
         var options = {
-            "key": RZP_KEY_ID, 
-            "amount": "49900", // ₹499 (Paise mein hota hai isliye 00 extra)
-            "name": "AI Reel Maker Pro",
-            "description": "Unlock Premium Features",
-            "image": "https://cdn-icons-png.flaticon.com/512/1170/1170577.png",
-            "handler": function (response){
-                alert("Payment Successful! ID: " + response.razorpay_payment_id);
-                // Yahan aap pro features unlock kar sakte hain
-            },
-            "prefill": {
-                "name": "User Name",
-                "email": "user@example.com"
-            },
-            "theme": { "color": "#b65b00" }
+            "key": RZP_KEY,
+            "amount": "49900",
+            "name": "AI Reel Maker",
+            "handler": function (res) { alert("Payment Success! ID: " + res.razorpay_payment_id); }
         };
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
+        new Razorpay(options).open();
     }
 
-    function makeReel() {
-        const topic = document.getElementById("topic").value;
-        if (!topic) { alert("Pehle topic likhein!"); return; }
-
-        document.getElementById("result-area").style.display = "block";
-        document.getElementById("script-text").innerText = "Viral idea about " + topic + "...";
-        document.getElementById("hashtag-text").innerText = "#ai #reels #" + topic.replace(/\s+/g, '');
-
-        const video = document.getElementById("video-player");
-        video.src = "https://www.w3schools.com/html/mov_bbb.mp4";
-        video.play();
-    }
-
-    function downloadVideo() {
-        const video = document.getElementById("video-player");
-        if (!video.src) return;
-        const link = document.createElement('a');
-        link.href = video.src;
-        link.download = 'AI_Reel.mp4';
-        link.click();
+    function downloadReel() {
+        const v = document.getElementById("video-player");
+        const a = document.createElement('a'); a.href = v.src; a.download = 'AI_Reel.mp4'; a.click();
     }
 </script>
 
 </body>
 </html>
+
