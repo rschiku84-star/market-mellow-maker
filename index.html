@@ -1,130 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AI Reel Maker</title>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
-
 body{
-background:#0f172a;
-font-family:sans-serif;
+font-family:Arial;
+background:#0b1b33;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 height:100vh;
-color:white;
+margin:0;
 }
 
-.box{
-background:#1e293b;
-padding:30px;
-border-radius:10px;
-width:300px;
+.card{
+background:#142544;
+padding:25px;
+border-radius:12px;
+width:320px;
 text-align:center;
+color:white;
 }
 
 input{
 width:100%;
 padding:10px;
 margin:8px 0;
-border-radius:5px;
+border-radius:6px;
 border:none;
 }
 
 button{
 width:100%;
-padding:10px;
+padding:12px;
 margin-top:10px;
 border:none;
-border-radius:5px;
+border-radius:6px;
+font-size:16px;
 cursor:pointer;
 }
 
 .generate{
-background:#22c55e;
+background:#4CAF50;
 color:white;
 }
 
 .pay{
-background:#f59e0b;
+background:#f39c12;
 color:white;
 }
 
-</style>
+canvas{
+margin-top:15px;
+max-width:100%;
+border-radius:10px;
+}
 
+.download{
+background:#3498db;
+color:white;
+display:none;
+}
+</style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="card">
 
 <h2>AI Reel Maker</h2>
 
-<input id="product" placeholder="Product Name">
+<input id="name" placeholder="Product Name">
 
 <input id="price" placeholder="Price">
 
-<input type="file">
+<input type="file" id="image">
 
 <button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button class="pay" onclick="payNow()">Pay ₹199 & Download</button>
+<button class="pay" onclick="pay()">Pay ₹199 & Unlimited</button>
+
+<canvas id="canvas" width="360" height="640"></canvas>
+
+<button id="download" class="download" onclick="download()">Download Reel</button>
 
 </div>
 
 <script>
 
-let trialCount = localStorage.getItem("trial") || 0;
+let freeTrial = localStorage.getItem("trial") || 0
 
 function generateReel(){
 
-trialCount++;
+if(freeTrial >=3){
+alert("Free trial finished. Please pay ₹199")
+return
+}
 
-localStorage.setItem("trial",trialCount);
+let name = document.getElementById("name").value
+let price = document.getElementById("price").value
+let file = document.getElementById("image").files[0]
 
-if(trialCount <= 3){
+if(!file){
+alert("Upload image first")
+return
+}
 
-alert("Free Trial Reel Generated ✅");
+let reader = new FileReader()
 
-}else{
+reader.onload = function(e){
 
-alert("Free trial finished. Please pay ₹199");
+let canvas = document.getElementById("canvas")
+let ctx = canvas.getContext("2d")
+
+let img = new Image()
+
+img.onload=function(){
+
+ctx.fillStyle="black"
+ctx.fillRect(0,0,360,640)
+
+ctx.drawImage(img,30,120,300,300)
+
+ctx.fillStyle="white"
+ctx.font="28px Arial"
+ctx.fillText(name,40,480)
+
+ctx.fillStyle="yellow"
+ctx.font="26px Arial"
+ctx.fillText("₹"+price,40,520)
+
+document.getElementById("download").style.display="block"
 
 }
 
-}
-
-function payNow(){
-
-var options = {
-
-key: "rzp_test_xxxxxxxx",
-
-amount: 19900,
-
-currency: "INR",
-
-name: "AI Reel Maker",
-
-description: "Monthly Plan",
-
-handler: function (response){
-
-alert("Payment Successful ✅");
+img.src=e.target.result
 
 }
 
-};
+reader.readAsDataURL(file)
 
-var rzp = new Razorpay(options);
+freeTrial++
+localStorage.setItem("trial",freeTrial)
 
-rzp.open();
+alert("Free Trial Reel Generated ✅")
+
+}
+
+function download(){
+
+let canvas=document.getElementById("canvas")
+
+let link=document.createElement("a")
+link.download="reel.png"
+link.href=canvas.toDataURL()
+
+link.click()
+
+}
+
+function pay(){
+
+alert("Payment feature connect Razorpay later")
 
 }
 
