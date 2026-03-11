@@ -1,4 +1,65 @@
-<script>
+<!DOCTYPE html><html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Reel Maker PRO</title><style>
+body{
+background:#0b0f2a;
+font-family:Arial;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.box{
+background:#111a44;
+padding:20px;
+border-radius:15px;
+max-width:400px;
+margin:auto;
+}
+
+input{
+width:90%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-bottom:15px;
+}
+
+button{
+width:90%;
+padding:14px;
+margin:6px;
+border:none;
+border-radius:12px;
+font-size:16px;
+color:white;
+}
+
+.gen{background:#00a83e;}
+.copy{background:#3b4bff;}
+.download{background:#0057ff;}
+.pro{background:#b65b00;}
+
+video{
+width:100%;
+border-radius:12px;
+margin-top:15px;
+}
+</style></head><body><div class="box"><h2>🚀 AI Reel Maker PRO</h2><input id="topic" placeholder="Enter reel topic"><button class="gen" onclick="makeReel()">Generate Reel Video</button>
+
+<button class="copy" onclick="copyScript()">Copy Script</button>
+
+<a id="downloadLink" download="reel.mp4">
+<button class="download">Download Video</button>
+</a><button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
+
+<p id="script"></p>
+<p id="hashtags"></p><video id="video" controls></video>
+
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+</div><script>
 
 function makeReel(){
 
@@ -18,18 +79,10 @@ video.src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.
 
 video.play();
 
-setTimeout(()=>{
-video.pause();
-},30000);
-
 let music=document.getElementById("music");
 
 music.currentTime=0;
 music.play();
-
-setTimeout(()=>{
-music.pause();
-},30000);
 
 }
 
@@ -49,4 +102,5 @@ window.location.href="https://rzp.io/l/YOURPAYMENTLINK";
 
 }
 
-</script>
+</script></body>
+</html>document.getElementById
