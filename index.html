@@ -3,105 +3,88 @@
 <head>
 <title>AI Reel Maker</title>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <style>
 body{
+background:#0f1b3d;
 font-family:Arial;
-text-align:center;
-background:#0f172a;
-color:white;
-padding:40px;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-.container{
-background:#1e293b;
+.box{
+background:#1e2a4a;
 padding:30px;
 border-radius:10px;
-max-width:400px;
-margin:auto;
+text-align:center;
+width:300px;
+color:white;
 }
 
 input{
 width:90%;
 padding:10px;
-margin:10px;
+margin:10px 0;
 border-radius:5px;
 border:none;
 }
 
 button{
-padding:12px 20px;
-background:#22c55e;
+padding:10px 20px;
 border:none;
-color:white;
-border-radius:6px;
+border-radius:5px;
 cursor:pointer;
-font-size:16px;
 }
 
 .pay{
-background:#f59e0b;
+background:#ff9800;
+color:white;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
 <h2>AI Reel Maker</h2>
 
 <input type="text" placeholder="Product Name">
-
 <input type="number" placeholder="Price">
 
-<input type="file">
-
 <br><br>
 
-<button onclick="generate()">Generate Reel</button>
-
-<br><br>
-
-<button class="pay" onclick="pay()">Pay ₹199 & Download</button>
+<button class="pay" onclick="payNow()">Pay ₹199 & Download</button>
 
 </div>
 
 <script>
 
-function generate(){
-alert("Reel Generated (Demo)");
-}
-
-function pay(){
+function payNow(){
 
 var options = {
-
-"key": "rzp_test_SPotf8L",
-
+"key": "rzp_test_SPotf8L", 
 "amount": "19900",
-
 "currency": "INR",
-
 "name": "AI Reel Maker",
-
 "description": "Reel Download",
-
-handler: function (response){
+"handler": function (response){
 
 alert("Payment Successful");
 
-}
+window.location.href="https://rschiku84-star.github.io/market-mellow-maker/";
 
+}
 };
 
-var rzp = new Razorpay(options);
-
-rzp.open();
+var rzp1 = new Razorpay(options);
+rzp1.open();
 
 }
 
 </script>
 
 </body>
-
 </html>
