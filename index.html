@@ -1,8 +1,7 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultra AI Reel Maker</title><style>
-
+<title>10X AI Reel Maker</title><style>
 body{
 font-family:Arial;
 background:#0f172a;
@@ -19,17 +18,12 @@ max-width:420px;
 margin:auto;
 }
 
-h2{
-margin-bottom:20px;
-}
-
 input{
 width:90%;
 padding:12px;
 margin:10px;
 border-radius:8px;
 border:none;
-font-size:16px;
 }
 
 button{
@@ -42,26 +36,10 @@ font-size:16px;
 cursor:pointer;
 }
 
-.generate{
-background:#22c55e;
-color:white;
-}
-
-.download{
-background:#3b82f6;
-color:white;
-}
-
-.pay{
-background:#f59e0b;
-color:black;
-font-weight:bold;
-}
-
-.clear{
-background:#ef4444;
-color:white;
-}
+.generate{background:#22c55e;color:white;}
+.download{background:#3b82f6;color:white;}
+.copy{background:#6366f1;color:white;}
+.pay{background:#f59e0b;color:black;font-weight:bold;}
 
 #result{
 margin-top:20px;
@@ -71,72 +49,71 @@ border-radius:10px;
 text-align:left;
 white-space:pre-line;
 }
+</style></head><body><div class="box"><h2>🚀 10X AI Reel Maker</h2><input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generateReel()">Generate Reel</button>
 
-</style></head><body><div class="box"><h2>🚀 Ultra AI Reel Maker</h2><input type="text" id="topic" placeholder="Enter Reel Topic"><button class="generate" onclick="generateReel()">Generate Reel</button>
+<button class="copy" onclick="copyScript()">Copy Script</button>
 
-<button class="download" onclick="downloadScript()">Download Script</button>
+<button class="download" onclick="downloadScript()">Download</button>
 
 <button class="pay" onclick="payment()">💳 Unlock PRO</button>
-
-<button class="clear" onclick="clearText()">Clear</button>
 
 <div id="result">
 Your reel script will appear here...
 </div></div><script>
 
+let freeLimit=3;
+let used=0;
+
 function generateReel(){
+
+if(used>=freeLimit){
+alert("Free limit finished. Please unlock PRO.");
+return;
+}
 
 let topic=document.getElementById("topic").value;
 
 if(topic===""){
-alert("Enter reel topic first");
+alert("Enter topic first");
 return;
 }
 
+used++;
+
 let hooks=[
-"Stop scrolling! This will change your view about ",
-"You won't believe this about ",
-"Top secret about ",
-"3 things you must know about ",
-"This viral trick about "
+"Stop scrolling!",
+"You won't believe this!",
+"Top secret revealed!",
+"This viral trick!",
+"3 things about"
 ];
 
 let captions=[
 "This is going viral 🔥",
-"Everyone is talking about this!",
-"Save this reel for later!",
+"Save this reel!",
 "Watch till the end!",
-"This trick will blow your mind!"
+"This will blow your mind!"
 ];
 
 let hashtags=[
-"#viralreel #reelsinstagram #trend",
-"#instareels #viralcontent #growth",
-"#contentcreator #reelideas #explore",
-"#socialmediatips #viralvideo #instagramgrowth"
+"#viralreel #instagramreels #trend",
+"#reelideas #viralcontent #explore",
+"#instagrowth #contentcreator #reels"
 ];
 
 let hook=hooks[Math.floor(Math.random()*hooks.length)];
 let caption=captions[Math.floor(Math.random()*captions.length)];
 let hashtag=hashtags[Math.floor(Math.random()*hashtags.length)];
 
-let script="🎬 Reel Topic: "+topic+"\n\n";
-
-script+="🔥 Hook:\n";
-script+=hook+topic+"\n\n";
-
+let script="🎬 Topic: "+topic+"\n\n";
+script+="🔥 Hook: "+hook+" "+topic+"\n\n";
 script+="🎥 Content:\n";
-script+="1️⃣ Interesting point about "+topic+"\n";
-script+="2️⃣ Hidden fact about "+topic+"\n";
-script+="3️⃣ Quick tip related to "+topic+"\n\n";
-
-script+="📢 Caption:\n";
-script+=caption+"\n\n";
-
-script+="🏷 Hashtags:\n";
-script+=hashtag+"\n\n";
-
-script+="👉 CTA:\nFollow for more viral reels!";
+script+="1. First point about "+topic+"\n";
+script+="2. Interesting fact about "+topic+"\n";
+script+="3. Quick tip about "+topic+"\n\n";
+script+="📢 Caption: "+caption+"\n\n";
+script+="🏷 Hashtags: "+hashtag+"\n\n";
+script+="👉 Follow for more reels!";
 
 document.getElementById("result").innerText=script;
 
@@ -158,10 +135,13 @@ link.click();
 
 }
 
-function clearText(){
+function copyScript(){
 
-document.getElementById("result").innerText="Your reel script will appear here...";
-document.getElementById("topic").value="";
+let text=document.getElementById("result").innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Script copied!");
 
 }
 
