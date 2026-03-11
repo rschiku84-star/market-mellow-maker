@@ -17,12 +17,7 @@ const NewProductPage = () => {
       <div className="p-6 max-w-3xl">
         <Card>
           <CardContent className="p-6">
-            <ProductUploadForm
-              onSubmit={async (product) => {
-                await addProduct(product);
-                navigate("/dashboard/products");
-              }}
-            />
+            <ProductUploadForm />
           </CardContent>
         </Card>
       </div>
