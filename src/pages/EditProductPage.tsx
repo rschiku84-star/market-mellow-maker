@@ -31,14 +31,7 @@ const EditProductPage = () => {
       <div className="p-6 max-w-3xl">
         <Card>
           <CardContent className="p-6">
-            <ProductUploadForm
-              initialData={product}
-              onSubmit={async (data) => {
-                await updateProduct(product.id, data);
-                navigate("/dashboard/products");
-              }}
-              submitLabel="Update Product"
-            />
+            <ProductUploadForm />
           </CardContent>
         </Card>
       </div>
