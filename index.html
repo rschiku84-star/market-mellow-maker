@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>AI Reel Maker</title>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -13,6 +14,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+margin:0;
 }
 
 .box{
@@ -43,6 +45,11 @@ cursor:pointer;
 .hidden{
 display:none;
 }
+
+.small{
+font-size:13px;
+color:#cbd5f5;
+}
 </style>
 </head>
 
@@ -52,22 +59,20 @@ display:none;
 
 <h2>AI Reel Maker</h2>
 
-<input id="email" placeholder="Email">
+<input id="email" placeholder="Enter Email">
 
-<br>
+<button onclick="login()">Start Free Trial</button>
 
-<button onclick="login()">Login</button>
+<p class="small">Free trial: 3 reels</p>
 
-<br><br>
-
-<button onclick="pay()">Pay ₹199 / Month</button>
+<button onclick="pay()">Upgrade ₹199 / Month</button>
 
 </div>
 
 
 <div class="box hidden" id="appBox">
 
-<h2>Welcome</h2>
+<h3>Create Reel</h3>
 
 <input placeholder="Product Name">
 <input type="number" placeholder="Price">
@@ -77,10 +82,15 @@ display:none;
 
 <button onclick="generate()">Generate Reel</button>
 
+<p id="trialText" class="small"></p>
+
 </div>
 
 
+
 <script>
+
+let trialLimit = 3;
 
 function login(){
 
@@ -90,6 +100,10 @@ if(email){
 
 localStorage.setItem("user",email);
 
+if(!localStorage.getItem("trial")){
+localStorage.setItem("trial",trialLimit);
+}
+
 checkAccess();
 
 }
@@ -98,11 +112,62 @@ checkAccess();
 
 function checkAccess(){
 
-if(localStorage.getItem("paid")=="yes"){
+let paid = localStorage.getItem("paid");
+
+if(paid=="yes" || localStorage.getItem("trial")>0){
 
 document.getElementById("loginBox").classList.add("hidden");
-
 document.getElementById("appBox").classList.remove("hidden");
+
+updateTrialText();
+
+}
+
+}
+
+function updateTrialText(){
+
+let trial = localStorage.getItem("trial");
+
+if(localStorage.getItem("paid")=="yes"){
+
+document.getElementById("trialText").innerText="Unlimited Access";
+
+}else{
+
+document.getElementById("trialText").innerText="Free reels left: "+trial;
+
+}
+
+}
+
+function generate(){
+
+let paid = localStorage.getItem("paid");
+
+let trial = localStorage.getItem("trial");
+
+if(paid=="yes"){
+
+alert("Reel Generated!");
+
+}else{
+
+if(trial>0){
+
+trial--;
+
+localStorage.setItem("trial",trial);
+
+alert("Reel Generated (Trial)");
+
+updateTrialText();
+
+}else{
+
+alert("Trial finished. Please upgrade.");
+
+}
 
 }
 
@@ -112,7 +177,7 @@ function pay(){
 
 var options = {
 
-"key": "rzp_test_SPotf8L",
+"key": "rzp_test_YOURKEYHERE",
 
 "amount": "19900",
 
@@ -126,9 +191,9 @@ handler: function (){
 
 localStorage.setItem("paid","yes");
 
-checkAccess();
-
 alert("Payment Successful");
+
+checkAccess();
 
 }
 
@@ -140,16 +205,9 @@ rzp.open();
 
 }
 
-function generate(){
-
-alert("AI Reel Generated (Demo)");
-
-}
-
 checkAccess();
 
 </script>
 
 </body>
-
 </html>
