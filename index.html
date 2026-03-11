@@ -1,26 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Reel Maker</title>
-
 <style>
 body{
+background:#0f2747;
 font-family:Arial;
-background:#0b1b33;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
-.card{
-background:#142544;
-padding:25px;
-border-radius:12px;
-width:320px;
+.container{
+background:#132f54;
+padding:30px;
+border-radius:15px;
+width:300px;
 text-align:center;
 color:white;
 }
@@ -38,7 +35,7 @@ width:100%;
 padding:12px;
 margin-top:10px;
 border:none;
-border-radius:6px;
+border-radius:8px;
 font-size:16px;
 cursor:pointer;
 }
@@ -49,122 +46,84 @@ color:white;
 }
 
 .pay{
-background:#f39c12;
+background:#FFA500;
 color:white;
 }
 
-canvas{
-margin-top:15px;
-max-width:100%;
-border-radius:10px;
-}
-
-.download{
-background:#3498db;
-color:white;
+#loading{
 display:none;
+margin-top:10px;
+}
+
+#result{
+margin-top:15px;
+display:none;
+}
+
+img{
+width:100%;
+border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-
+<div class="container">
 <h2>AI Reel Maker</h2>
 
-<input id="name" placeholder="Product Name">
-
-<input id="price" placeholder="Price">
+<input type="text" id="name" placeholder="Product Name">
+<input type="text" id="price" placeholder="Price">
 
 <input type="file" id="image">
 
 <button class="generate" onclick="generateReel()">Generate Reel</button>
 
-<button class="pay" onclick="pay()">Pay ₹199 & Unlimited</button>
+<button class="pay">Pay ₹199 & Unlimited</button>
 
-<canvas id="canvas" width="360" height="640"></canvas>
+<div id="loading">Generating Reel...</div>
 
-<button id="download" class="download" onclick="download()">Download Reel</button>
+<div id="result">
+<h4>Your Reel Preview</h4>
+<img id="preview">
+<br><br>
+<a id="download" download="reel.jpg">
+<button>Download</button>
+</a>
+</div>
 
 </div>
 
 <script>
 
-let freeTrial = localStorage.getItem("trial") || 0
-
 function generateReel(){
 
-if(freeTrial >=3){
-alert("Free trial finished. Please pay ₹199")
-return
-}
-
-let name = document.getElementById("name").value
-let price = document.getElementById("price").value
-let file = document.getElementById("image").files[0]
+let file=document.getElementById("image").files[0]
 
 if(!file){
-alert("Upload image first")
+alert("Upload product image")
 return
 }
 
-let reader = new FileReader()
+document.getElementById("loading").style.display="block"
 
-reader.onload = function(e){
+setTimeout(()=>{
 
-let canvas = document.getElementById("canvas")
-let ctx = canvas.getContext("2d")
+let reader=new FileReader()
 
-let img = new Image()
+reader.onload=function(e){
 
-img.onload=function(){
+document.getElementById("preview").src=e.target.result
+document.getElementById("download").href=e.target.result
 
-ctx.fillStyle="black"
-ctx.fillRect(0,0,360,640)
-
-ctx.drawImage(img,30,120,300,300)
-
-ctx.fillStyle="white"
-ctx.font="28px Arial"
-ctx.fillText(name,40,480)
-
-ctx.fillStyle="yellow"
-ctx.font="26px Arial"
-ctx.fillText("₹"+price,40,520)
-
-document.getElementById("download").style.display="block"
-
-}
-
-img.src=e.target.result
+document.getElementById("loading").style.display="none"
+document.getElementById("result").style.display="block"
 
 }
 
 reader.readAsDataURL(file)
 
-freeTrial++
-localStorage.setItem("trial",freeTrial)
-
-alert("Free Trial Reel Generated ✅")
-
-}
-
-function download(){
-
-let canvas=document.getElementById("canvas")
-
-let link=document.createElement("a")
-link.download="reel.png"
-link.href=canvas.toDataURL()
-
-link.click()
-
-}
-
-function pay(){
-
-alert("Payment feature connect Razorpay later")
+},2000)
 
 }
 
