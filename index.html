@@ -1,172 +1,78 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Reel Maker PRO</title>
+const generateBtn = document.querySelector("button");
+const video = document.querySelector("video");
+const downloadBtn = document.querySelectorAll("button")[1];
 
-<style>
+generateBtn.onclick = async () => {
 
-body{
-background:#0b2545;
-font-family:Arial;
-text-align:center;
-color:white;
-padding:20px;
+const fileInput = document.querySelector("input[type=file]");
+const text = document.querySelectorAll("input")[1].value;
+
+if (!fileInput.files[0]) {
+alert("Upload image first");
+return;
 }
 
-.box{
-background:#132f4c;
-padding:20px;
-border-radius:12px;
-max-width:420px;
-margin:auto;
+const img = document.createElement("img");
+img.src = URL.createObjectURL(fileInput.files[0]);
+
+await img.decode();
+
+const canvas = document.createElement("canvas");
+canvas.width = 720;
+canvas.height = 1280;
+
+const ctx = canvas.getContext("2d");
+
+const stream = canvas.captureStream(30);
+const recorder = new MediaRecorder(stream);
+
+let chunks = [];
+
+recorder.ondataavailable = e => chunks.push(e.data);
+
+recorder.onstop = () => {
+
+const blob = new Blob(chunks,{type:"video/mp4"});
+const url = URL.createObjectURL(blob);
+
+video.src = url;
+
+downloadBtn.onclick = () => {
+
+const a = document.createElement("a");
+a.href = url;
+a.download = "ai-reel.mp4";
+a.click();
+
+};
+
+};
+
+recorder.start();
+
+let frame = 0;
+
+const draw = () => {
+
+ctx.fillStyle = "black";
+ctx.fillRect(0,0,720,1280);
+
+ctx.drawImage(img,0,0,720,900);
+
+ctx.fillStyle="white";
+ctx.font="60px Arial";
+ctx.fillText(text,40,1000);
+
+frame++;
+
+if(frame < 900){
+requestAnimationFrame(draw);
+}else{
+recorder.stop();
 }
 
-input{
-width:90%;
-padding:12px;
-margin:10px;
-border-radius:6px;
-border:none;
-}
+};
 
-button{
-width:90%;
-padding:14px;
-margin:10px;
-border-radius:6px;
-border:none;
-background:#16a34a;
-color:white;
-font-size:16px;
-}
+draw();
 
-.pay{
-background:#ff9800;
-}
-
-video{
-width:100%;
-margin-top:10px;
-border-radius:8px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h2>AI Reel Maker PRO</h2>
-
-<div class="box">
-
-<input type="file" id="image">
-
-<input type="text" id="name" placeholder="Product Name">
-
-<input type="text" id="price" placeholder="Price">
-
-<button onclick="generateReel()">Generate Reel</button>
-
-<video id="video" controls></video>
-
-<a id="downloadLink" download="reel.webm">
-<button>Download Reel</button>
-</a>
-
-<button class="pay" onclick="pay()">Pay ₹199 Unlock</button>
-
-</div>
-
-<script>
-
-function pay(){
-alert("Payment feature demo version me hai")
-}
-
-function generateReel(){
-
-let file=document.getElementById("image").files[0]
-
-if(!file){
-alert("Upload image first")
-return
-}
-
-let reader=new FileReader()
-
-reader.onload=function(e){
-
-let canvas=document.createElement("canvas")
-canvas.width=720
-canvas.height=1280
-
-let ctx=canvas.getContext("2d")
-
-let img=new Image()
-
-img.onload=function(){
-
-let stream=canvas.captureStream(30)
-let recorder=new MediaRecorder(stream)
-
-let chunks=[]
-
-recorder.ondataavailable=e=>chunks.push(e.data)
-
-recorder.onstop=function(){
-
-let blob=new Blob(chunks,{type:"video/webm"})
-let url=URL.createObjectURL(blob)
-
-document.getElementById("video").src=url
-document.getElementById("downloadLink").href=url
-
-}
-
-recorder.start()
-
-let frame=0
-
-let anim=setInterval(()=>{
-
-ctx.fillStyle="black"
-ctx.fillRect(0,0,720,1280)
-
-let scale=1+frame*0.002
-
-ctx.drawImage(img,120,250,480*scale,480*scale)
-
-ctx.fillStyle="white"
-ctx.font="40px Arial"
-
-let name=document.getElementById("name").value
-let price=document.getElementById("price").value
-
-ctx.fillText(name,120,950)
-ctx.fillText("Price "+price,120,1000)
-
-frame++
-
-if(frame>300){
-clearInterval(anim)
-recorder.stop()
-}
-
-},33)
-
-}
-
-img.src=e.target.result
-
-}
-
-reader.readAsDataURL(file)
-
-}
-
-</script>
-
-</body>
-</html>
+};
