@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Reel Maker</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Reel Maker PRO</title>
 
 <style>
 
 body{
-background:#07122c;
-font-family:Arial;
+background:#0b0f2a;
+font-family:sans-serif;
 color:white;
 text-align:center;
 padding:20px;
 }
 
 .box{
-background:#0c1b3f;
+background:#111a44;
 padding:20px;
 border-radius:15px;
 max-width:400px;
@@ -27,28 +26,28 @@ width:90%;
 padding:12px;
 border-radius:10px;
 border:none;
-margin:10px 0;
+margin-bottom:15px;
 }
 
 button{
 width:90%;
 padding:14px;
+margin:6px;
 border:none;
 border-radius:12px;
-margin:8px;
 font-size:16px;
-cursor:pointer;
+color:white;
 }
 
-.gen{background:#0dbb4f;color:white;}
-.copy{background:#4c5cff;color:white;}
-.download{background:#1e63ff;color:white;}
-.pay{background:#c46a00;color:white;}
+.gen{background:#00a83e;}
+.copy{background:#3b4bff;}
+.download{background:#0057ff;}
+.pro{background:#b65b00;}
 
 video{
 width:100%;
-margin-top:20px;
-border-radius:10px;
+border-radius:12px;
+margin-top:15px;
 }
 
 </style>
@@ -58,56 +57,94 @@ border-radius:10px;
 
 <div class="box">
 
-<h2>🚀 AI Reel Maker</h2>
+<h2>🚀 AI Reel Maker PRO</h2>
 
 <input id="topic" placeholder="Enter reel topic">
 
-<button class="gen" onclick="makeVideo()">Generate Reel Video</button>
+<button class="gen" onclick="makeReel()">Generate Reel Video</button>
 
 <button class="copy" onclick="copyScript()">Copy Script</button>
 
-<button class="download" onclick="downloadVideo()">Download Video</button>
+<a id="downloadLink" download="reel.mp4">
+<button class="download">Download Video</button>
+</a>
 
-<button class="pay" onclick="upgrade()">💳 Upgrade PRO</button>
+<button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
 
 <p id="script"></p>
 
+<p id="hashtags"></p>
+
 <video id="video" controls></video>
+
+<audio id="music" src="music.mp3"></audio>
 
 </div>
 
 <script>
 
-let videoUrl="";
+let recorder;
+let chunks=[];
 
-function makeVideo(){
+async function makeReel(){
 
 let topic=document.getElementById("topic").value;
 
-videoUrl="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+document.getElementById("script").innerText=
+"Hook: You won't believe this about "+topic+
+"\nStory: This reel explains "+topic+
+"\nEnding: Follow for more AI reels.";
 
-document.getElementById("video").src=videoUrl;
+document.getElementById("hashtags").innerText=
+"#reels #viralreels #instagramreels #ai #trending #viral";
 
-document.getElementById("script").innerText="Demo Reel created for: "+topic;
+let music=document.getElementById("music");
+music.currentTime=0;
+music.play();
+
+let stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+
+let video=document.getElementById("video");
+
+video.srcObject=stream;
+
+recorder=new MediaRecorder(stream);
+
+recorder.ondataavailable=e=>chunks.push(e.data);
+
+recorder.onstop=e=>{
+
+let blob=new Blob(chunks,{type:"video/mp4"});
+
+let url=URL.createObjectURL(blob);
+
+video.srcObject=null;
+
+video.src=url;
+
+document.getElementById("downloadLink").href=url;
+
+};
+
+recorder.start();
+
+setTimeout(()=>{
+
+recorder.stop();
+
+music.pause();
+
+},30000);
 
 }
 
 function copyScript(){
 
-navigator.clipboard.writeText(videoUrl);
+let text=document.getElementById("script").innerText;
 
-alert("Video link copied");
+navigator.clipboard.writeText(text);
 
-}
-
-function downloadVideo(){
-
-if(videoUrl==""){
-alert("Generate video first");
-return;
-}
-
-window.open(videoUrl);
+alert("Script Copied");
 
 }
 
