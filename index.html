@@ -1,210 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>AI Viral Studio PRO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Reel Maker Pro</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <style>
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
+        body { background: var(--bg); font-family: 'Poppins', sans-serif; color: white; text-align: center; padding: 15px; margin: 0; }
+        .container { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,242,255,0.1); }
+        
+        .mode-switch { display: flex; gap: 10px; margin-bottom: 20px; }
+        .mode-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #444; background: #222; color: #888; cursor: pointer; font-weight: bold; }
+        .active-mode { background: var(--neon); color: #000; border: none; }
 
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        textarea, input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #444; background: #1a1a1a; color: white; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; }
+        
+        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; transition: 0.3s; }
+        .main-btn:active { transform: scale(0.98); }
+        .download-btn { background: #fff; color: #000; margin-top: 10px; display: none; }
+        .pay-btn { background: var(--gold); margin-top: 10px; }
 
-<style>
+        #output-screen { position: relative; width: 100%; height: 500px; background: #000; border-radius: 20px; margin-top: 20px; display: none; overflow: hidden; border: 2px solid var(--neon); }
+        #v-play, #p-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .caption-overlay { position: absolute; bottom: 40px; width: 100%; text-align: center; background: rgba(0,0,0,0.7); padding: 15px; font-size: 18px; font-weight: bold; color: white; box-sizing: border-box; }
+        .shop-tag { position: absolute; top: 20px; left: 20px; background: red; padding: 5px 12px; border-radius: 5px; font-weight: bold; z-index: 5; }
 
-body{
-background:#020617;
-color:white;
-font-family:Arial;
-text-align:center;
-}
-
-h1{
-color:#22d3ee;
-}
-
-input,select{
-padding:12px;
-width:85%;
-border-radius:10px;
-border:none;
-margin:10px;
-}
-
-button{
-padding:14px 25px;
-border-radius:12px;
-border:none;
-background:#06b6d4;
-color:white;
-font-size:16px;
-margin:10px;
-}
-
-#paybtn{
-background:#facc15;
-color:black;
-}
-
-#output-screen{
-display:none;
-margin-top:20px;
-}
-
-#videoBox{
-position:relative;
-width:360px;
-margin:auto;
-}
-
-video{
-width:100%;
-border-radius:12px;
-}
-
-#caption{
-position:absolute;
-bottom:15px;
-left:10px;
-right:10px;
-background:rgba(0,0,0,0.6);
-padding:8px;
-border-radius:8px;
-font-size:18px;
-}
-
-</style>
+        #status { font-size: 13px; color: var(--neon); margin: 10px 0; min-height: 20px; }
+    </style>
 </head>
-
 <body>
 
-<h1>🚀 AI Viral Studio PRO</h1>
+<div class="container">
+    <h2>🚀 AI Viral Studio</h2>
+    
+    <div class="mode-switch">
+        <button id="btn-ai" class="mode-btn active-mode" onclick="setMode('ai')">Social Media AI</button>
+        <button id="btn-shop" class="mode-btn" onclick="setMode('shop')">Local Shop Mode</button>
+    </div>
 
-<input id="topic" placeholder="Enter viral topic (nature, dog, motivation)">
+    <textarea id="mainInput" rows="3" placeholder="Describe your reel (e.g. Luxury Car in Rain)"></textarea>
+    
+    <div id="shopInputs" style="display:none;">
+        <input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
+        <input type="text" id="price" placeholder="Enter Price (e.g. ₹2999)">
+    </div>
 
-<br>
+    <div id="aiInputs">
+        <select id="voiceType">
+            <option value="Hindi Male">Hindi Male Voice</option>
+            <option value="Hindi Female">Hindi Female Voice</option>
+        </select>
+    </div>
 
-<select id="voice">
-<option>Hindi Male</option>
-<option>Hindi Female</option>
-</select>
+    <button class="main-btn" onclick="createReel()">🎬 Generate Viral Reel</button>
+    <div id="status"></div>
 
-<br>
+    <div id="output-screen">
+        <video id="v-play" loop playsinline muted></video>
+        <img id="p-img" style="display:none;">
+        <div class="shop-tag" id="v-price" style="display:none;"></div>
+        <div class="caption-overlay" id="v-caption"></div>
+    </div>
 
-<button onclick="createReel()">🎬 CREATE VIRAL REEL</button>
-
-<button id="paybtn" onclick="payNow()">⭐ UNLOCK PRO ₹199</button>
-
-<div id="status"></div>
-
-<div id="output-screen">
-
-<div id="videoBox">
-
-<video id="video" loop controls></video>
-
-<div id="caption"></div>
-
-</div>
-
-<br>
-
-<button onclick="downloadVideo()">📥 Download Video</button>
-
+    <button id="dl-btn" class="main-btn download-btn" onclick="downloadContent()">📥 Download to Phone</button>
+    <button class="main-btn pay-btn" onclick="payNow()">⭐ Get Pro (Remove Ads)</button>
 </div>
 
 <script>
+    let currentMode = 'ai';
+    const PEXELS_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
 
-const PEXELS_KEY="YOUR_PEXELS_API_KEY";
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('btn-ai').classList.toggle('active-mode', mode === 'ai');
+        document.getElementById('btn-shop').classList.toggle('active-mode', mode === 'shop');
+        document.getElementById('shopInputs').style.display = mode === 'shop' ? 'block' : 'none';
+        document.getElementById('aiInputs').style.display = mode === 'ai' ? 'block' : 'none';
+    }
 
-async function createReel(){
+    function previewImg(e) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            document.getElementById('p-img').src = reader.result;
+            document.getElementById('p-img').style.display = 'block';
+            document.getElementById('v-play').style.display = 'none';
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
 
-const topic=document.getElementById("topic").value;
-const status=document.getElementById("status");
+    async function createReel() {
+        const input = document.getElementById('mainInput').value;
+        const status = document.getElementById('status');
+        if(!input) return alert("Write something first!");
 
-if(!topic){
-alert("Enter topic");
-return;
-}
+        status.innerText = "🔍 AI searching trending clips...";
+        document.getElementById('output-screen').style.display = 'block';
 
-status.innerText="⏳ AI searching viral video...";
+        if(currentMode === 'ai') {
+            try {
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${input}&per_page=1&orientation=portrait`, {
+                    headers: { Authorization: PEXELS_KEY }
+                });
+                const data = await res.json();
+                
+                if(data.videos && data.videos.length > 0) {
+                    const vid = document.getElementById('v-play');
+                    vid.src = data.videos[0].video_files[0].link;
+                    vid.style.display = 'block';
+                    document.getElementById('p-img').style.display = 'none';
+                    vid.muted = false;
+                    vid.play();
+                    
+                    responsiveVoice.speak(input, document.getElementById('voiceType').value);
+                    document.getElementById('v-caption').innerText = input;
+                    document.getElementById('dl-btn').style.display = 'block';
+                    status.innerText = "✅ Reel Generated Successfully!";
+                } else {
+                    status.innerText = "❌ No video found. Try 'Nature' or 'Gym'.";
+                }
+            } catch (err) {
+                status.innerText = "❌ API Error. Check your connection.";
+            }
+        } else {
+            document.getElementById('v-price').innerText = document.getElementById('price').value;
+            document.getElementById('v-price').style.display = 'block';
+            document.getElementById('v-caption').innerText = input;
+            document.getElementById('dl-btn').style.display = 'block';
+            status.innerText = "✅ Shop Reel Created!";
+        }
+    }
 
-try{
+    function downloadContent() {
+        const fileUrl = currentMode === 'ai' ? document.getElementById('v-play').src : document.getElementById('p-img').src;
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.download = 'My_AI_Reel.mp4';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        alert("Downloading started...");
+    }
 
-const res=await fetch(`https://api.pexels.com/videos/search?query=${topic}&per_page=1`,{
-headers:{Authorization:PEXELS_KEY}
-});
-
-const data=await res.json();
-
-if(data.videos.length==0){
-status.innerText="❌ No video found";
-return;
-}
-
-const video=data.videos[0].video_files.find(v=>v.quality==="sd");
-
-const vid=document.getElementById("video");
-
-vid.src=video.link;
-
-document.getElementById("output-screen").style.display="block";
-
-vid.play();
-
-document.getElementById("caption").innerText=topic;
-
-responsiveVoice.speak(topic,document.getElementById("voice").value);
-
-status.innerText="✅ Viral Reel Generated";
-
-}catch(e){
-
-status.innerText="❌ Connection Error";
-
-}
-
-}
-
-function downloadVideo(){
-
-const url=document.getElementById("video").src;
-
-const a=document.createElement("a");
-
-a.href=url;
-
-a.download="viral-reel.mp4";
-
-a.click();
-
-}
-
-function payNow(){
-
-var options={
-
-key:"rzp_test_123456",
-
-amount:"19900",
-
-name:"AI Viral Studio PRO",
-
-description:"Unlock PRO Features",
-
-handler:function(){
-
-alert("Payment Success");
-
-}
-
-};
-
-var rzp=new Razorpay(options);
-
-rzp.open();
-
-}
-
+    function payNow() {
+        new Razorpay({
+            "key": "rzp_test_SPotf8L7S7I5pS",
+            "amount": "19900",
+            "name": "AI Studio Pro",
+            "handler": function(res){ alert("Pro Unlocked!"); }
+        }).open();
+    }
 </script>
-
 </body>
-
 </html>
+
