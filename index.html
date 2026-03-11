@@ -1,7 +1,7 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Reel Maker PRO</title><style>
+<title>AI Reel Maker SaaS</title><style>
 body{
 background:#0b0f2a;
 font-family:Arial;
@@ -14,7 +14,7 @@ padding:20px;
 background:#111a44;
 padding:20px;
 border-radius:15px;
-max-width:400px;
+max-width:420px;
 margin:auto;
 }
 
@@ -23,7 +23,7 @@ width:90%;
 padding:12px;
 border-radius:10px;
 border:none;
-margin-bottom:15px;
+margin:8px;
 }
 
 button{
@@ -36,8 +36,9 @@ font-size:16px;
 color:white;
 }
 
+.login{background:#00a83e;}
+.signup{background:#3b4bff;}
 .gen{background:#00a83e;}
-.copy{background:#3b4bff;}
 .download{background:#0057ff;}
 .pro{background:#b65b00;}
 
@@ -46,13 +47,15 @@ width:100%;
 border-radius:12px;
 margin-top:15px;
 }
-</style></head><body><div class="box"><h2>🚀 AI Reel Maker PRO</h2><input id="topic" placeholder="Enter reel topic"><br><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel Video</button>
+</style></head><body><div id="auth" class="box"><h2>Login / Signup</h2><input id="email" placeholder="Email">
+<input id="pass" placeholder="Password" type="password"><button class="login" onclick="login()">Login</button>
+<button class="signup" onclick="signup()">Signup</button>
 
-<button class="copy" onclick="copyScript()">Copy Script</button>
+<p id="authMsg"></p></div><div id="app" class="box" style="display:none;"><h2>🚀 AI Reel Maker</h2><input id="topic" placeholder="Enter reel topic"><input type="file" id="musicUpload" accept="audio/*"><button class="gen" onclick="makeReel()">Generate Reel</button>
 
 <button class="download" onclick="downloadVideo()">Download Video</button>
 
-<button class="pro" onclick="upgrade()">💳 Upgrade PRO</button>
+<button class="pro" onclick="upgrade()">Upgrade PRO</button>
 
 <p id="script"></p>
 <p id="hashtags"></p><video id="video" controls></video>
@@ -61,17 +64,48 @@ margin-top:15px;
 
 </div><script>
 
+function signup(){
+
+let email=document.getElementById("email").value;
+let pass=document.getElementById("pass").value;
+
+localStorage.setItem("userEmail",email);
+localStorage.setItem("userPass",pass);
+
+document.getElementById("authMsg").innerText="Signup success. Login now.";
+
+}
+
+function login(){
+
+let email=document.getElementById("email").value;
+let pass=document.getElementById("pass").value;
+
+if(email===localStorage.getItem("userEmail") &&
+pass===localStorage.getItem("userPass")){
+
+document.getElementById("auth").style.display="none";
+document.getElementById("app").style.display="block";
+
+}else{
+
+document.getElementById("authMsg").innerText="Wrong login";
+
+}
+
+}
+
 function makeReel(){
 
 let topic=document.getElementById("topic").value;
 
 document.getElementById("script").innerText=
-"Hook: You won't believe this about "+topic+
-"\nStory: This reel explains "+topic+
-"\nEnding: Follow for more AI reels.";
+"Hook: Viral reel about "+topic+
+"\nStory: Amazing facts about "+topic+
+"\nEnding: Follow for more reels.";
 
 document.getElementById("hashtags").innerText=
-"#reels #viralreels #instagramreels #ai #trending #viral";
+"#reels #viralreels #instagramreels #ai #viral #trending";
 
 let video=document.getElementById("video");
 
@@ -106,16 +140,6 @@ a.href=video;
 a.download="reel-video.mp4";
 
 a.click();
-
-}
-
-function copyScript(){
-
-let text=document.getElementById("script").innerText;
-
-navigator.clipboard.writeText(text);
-
-alert("Script Copied");
 
 }
 
