@@ -7,76 +7,121 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 15px; }
-        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; }
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 15px; }
-        textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; font-size: 16px; }
-        #output { width: 100%; height: 420px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); overflow: hidden; }
+        body { background: #0b0b0b; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 15px; }
+        .card { max-width: 420px; margin: auto; background: #161616; padding: 25px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .title { color: #00f2ff; font-size: 24px; font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        .tabs { display: flex; gap: 8px; background: #222; padding: 6px; border-radius: 15px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .tab.active { background: #55e6ee; color: #000; }
+
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; background: #202020; color: #fff; border: 1px solid #333; box-sizing: border-box; font-size: 15px; }
+        
+        .music-toggle { margin: 15px 0; font-size: 14px; color: #ffcc00; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; }
+        
+        .btn-gen { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; background: #55e6ee; color: #000; cursor: pointer; font-size: 16px; text-transform: uppercase; }
+        .btn-row { display: flex; gap: 12px; margin-top: 15px; }
+        .btn-half { flex: 1; padding: 16px; border-radius: 15px; border: none; font-weight: bold; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-save { background: #2a2a2a; }
+        .btn-insta { background: #e1306c; }
+        .btn-pro { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: bold; background: #ffcc00; color: #000; margin-top: 15px; cursor: pointer; font-size: 15px; }
+
+        #video-zone { width: 100%; height: 380px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid #55e6ee; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; }
+        #hashtag-box { margin-top: 15px; font-size: 12px; color: #00f2ff; text-align: left; background: #111; padding: 10px; border-radius: 10px; display: none; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2 style="color:var(--neon)">🚀 DABIX VIDEO ENGINE</h2>
-        <textarea id="storyTxt" rows="5" placeholder="Yahan apni viral story likhein..."></textarea>
+        <div class="title">🚀 DABIX MASTER STUDIO</div>
         
-        <button class="main-btn" onclick="generateVideo()">🎬 GENERATE VIRAL REEL</button>
-
-        <div id="output">
-            <video id="v-player" loop playsinline autoplay muted></video>
+        <div class="tabs">
+            <button id="t1" class="tab active" onclick="setMode('shop')">Shop Mode</button>
+            <button id="t2" class="tab" onclick="setMode('creator')">Creator Mode</button>
         </div>
 
-        <button class="main-btn" style="background:#ffcc00; margin-top:20px;" onclick="startPay()">💎 UNLOCK PRO (₹199)</button>
+        <div id="shopInputs">
+            <input type="text" id="pName" placeholder="Product Name (iPhone, Shoes...)">
+            <input type="text" id="pPrice" placeholder="Price (₹999)">
+            <input type="text" id="pDiscount" placeholder="Discount (20% OFF)">
+        </div>
+
+        <div id="creatorInputs" style="display:none;">
+            <textarea id="storyInput" rows="4" placeholder="Apni viral story likho..."></textarea>
+        </div>
+
+        <div class="music-toggle">
+            <input type="checkbox" id="musicCheck" checked> Background Music Enable 🎵
+        </div>
+
+        <button class="btn-gen" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
+
+        <div id="video-zone"><video id="vid" loop playsinline autoplay muted></video></div>
+        
+        <div id="hashtag-box"></div>
+
+        <div class="btn-row">
+            <button class="btn-half btn-save">📥 SAVE</button>
+            <button class="btn-half btn-insta" onclick="showHashtags()">📸 INSTA</button>
+        </div>
+
+        <button class="btn-pro" onclick="pay()">💎 PRO ACTIVATION (₹199)</button>
     </div>
 
+    <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-actionable.mp3" loop></audio>
+
     <script>
-        async function generateVideo() {
-            const v = document.getElementById('v-player');
-            const txt = document.getElementById('storyTxt').value;
-            const zone = document.getElementById('output');
+        let mode = 'shop';
+        function setMode(m) {
+            mode = m;
+            document.getElementById('t1').className = m=='shop'?'tab active':'tab';
+            document.getElementById('t2').className = m=='creator'?'tab active':'tab';
+            document.getElementById('shopInputs').style.display = m=='shop'?'block':'none';
+            document.getElementById('creatorInputs').style.display = m=='creator'?'block':'none';
+        }
 
-            if(!txt) return alert("Pehle story likho!");
-            zone.style.display = 'block';
-
-            // Voice Engine
-            responsiveVoice.speak(txt, "Hindi Male");
-
-            // Video Engine with your Key
-            const API_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+        async function generate() {
+            const v = document.getElementById('vid');
+            const zone = document.getElementById('video-zone');
+            const music = document.getElementById('bgMusic');
+            let name = document.getElementById('pName').value;
+            let price = document.getElementById('pPrice').value;
+            let story = document.getElementById('storyInput').value;
             
-            // Logic: Sirf pehla keyword search karega taki error na aaye
-            let searchWord = txt.split(" ")[0] || "motivation";
+            let finalTxt = mode=='shop' ? `${name} sirf ${price} rupaye mein. Maalik pareshan hai, loot lo!` : story;
+            
+            if(!finalTxt) return alert("Pehle details bharo!");
+            
+            zone.style.display = 'block';
+            if(document.getElementById('musicCheck').checked) music.play();
+            
+            responsiveVoice.speak(finalTxt, "Hindi Male");
+
+            const KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+            let query = mode=='shop' ? name.split(" ")[0] : story.split(" ")[0];
 
             try {
-                const res = await fetch(`https://api.pexels.com/videos/search?query=${searchWord}&per_page=1`, {
-                    headers: { Authorization: API_KEY }
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1`, {
+                    headers: { Authorization: KEY }
                 });
-                const data = await res.json();
-                
-                if(data.videos && data.videos.length > 0) {
-                    v.src = data.videos[0].video_files[0].link;
-                } else {
-                    // Backup Video agar search result na mile
-                    v.src = "https://player.vimeo.com/external/403425024.sd.mp4?s=d00465342a731d102e342750e3223f6631b0a793&profile_id=139";
-                }
-            } catch(err) {
-                // Failsafe Video
+                const d = await res.json();
+                v.src = d.videos[0].video_files[0].link;
+            } catch(e) {
                 v.src = "https://player.vimeo.com/external/403425024.sd.mp4?s=d00465342a731d102e342750e3223f6631b0a793&profile_id=139";
             }
             v.play();
         }
 
-        function startPay() {
-            var options = {
-                "key": "rzp_test_SPotf8L7S7I5pS", 
-                "amount": "19900",
-                "name": "Dabix Pro",
-                "handler": function(res){ alert("Payment Success!"); },
-                "theme": { "color": "#00f2ff" }
-            };
-            new Razorpay(options).open();
+        function showHashtags() {
+            const box = document.getElementById('hashtag-box');
+            box.style.display = 'block';
+            box.innerHTML = "<b>Copy Hashtags:</b><br>#dabix #viral #shoplife #discount #trending #india #reelsindia #marketing";
+        }
+
+        function pay() {
+            var o = { "key": "rzp_test_SPotf8L7S7I5pS", "amount": "19900", "name": "Dabix Pro", "handler": function(r){ alert("Success!"); } };
+            new Razorpay(o).open();
         }
     </script>
 </body>
