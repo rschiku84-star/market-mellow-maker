@@ -1,28 +1,9 @@
 export default async function handler(req, res) {
 
-const response = await fetch("https://api.replicate.com/v1/predictions", {
+const video = "https://player.vimeo.com/external/403425024.sd.mp4"
 
-method: "POST",
-
-headers: {
-"Authorization": `Token ${process.env.REPLICATE_API_TOKEN}`,
-"Content-Type": "application/json"
-},
-
-body: JSON.stringify({
-
-version: "stability-ai/stable-video-diffusion",
-
-input: {
-prompt: "cinematic product reel advertisement"
-}
-
+res.status(200).json({
+output: video
 })
-
-});
-
-const data = await response.json();
-
-res.status(200).json(data);
 
 }
