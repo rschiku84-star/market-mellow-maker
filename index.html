@@ -136,7 +136,50 @@ document.getElementById("vid").src = data.output;
 
 }
 
-</script>
+
+function generateReel(){
+
+let product = document.querySelector("input[placeholder*='Product']").value
+let price = document.querySelector("input[placeholder*='Price']").value
+let discount = document.querySelector("input[placeholder*='Discount']").value
+
+let hashtags = [
+"#viralreels",
+"#instashop",
+"#trendingreels",
+"#dealoftheday",
+"#shopnow"
+]
+
+let caption = product + " only " + price + " 🔥 " + discount
+
+let reelBox = document.createElement("div")
+reelBox.style.marginTop="20px"
+reelBox.style.padding="20px"
+reelBox.style.background="#111"
+reelBox.style.borderRadius="15px"
+
+reelBox.innerHTML = `
+<h3>🎬 Reel Ready</h3>
+<p>${caption}</p>
+<p>${hashtags.join(" ")}</p>
+<button onclick="downloadReel()">📥 Download</button>
+`
+
+document.body.appendChild(reelBox)
+
+}
+
+function downloadReel(){
+
+alert("Reel Download Starting 🚀")
+
+}
+
+document.querySelector("button").onclick = generateReel
+
+
+
     </script>
 </body>
 </html>
