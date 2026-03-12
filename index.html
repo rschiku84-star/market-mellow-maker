@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>DABIX MASTER STUDIO</title>
+<title>DABIX MASTER V3</title>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 <style>
 
 body{
 background:#0b0b0b;
-color:#fff;
+color:white;
 font-family:sans-serif;
 text-align:center;
 padding:20px;
@@ -28,34 +29,7 @@ padding:25px;
 border-radius:20px;
 }
 
-.title{
-font-size:26px;
-font-weight:bold;
-margin-bottom:20px;
-}
-
-.tabs{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-}
-
-.tab{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-background:#222;
-color:white;
-cursor:pointer;
-}
-
-.tab.active{
-background:#55e6ee;
-color:black;
-}
-
-input,textarea{
+input{
 width:100%;
 padding:12px;
 margin:8px 0;
@@ -65,9 +39,9 @@ background:#202020;
 color:white;
 }
 
-.btn{
+button{
 width:100%;
-padding:15px;
+padding:14px;
 border:none;
 border-radius:12px;
 margin-top:10px;
@@ -79,16 +53,17 @@ cursor:pointer;
 .save{background:#333;color:white;}
 .pay{background:#ffc107;color:black;}
 
-video{
+img{
 width:100%;
-margin-top:20px;
-border-radius:15px;
+margin-top:10px;
+border-radius:10px;
 }
 
-#hashtags{
-margin-top:15px;
-font-size:12px;
-color:#55e6ee;
+.product{
+background:#1f1f1f;
+margin-top:10px;
+padding:10px;
+border-radius:10px;
 }
 
 </style>
@@ -98,160 +73,119 @@ color:#55e6ee;
 
 <div class="card">
 
-<div class="title">🔥 DABIX MASTER STUDIO</div>
-
-<div class="tabs">
-<button id="shopTab" class="tab active" onclick="setMode('shop')">Shop Mode</button>
-<button id="creatorTab" class="tab" onclick="setMode('creator')">Creator Mode</button>
-</div>
-
-<div id="shopInputs">
+<h2>🔥 DABIX MASTER V3</h2>
 
 <input id="pName" placeholder="Product Name">
 <input id="pPrice" placeholder="Price">
-<input id="pDiscount" placeholder="Discount">
+
+<input type="file" id="imageUpload">
+
+<img id="preview">
+
+<button class="save" onclick="saveProduct()">🛒 Save Product</button>
+
+<button class="gen" onclick="generateReel()">🎬 Generate Reel</button>
+
+<button class="pay" onclick="payNow()">💳 Pay</button>
+
+<div id="products"></div>
 
 </div>
-
-<div id="creatorInputs" style="display:none">
-<textarea id="storyInput" rows="4" placeholder="Viral story likho"></textarea>
-</div>
-
-<label>
-<input type="checkbox" id="musicCheck" checked>
-🎵 Music
-</label>
-
-<button class="btn gen" onclick="generate()">🔥 GENERATE REEL</button>
-
-<button class="btn save" onclick="downloadVideo()">⬇ DOWNLOAD</button>
-
-<button class="btn pay" onclick="pay()">💳 PRO</button>
-
-<video id="video" controls muted loop></video>
-
-<div id="hashtags"></div>
-
-</div>
-
-<audio id="music" src="https://www.bensound.com/bensound-music/bensound-actionable.mp3" loop></audio>
 
 <script>
 
-let mode="shop"
+const firebaseConfig={
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+projectId:"YOUR_PROJECT"
+}
 
-function setMode(m){
+firebase.initializeApp(firebaseConfig)
 
-mode=m
+const db=firebase.firestore()
 
-document.getElementById("shopInputs").style.display=
-m=="shop"?"block":"none"
+imageUpload.onchange=function(e){
 
-document.getElementById("creatorInputs").style.display=
-m=="creator"?"block":"none"
+let file=e.target.files[0]
 
-document.getElementById("shopTab").classList.toggle("active",m=="shop")
-document.getElementById("creatorTab").classList.toggle("active",m=="creator")
+let reader=new FileReader()
+
+reader.onload=function(){
+
+preview.src=reader.result
 
 }
 
-async function generate(){
+reader.readAsDataURL(file)
 
-let text=""
+}
 
-if(mode=="shop"){
+function saveProduct(){
 
 let name=document.getElementById("pName").value
 let price=document.getElementById("pPrice").value
-let disc=document.getElementById("pDiscount").value
+let img=preview.src
 
-text=`${name} sirf ₹${price} me ${disc} discount.`
+db.collection("products").add({
 
-}else{
+name:name,
+price:price,
+img:img
 
-text=document.getElementById("storyInput").value
+})
 
-}
-
-if(!text)return alert("details bharo")
-
-responsiveVoice.speak(text,"Hindi Male")
-
-if(document.getElementById("musicCheck").checked){
-
-document.getElementById("music").play()
+loadProducts()
 
 }
 
-let video=document.getElementById("video")
+function loadProducts(){
 
-try{
+db.collection("products").get().then(snap=>{
 
-const API="YOUR_PEXELS_KEY"
+products.innerHTML=""
 
-let res=await fetch(
-`https://api.pexels.com/videos/search?query=shopping&per_page=1`,
-{headers:{Authorization:API}}
-)
+snap.forEach(doc=>{
 
-let data=await res.json()
+let p=doc.data()
 
-video.src=data.videos[0].video_files[0].link
+products.innerHTML+=`
+<div class="product">
 
-}catch{
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>₹${p.price}</p>
 
-video.src="https://player.vimeo.com/external/403425024.sd.mp4"
+</div>
+`
 
-}
+})
 
-video.play()
-
-generateHashtags()
-
-}
-
-function generateHashtags(){
-
-let tags=[
-"#viral",
-"#reels",
-"#trending",
-"#shopindia",
-"#marketing",
-"#instagramreels",
-"#viralvideo"
-]
-
-document.getElementById("hashtags").innerText=tags.join(" ")
+})
 
 }
 
-function downloadVideo(){
+loadProducts()
 
-let v=document.getElementById("video").src
-window.open(v)
+function generateReel(){
+
+alert("Reel generator connected")
 
 }
 
-function pay(){
+function payNow(){
+
+let price=document.getElementById("pPrice").value
 
 var options={
-
-key:"rzp_test_Spotf8L75715ps",
-
-amount:"19900",
-
-name:"Dabix Pro",
-
-handler:function(){
-
-alert("Payment Success")
-
-}
-
+key:"YOUR_RAZORPAY_KEY",
+amount:price*100,
+currency:"INR",
+name:"DABIX MASTER",
+description:"Product Payment"
 }
 
 var rzp=new Razorpay(options)
+
 rzp.open()
 
 }
