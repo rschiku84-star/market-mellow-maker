@@ -36,10 +36,10 @@
         </div>
 
         <div id="creatorPanel" style="display:none;">
-            <textarea id="storyTxt" rows="3" placeholder="Write story/script..."></textarea>
+            <textarea id="storyTxt" rows="3" placeholder="Apni story likhein..."></textarea>
         </div>
 
-        <button class="main-btn" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
+        <button class="main-btn" onclick="generate()">🎬 GENERATE AI VIDEO</button>
 
         <div id="output-zone">
             <video id="v-player" loop playsinline autoplay muted></video>
@@ -67,51 +67,54 @@
             const v = document.getElementById('v-player');
             const zone = document.getElementById('output-zone');
             
-            let query = mode == 'shop' ? "luxury shopping" : "motivation";
+            let q = mode == 'shop' ? "luxury shopping" : "motivation";
             let msg = mode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
-            if(!msg) return alert("Pehle kuch likho!");
-
+            
+            if(!msg) { alert("Pehle details bharo bhai!"); return; }
             zone.style.display = 'block';
 
-            // FORCE VIDEO FETCH
-            const VIDEO_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; 
-            try {
-                const response = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1`, {
-                    method: 'GET',
-                    headers: { 'Authorization': VIDEO_KEY }
-                });
-                const data = await response.json();
-                if(data.videos.length > 0) {
+            // PROBLEM SOLVED: Added proper async fetch and error catching
+            const P_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; 
+            fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
+                headers: { Authorization: P_KEY }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.videos && data.videos.length > 0) {
                     v.src = data.videos[0].video_files[0].link;
-                    v.play();
+                    v.play().catch(e => console.log("Auto-play blocked, manual play required"));
                     responsiveVoice.speak(msg, "Hindi Male");
+                } else {
+                    alert("No video found for this topic.");
                 }
-            } catch(e) {
-                alert("Video Engine Error. Check internet.");
-            }
+            })
+            .catch(err => alert("Video server connection error. Internet check karein."));
         }
 
         function pay() {
-            // FORCE PAYMENT POPUP
-            const PAY_KEY = "rzp_test_SPotf8L7S7I5pS";
-            try {
-                var options = {
-                    "key": PAY_KEY,
-                    "amount": "19900",
-                    "name": "Dabix Pro",
-                    "handler": function(res){ alert("Success: " + res.razorpay_payment_id); },
-                    "theme": { "color": "#00f2ff" }
-                };
-                var rzp1 = new Razorpay(options);
-                rzp1.open();
-            } catch(e) {
-                alert("Razorpay not loaded. Please refresh.");
+            // PROBLEM SOLVED: Checking if Razorpay is loaded before running
+            if (typeof Razorpay === 'undefined') {
+                alert("Razorpay load ho raha hai... 2 second baad click karein.");
+                return;
             }
+
+            var options = {
+                "key": "rzp_test_SPotf8L7S7I5pS", 
+                "amount": "19900",
+                "name": "Dabix AI Studio",
+                "description": "Pro Mode Activation",
+                "handler": function(res){ alert("Success: " + res.razorpay_payment_id); },
+                "prefill": { "name": "Manik Chaudhary" },
+                "theme": { "color": "#00f2ff" }
+            };
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (resp){ alert("Oops! " + resp.error.description); });
+            rzp.open();
         }
 
         function download() {
-            const vUrl = document.getElementById('v-player').src;
-            if(vUrl) window.open(vUrl, '_blank');
+            const src = document.getElementById('v-player').src;
+            if(src) window.open(src, '_blank');
         }
 
         function share() {
