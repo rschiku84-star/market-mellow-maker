@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dabix AI Studio - All-in-One</title>
+    <title>Dabix Master Studio</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
         :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
         body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; text-align: center; margin: 0; }
-        .card { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .card { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #222; padding: 5px; border-radius: 15px; }
         .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; }
         .active { background: var(--neon); color: #000; }
         input, textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; }
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #output-zone { width: 100%; height: 480px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); position: relative; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .price-tag { position: absolute; bottom: 80px; right: 20px; background: var(--gold); color: #000; padding: 10px 15px; border-radius: 50px; font-weight: 900; font-size: 18px; animation: bounce 1s infinite; display: none; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        #h-tag { font-size: 13px; color: var(--neon); margin-top: 10px; font-weight: bold; }
-        .music-ctrl { margin-top: 10px; font-size: 14px; color: var(--gold); }
+        .music-ctrl { margin: 15px 0; font-size: 14px; color: var(--gold); display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
@@ -50,14 +47,12 @@
         <button class="main-btn" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
 
         <div id="output-zone">
-            <video id="v-player" loop playsinline></video>
-            <div id="p-label" class="price-tag"></div>
+            <video id="v-player" loop playsinline autoplay muted></video>
         </div>
-        <div id="h-tag"></div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="main-btn" style="background:#222; color:#fff;" onclick="download()">📥 SAVE</button>
-            <button class="main-btn" style="background:#E1306C; color:#fff;" onclick="share()">📸 INSTA</button>
+            <button class="main-btn" style="background:#222; color:#fff; flex:1;" onclick="download()">📥 SAVE</button>
+            <button class="main-btn" style="background:#E1306C; color:#fff; flex:1;" onclick="share()">📸 INSTA</button>
         </div>
 
         <button class="main-btn" style="background:var(--gold); margin-top:20px;" onclick="pay()">💎 PRO ACTIVATION (₹199)</button>
@@ -77,49 +72,59 @@
 
         async function generate() {
             const v = document.getElementById('v-player');
-            const p = document.getElementById('p-label');
-            const h = document.getElementById('h-tag');
+            const zone = document.getElementById('output-zone');
             const music = document.getElementById('m-track');
-            document.getElementById('output-zone').style.display = 'block';
+            
+            let q = mode == 'shop' ? "shopping" : "motivation";
+            let msg = mode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
+            if(!msg) return alert("Pehle details bhariye!");
 
-            let q = mode == 'shop' ? "luxury" : "nature";
-            let msg = mode == 'shop' ? document.getElementById('pName').value + " available for " + document.getElementById('pPrice').value : document.getElementById('storyTxt').value;
-
-            if(mode == 'shop') {
-                p.style.display = 'block';
-                p.innerText = document.getElementById('pPrice').value + " (" + document.getElementById('pDisc').value + ")";
-                h.innerText = "#shop #offer #viral #dabixAI";
-            } else {
-                p.style.display = 'none';
-                h.innerText = "#motivation #viral #ai #trending2024";
-            }
-
-            // Start Music if enabled
+            zone.style.display = 'block';
             if(document.getElementById('bgMusic').checked) { music.volume = 0.2; music.play(); }
 
-            const res = await fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
-                headers: { Authorization: "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav" }
-            });
-            const data = await res.json();
-            v.src = data.videos[0].video_files[0].link;
-            v.play();
-            responsiveVoice.speak(msg, "Hindi Male");
+            // VIDEO FIX: Directly fetching and playing with error handling
+            try {
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
+                    headers: { Authorization: "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav" }
+                });
+                const data = await res.json();
+                v.src = data.videos[0].video_files[0].link;
+                v.load();
+                v.play();
+                responsiveVoice.speak(msg, "Hindi Male");
+            } catch(e) {
+                alert("Video server down, please try again!");
+            }
+        }
+
+        // PAYMENT FIX: Correct Razorpay Popup Logic
+        function pay() {
+            var options = {
+                "key": "rzp_test_SPotf8L7S7I5pS", 
+                "amount": "19900", 
+                "name": "Dabix Pro Suite",
+                "description": "Unlock Full AI Automation",
+                "handler": function(response){
+                    alert("Payment Successful! ID: " + response.razorpay_payment_id);
+                },
+                "theme": { "color": "#00f2ff" }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
         }
 
         function download() {
-            const link = document.createElement('a');
-            link.href = document.getElementById('v-player').src;
-            link.download = 'dabix_ai_video.mp4';
-            link.click();
+            const vUrl = document.getElementById('v-player').src;
+            if(!vUrl) return alert("Pehle video banayein!");
+            const a = document.createElement('a');
+            a.href = vUrl;
+            a.download = 'dabix_video.mp4';
+            a.click();
         }
 
         function share() {
             download();
             setTimeout(() => { window.location.href = "instagram://camera"; }, 2000);
-        }
-
-        function pay() {
-            new Razorpay({ key: "rzp_test_SPotf8L7S7I5pS", amount: 19900, name: "Dabix Pro Suite", handler: function(r){ alert("All Features Unlocked!"); } }).open();
         }
     </script>
 </body>
