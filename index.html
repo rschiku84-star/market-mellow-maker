@@ -17,7 +17,6 @@
         .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #output-zone { width: 100%; height: 480px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); position: relative; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .music-ctrl { margin: 15px 0; font-size: 14px; color: var(--gold); display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
@@ -31,17 +30,13 @@
         </div>
 
         <div id="shopPanel">
-            <input type="text" id="pName" placeholder="Product Name (iPhone, Shoes...)">
+            <input type="text" id="pName" placeholder="Product Name">
             <input type="text" id="pPrice" placeholder="Price (₹999)">
             <input type="text" id="pDisc" placeholder="Discount (20% OFF)">
         </div>
 
         <div id="creatorPanel" style="display:none;">
-            <textarea id="storyTxt" rows="3" placeholder="Write story/script... AI will voice it!"></textarea>
-        </div>
-
-        <div class="music-ctrl">
-            <input type="checkbox" id="bgMusic" checked> Background Music Enable 🎵
+            <textarea id="storyTxt" rows="3" placeholder="Write story/script..."></textarea>
         </div>
 
         <button class="main-btn" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
@@ -58,8 +53,6 @@
         <button class="main-btn" style="background:var(--gold); margin-top:20px;" onclick="pay()">💎 PRO ACTIVATION (₹199)</button>
     </div>
 
-    <audio id="m-track" loop src="https://www.bensound.com/bensound-music/bensound-epic.mp3"></audio>
-
     <script>
         let mode = 'shop';
         function setMode(m) {
@@ -73,58 +66,56 @@
         async function generate() {
             const v = document.getElementById('v-player');
             const zone = document.getElementById('output-zone');
-            const music = document.getElementById('m-track');
             
-            let q = mode == 'shop' ? "shopping" : "motivation";
+            let query = mode == 'shop' ? "luxury shopping" : "motivation";
             let msg = mode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
-            if(!msg) return alert("Pehle details bhariye!");
+            if(!msg) return alert("Pehle kuch likho!");
 
             zone.style.display = 'block';
-            if(document.getElementById('bgMusic').checked) { music.volume = 0.2; music.play(); }
 
-            // VIDEO FIX: Directly fetching and playing with error handling
+            // FORCE VIDEO FETCH
+            const VIDEO_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; 
             try {
-                const res = await fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
-                    headers: { Authorization: "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav" }
+                const response = await fetch(`https://api.pexels.com/videos/search?query=${query}&per_page=1`, {
+                    method: 'GET',
+                    headers: { 'Authorization': VIDEO_KEY }
                 });
-                const data = await res.json();
-                v.src = data.videos[0].video_files[0].link;
-                v.load();
-                v.play();
-                responsiveVoice.speak(msg, "Hindi Male");
+                const data = await response.json();
+                if(data.videos.length > 0) {
+                    v.src = data.videos[0].video_files[0].link;
+                    v.play();
+                    responsiveVoice.speak(msg, "Hindi Male");
+                }
             } catch(e) {
-                alert("Video server down, please try again!");
+                alert("Video Engine Error. Check internet.");
             }
         }
 
-        // PAYMENT FIX: Correct Razorpay Popup Logic
         function pay() {
-            var options = {
-                "key": "rzp_test_SPotf8L7S7I5pS", 
-                "amount": "19900", 
-                "name": "Dabix Pro Suite",
-                "description": "Unlock Full AI Automation",
-                "handler": function(response){
-                    alert("Payment Successful! ID: " + response.razorpay_payment_id);
-                },
-                "theme": { "color": "#00f2ff" }
-            };
-            var rzp = new Razorpay(options);
-            rzp.open();
+            // FORCE PAYMENT POPUP
+            const PAY_KEY = "rzp_test_SPotf8L7S7I5pS";
+            try {
+                var options = {
+                    "key": PAY_KEY,
+                    "amount": "19900",
+                    "name": "Dabix Pro",
+                    "handler": function(res){ alert("Success: " + res.razorpay_payment_id); },
+                    "theme": { "color": "#00f2ff" }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } catch(e) {
+                alert("Razorpay not loaded. Please refresh.");
+            }
         }
 
         function download() {
             const vUrl = document.getElementById('v-player').src;
-            if(!vUrl) return alert("Pehle video banayein!");
-            const a = document.createElement('a');
-            a.href = vUrl;
-            a.download = 'dabix_video.mp4';
-            a.click();
+            if(vUrl) window.open(vUrl, '_blank');
         }
 
         function share() {
-            download();
-            setTimeout(() => { window.location.href = "instagram://camera"; }, 2000);
+            window.location.href = "instagram://camera";
         }
     </script>
 </body>
