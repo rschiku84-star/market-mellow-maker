@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>DABIX MASTER V9</title>
+<title>DABIX MASTER V11</title>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <style>
+
 body{
 background:#0b0b0b;
 color:white;
@@ -20,7 +19,7 @@ text-align:center;
 padding:20px;
 }
 
-.card{
+.container{
 max-width:420px;
 margin:auto;
 background:#161616;
@@ -28,24 +27,9 @@ padding:20px;
 border-radius:20px;
 }
 
-.tabs{
-display:flex;
-gap:8px;
-margin-bottom:10px;
-}
-
-.tab{
-flex:1;
-padding:10px;
-border:none;
-border-radius:10px;
-background:#333;
-color:white;
-}
-
 input{
 width:100%;
-padding:12px;
+padding:10px;
 margin:6px 0;
 border-radius:10px;
 border:none;
@@ -58,14 +42,18 @@ width:100%;
 padding:12px;
 border:none;
 border-radius:10px;
-margin-top:8px;
-cursor:pointer;
+margin-top:6px;
 }
 
-.product{
+.videoCard{
 background:#1f1f1f;
 padding:10px;
 margin-top:10px;
+border-radius:10px;
+}
+
+video{
+width:100%;
 border-radius:10px;
 }
 
@@ -74,144 +62,44 @@ width:100%;
 border-radius:10px;
 }
 
-video{
-width:100%;
-margin-top:10px;
-border-radius:10px;
-}
-
-#map{
-height:250px;
-margin-top:10px;
-border-radius:10px;
-}
 </style>
+
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
 
-<h2>DABIX MASTER V9</h2>
+<h2>DABIX MASTER V11</h2>
 
-<div id="loginBox">
-
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-<button onclick="register()">Register</button>
-
-</div>
-
-<div id="app" style="display:none">
-
-<div class="tabs">
-<button onclick="setMode('shop')">Shop</button>
-<button onclick="setMode('creator')">Creator</button>
-<button onclick="setMode('map')">Nearby</button>
-<button onclick="setMode('orders')">Orders</button>
-</div>
-
-<div id="shopMode">
+<h3>Shop Upload</h3>
 
 <input id="pName" placeholder="Product Name">
+
 <input id="pPrice" placeholder="Price">
 
-<input type="file" id="imageUpload">
+<input type="file" id="imgUpload">
 
 <img id="preview">
 
-<button onclick="saveProduct()">Save Product</button>
+<button onclick="uploadProduct()">Upload Product</button>
 
-</div>
+<h3>Creator Feed</h3>
 
-<div id="creatorMode" style="display:none">
-
-<input id="reelText" placeholder="Reel Text">
-
-<button onclick="generateReel()">Generate Reel</button>
-
-<video id="video" controls></video>
-
-</div>
-
-<div id="mapMode" style="display:none">
-
-<div id="map"></div>
-
-</div>
-
-<div id="ordersMode" style="display:none">
+<div id="feed"></div>
 
 <h3>Orders</h3>
+
 <div id="orders"></div>
-
-</div>
-
-<h3>Products</h3>
-
-<div id="products"></div>
-
-<button onclick="checkout()">Checkout</button>
-
-</div>
 
 </div>
 
 <script>
 
-let users=JSON.parse(localStorage.getItem("users"))||[]
 let products=JSON.parse(localStorage.getItem("products"))||[]
 let orders=JSON.parse(localStorage.getItem("orders"))||[]
 
-let cart=[]
-
-function register(){
-
-users.push({u:user.value,p:pass.value})
-
-localStorage.setItem("users",JSON.stringify(users))
-
-alert("Registered")
-
-}
-
-function login(){
-
-let found=users.find(x=>x.u===user.value && x.p===pass.value)
-
-if(found){
-
-loginBox.style.display="none"
-app.style.display="block"
-
-renderProducts()
-renderOrders()
-
-}else{
-
-alert("Login failed")
-
-}
-
-}
-
-function setMode(m){
-
-shopMode.style.display="none"
-creatorMode.style.display="none"
-mapMode.style.display="none"
-ordersMode.style.display="none"
-
-if(m==="shop")shopMode.style.display="block"
-if(m==="creator")creatorMode.style.display="block"
-if(m==="map")mapMode.style.display="block"
-if(m==="orders")ordersMode.style.display="block"
-
-}
-
-imageUpload.onchange=function(e){
+imgUpload.onchange=function(e){
 
 let file=e.target.files[0]
 
@@ -227,126 +115,29 @@ reader.readAsDataURL(file)
 
 }
 
-function saveProduct(){
+function uploadProduct(){
 
-let p={
+let name=pName.value
+let price=pPrice.value
+let img=preview.src
 
-name:pName.value,
-price:pPrice.value,
-img:preview.src
-
-}
-
-products.push(p)
-
-localStorage.setItem("products",JSON.stringify(products))
-
-renderProducts()
+createVideoFromImage(img,name,price)
 
 }
 
-function renderProducts(){
-
-productsDiv.innerHTML=""
-
-products.forEach((p,i)=>{
-
-productsDiv.innerHTML+=`
-
-<div class="product">
-
-<img src="${p.img}">
-<h3>${p.name}</h3>
-<p>₹${p.price}</p>
-
-<button onclick="addCart(${i})">Add to Cart</button>
-
-</div>
-
-`
-
-})
-
-}
-
-function addCart(i){
-
-cart.push(products[i])
-
-alert("Added")
-
-}
-
-function checkout(){
-
-let total=0
-
-cart.forEach(p=>total+=Number(p.price))
-
-if(total===0){
-
-alert("Cart empty")
-
-return
-
-}
-
-orders.push({items:cart,total})
-
-localStorage.setItem("orders",JSON.stringify(orders))
-
-renderOrders()
-
-var options={
-
-key:"YOUR_RAZORPAY_KEY",
-amount:total*100,
-currency:"INR",
-name:"DABIX MASTER",
-description:"Order Payment"
-
-}
-
-new Razorpay(options).open()
-
-}
-
-function renderOrders(){
-
-ordersDiv.innerHTML=""
-
-orders.forEach(o=>{
-
-ordersDiv.innerHTML+=`
-
-<div class="product">
-
-<p>Order ₹${o.total}</p>
-
-</div>
-
-`
-
-})
-
-}
-
-function generateReel(){
+function createVideoFromImage(imgSrc,name,price){
 
 let canvas=document.createElement("canvas")
-
 canvas.width=360
 canvas.height=640
 
 let ctx=canvas.getContext("2d")
 
-ctx.fillStyle="black"
-ctx.fillRect(0,0,360,640)
+let img=new Image()
 
-ctx.fillStyle="white"
-ctx.font="28px sans-serif"
+img.src=imgSrc
 
-ctx.fillText(reelText.value,40,300)
+img.onload=function(){
 
 let stream=canvas.captureStream(30)
 
@@ -358,27 +149,153 @@ rec.ondataavailable=e=>chunks.push(e.data)
 
 rec.onstop=()=>{
 
-video.src=URL.createObjectURL(new Blob(chunks,{type:"video/webm"}))
+let blob=new Blob(chunks,{type:"video/webm"})
+let url=URL.createObjectURL(blob)
+
+let product={
+
+name:name,
+price:price,
+video:url,
+likes:0
+
+}
+
+products.push(product)
+
+localStorage.setItem("products",JSON.stringify(products))
+
+renderFeed()
 
 }
 
 rec.start()
 
-setTimeout(()=>rec.stop(),30000)
+let y=600
+
+let anim=setInterval(()=>{
+
+ctx.clearRect(0,0,360,640)
+
+ctx.drawImage(img,0,0,360,640)
+
+ctx.fillStyle="white"
+ctx.font="28px sans-serif"
+
+ctx.fillText(name,40,y)
+
+y-=2
+
+if(y<300)y=300
+
+},30)
+
+setTimeout(()=>{
+
+clearInterval(anim)
+
+rec.stop()
+
+},30000)
 
 }
 
-navigator.geolocation.getCurrentPosition(pos=>{
+}
 
-let map=L.map('map').setView([pos.coords.latitude,pos.coords.longitude],13)
+function renderFeed(){
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
+feed.innerHTML=""
 
-L.marker([pos.coords.latitude,pos.coords.longitude]).addTo(map)
+products.forEach((p,i)=>{
+
+feed.innerHTML+=`
+
+<div class="videoCard">
+
+<video controls loop src="${p.video}"></video>
+
+<h3>${p.name}</h3>
+
+<p>₹${p.price}</p>
+
+<button onclick="like(${i})">❤️ ${p.likes}</button>
+
+<button onclick="buy(${i})">Buy</button>
+
+</div>
+
+`
 
 })
+
+}
+
+function like(i){
+
+products[i].likes++
+
+localStorage.setItem("products",JSON.stringify(products))
+
+renderFeed()
+
+}
+
+function buy(i){
+
+let price=products[i].price
+
+var options={
+
+key:"YOUR_RAZORPAY_KEY",
+
+amount:price*100,
+
+currency:"INR",
+
+name:"DABIX MASTER",
+
+description:"Product Purchase"
+
+}
+
+var rzp=new Razorpay(options)
+
+rzp.open()
+
+orders.push(products[i])
+
+localStorage.setItem("orders",JSON.stringify(orders))
+
+renderOrders()
+
+}
+
+function renderOrders(){
+
+orders.innerHTML=""
+
+orders.forEach(o=>{
+
+orders.innerHTML+=`
+
+<div class="videoCard">
+
+<p>${o.name} ₹${o.price}</p>
+
+</div>
+
+`
+
+})
+
+}
+
+renderFeed()
+
+renderOrders()
 
 </script>
 
 </body>
+
 </html>
