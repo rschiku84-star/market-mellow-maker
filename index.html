@@ -3,71 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dabix AI Studio</title>
+    <title>Dabix AI Studio - All-in-One</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: sans-serif; text-align: center; padding: 15px; }
-        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
-        textarea { width: 100%; padding: 15px; border-radius: 15px; background: #1a1a1a; color: #fff; border: 1px solid #444; margin-bottom: 15px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; }
-        #videoBox { width: 100%; height: 450px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); overflow: hidden; }
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; text-align: center; margin: 0; }
+        .card { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #222; padding: 5px; border-radius: 15px; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; }
+        .active { background: var(--neon); color: #000; }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; }
+        #output-zone { width: 100%; height: 480px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); position: relative; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; }
+        .price-tag { position: absolute; bottom: 80px; right: 20px; background: var(--gold); color: #000; padding: 10px 15px; border-radius: 50px; font-weight: 900; font-size: 18px; animation: bounce 1s infinite; display: none; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        #h-tag { font-size: 13px; color: var(--neon); margin-top: 10px; font-weight: bold; }
+        .music-ctrl { margin-top: 10px; font-size: 14px; color: var(--gold); }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>🚀 DABIX AI STUDIO</h2>
-        <textarea id="scriptTxt" rows="3" placeholder="Yahan apni viral script likhein..."></textarea>
+        <h2 style="color:var(--neon)">🚀 DABIX MASTER STUDIO</h2>
         
-        <button class="btn" onclick="makeVideo()">🎬 GENERATE AI VIDEO</button>
-        
-        <div id="videoBox">
-            <video id="mainVid" loop playsinline></video>
+        <div class="tabs">
+            <button id="b1" class="tab-btn active" onclick="setMode('shop')">Shop Mode</button>
+            <button id="b2" class="tab-btn" onclick="setMode('creator')">Creator Mode</button>
         </div>
 
-        <button class="btn" style="background:#ffcc00; margin-top:20px;" onclick="startPay()">💳 UNLOCK FULL APP (₹199)</button>
+        <div id="shopPanel">
+            <input type="text" id="pName" placeholder="Product Name (iPhone, Shoes...)">
+            <input type="text" id="pPrice" placeholder="Price (₹999)">
+            <input type="text" id="pDisc" placeholder="Discount (20% OFF)">
+        </div>
+
+        <div id="creatorPanel" style="display:none;">
+            <textarea id="storyTxt" rows="3" placeholder="Write story/script... AI will voice it!"></textarea>
+        </div>
+
+        <div class="music-ctrl">
+            <input type="checkbox" id="bgMusic" checked> Background Music Enable 🎵
+        </div>
+
+        <button class="main-btn" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
+
+        <div id="output-zone">
+            <video id="v-player" loop playsinline></video>
+            <div id="p-label" class="price-tag"></div>
+        </div>
+        <div id="h-tag"></div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button class="main-btn" style="background:#222; color:#fff;" onclick="download()">📥 SAVE</button>
+            <button class="main-btn" style="background:#E1306C; color:#fff;" onclick="share()">📸 INSTA</button>
+        </div>
+
+        <button class="main-btn" style="background:var(--gold); margin-top:20px;" onclick="pay()">💎 PRO ACTIVATION (₹199)</button>
     </div>
 
-    <script>
-        async function makeVideo() {
-            const txt = document.getElementById('scriptTxt').value;
-            if(!txt) return alert("Bhai, script toh likho!");
+    <audio id="m-track" loop src="https://www.bensound.com/bensound-music/bensound-epic.mp3"></audio>
 
-            document.getElementById('videoBox').style.display = 'block';
-            
-            // Fixed Video Engine (Using your Pexels Key)
-            const pexelsKey = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
-            try {
-                const res = await fetch('https://api.pexels.com/videos/search?query=motivation&per_page=1', {
-                    headers: { Authorization: pexelsKey }
-                });
-                const data = await res.json();
-                const video = document.getElementById('mainVid');
-                video.src = data.videos[0].video_files[0].link;
-                video.play();
-                
-                // Voice Engine Fix
-                responsiveVoice.speak(txt, "Hindi Male");
-            } catch(e) {
-                alert("Video load nahi hui, API check karein.");
-            }
+    <script>
+        let mode = 'shop';
+        function setMode(m) {
+            mode = m;
+            document.getElementById('b1').className = m=='shop'?'tab-btn active':'tab-btn';
+            document.getElementById('b2').className = m=='creator'?'tab-btn active':'tab-btn';
+            document.getElementById('shopPanel').style.display = m=='shop'?'block':'none';
+            document.getElementById('creatorPanel').style.display = m=='creator'?'block':'none';
         }
 
-        function startPay() {
-            // Fixed Razorpay Logic
-            var options = {
-                "key": "rzp_test_SPotf8L7S7I5pS", // Isko apni live key se badal lena baad mein
-                "amount": "19900", 
-                "name": "Dabix AI Studio",
-                "handler": function(response) {
-                    alert("Shabaash! Payment Success ID: " + response.razorpay_payment_id);
-                }
-            };
-            var rzp = new Razorpay(options);
-            rzp.open();
+        async function generate() {
+            const v = document.getElementById('v-player');
+            const p = document.getElementById('p-label');
+            const h = document.getElementById('h-tag');
+            const music = document.getElementById('m-track');
+            document.getElementById('output-zone').style.display = 'block';
+
+            let q = mode == 'shop' ? "luxury" : "nature";
+            let msg = mode == 'shop' ? document.getElementById('pName').value + " available for " + document.getElementById('pPrice').value : document.getElementById('storyTxt').value;
+
+            if(mode == 'shop') {
+                p.style.display = 'block';
+                p.innerText = document.getElementById('pPrice').value + " (" + document.getElementById('pDisc').value + ")";
+                h.innerText = "#shop #offer #viral #dabixAI";
+            } else {
+                p.style.display = 'none';
+                h.innerText = "#motivation #viral #ai #trending2024";
+            }
+
+            // Start Music if enabled
+            if(document.getElementById('bgMusic').checked) { music.volume = 0.2; music.play(); }
+
+            const res = await fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
+                headers: { Authorization: "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav" }
+            });
+            const data = await res.json();
+            v.src = data.videos[0].video_files[0].link;
+            v.play();
+            responsiveVoice.speak(msg, "Hindi Male");
+        }
+
+        function download() {
+            const link = document.createElement('a');
+            link.href = document.getElementById('v-player').src;
+            link.download = 'dabix_ai_video.mp4';
+            link.click();
+        }
+
+        function share() {
+            download();
+            setTimeout(() => { window.location.href = "instagram://camera"; }, 2000);
+        }
+
+        function pay() {
+            new Razorpay({ key: "rzp_test_SPotf8L7S7I5pS", amount: 19900, name: "Dabix Pro Suite", handler: function(r){ alert("All Features Unlocked!"); } }).open();
         }
     </script>
 </body>
