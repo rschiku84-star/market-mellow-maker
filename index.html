@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>DABIX MASTER V4</title>
+<title>DABIX MASTER V9</title>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<style>
 body{
 background:#0b0b0b;
 color:white;
@@ -23,20 +24,14 @@ padding:20px;
 max-width:420px;
 margin:auto;
 background:#161616;
-padding:25px;
+padding:20px;
 border-radius:20px;
-}
-
-.title{
-font-size:24px;
-margin-bottom:15px;
-font-weight:bold;
 }
 
 .tabs{
 display:flex;
-gap:10px;
-margin-bottom:15px;
+gap:8px;
+margin-bottom:10px;
 }
 
 .tab{
@@ -46,18 +41,12 @@ border:none;
 border-radius:10px;
 background:#333;
 color:white;
-cursor:pointer;
-}
-
-.active{
-background:#55e6ee;
-color:black;
 }
 
 input{
 width:100%;
 padding:12px;
-margin:8px 0;
+margin:6px 0;
 border-radius:10px;
 border:none;
 background:#202020;
@@ -66,103 +55,159 @@ color:white;
 
 button{
 width:100%;
-padding:14px;
+padding:12px;
 border:none;
-border-radius:12px;
-margin-top:10px;
-font-weight:bold;
+border-radius:10px;
+margin-top:8px;
 cursor:pointer;
 }
 
-.save{background:#333;color:white;}
-.gen{background:#55e6ee;color:black;}
-.pay{background:#ffc107;color:black;}
+.product{
+background:#1f1f1f;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+}
 
 img{
 width:100%;
-margin-top:10px;
 border-radius:10px;
 }
 
 video{
 width:100%;
-margin-top:15px;
-border-radius:12px;
-}
-
-.product{
-background:#1f1f1f;
 margin-top:10px;
-padding:10px;
 border-radius:10px;
 }
 
+#map{
+height:250px;
+margin-top:10px;
+border-radius:10px;
+}
 </style>
-
 </head>
 
 <body>
 
 <div class="card">
 
-<div class="title">🔥 DABIX MASTER</div>
+<h2>DABIX MASTER V9</h2>
 
-<div class="tabs">
-<button id="shopTab" class="tab active" onclick="setMode('shop')">Shop</button>
-<button id="creatorTab" class="tab" onclick="setMode('creator')">Creator</button>
+<div id="loginBox">
+
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+<button onclick="register()">Register</button>
+
 </div>
 
-<div id="shopInputs">
+<div id="app" style="display:none">
+
+<div class="tabs">
+<button onclick="setMode('shop')">Shop</button>
+<button onclick="setMode('creator')">Creator</button>
+<button onclick="setMode('map')">Nearby</button>
+<button onclick="setMode('orders')">Orders</button>
+</div>
+
+<div id="shopMode">
 
 <input id="pName" placeholder="Product Name">
 <input id="pPrice" placeholder="Price">
+
 <input type="file" id="imageUpload">
 
 <img id="preview">
 
-<button class="save" onclick="saveProduct()">Save Product</button>
-
-<button class="pay" onclick="payNow()">Pay</button>
+<button onclick="saveProduct()">Save Product</button>
 
 </div>
 
-<div id="creatorInputs" style="display:none">
+<div id="creatorMode" style="display:none">
 
 <input id="reelText" placeholder="Reel Text">
 
-<button class="gen" onclick="generateReel()">Generate Reel</button>
+<button onclick="generateReel()">Generate Reel</button>
 
 <video id="video" controls></video>
 
 </div>
 
+<div id="mapMode" style="display:none">
+
+<div id="map"></div>
+
+</div>
+
+<div id="ordersMode" style="display:none">
+
+<h3>Orders</h3>
+<div id="orders"></div>
+
+</div>
+
+<h3>Products</h3>
+
 <div id="products"></div>
+
+<button onclick="checkout()">Checkout</button>
+
+</div>
 
 </div>
 
 <script>
 
-let mode="shop"
-let products=[]
+let users=JSON.parse(localStorage.getItem("users"))||[]
+let products=JSON.parse(localStorage.getItem("products"))||[]
+let orders=JSON.parse(localStorage.getItem("orders"))||[]
+
+let cart=[]
+
+function register(){
+
+users.push({u:user.value,p:pass.value})
+
+localStorage.setItem("users",JSON.stringify(users))
+
+alert("Registered")
+
+}
+
+function login(){
+
+let found=users.find(x=>x.u===user.value && x.p===pass.value)
+
+if(found){
+
+loginBox.style.display="none"
+app.style.display="block"
+
+renderProducts()
+renderOrders()
+
+}else{
+
+alert("Login failed")
+
+}
+
+}
 
 function setMode(m){
 
-mode=m
+shopMode.style.display="none"
+creatorMode.style.display="none"
+mapMode.style.display="none"
+ordersMode.style.display="none"
 
-document.getElementById("shopInputs").style.display=
-m==="shop"?"block":"none"
-
-document.getElementById("creatorInputs").style.display=
-m==="creator"?"block":"none"
-
-shopTab.classList.remove("active")
-creatorTab.classList.remove("active")
-
-if(m==="shop"){
-shopTab.classList.add("active")
-}else{
-creatorTab.classList.add("active")
-}
+if(m==="shop")shopMode.style.display="block"
+if(m==="creator")creatorMode.style.display="block"
+if(m==="map")mapMode.style.display="block"
+if(m==="orders")ordersMode.style.display="block"
 
 }
 
@@ -184,13 +229,17 @@ reader.readAsDataURL(file)
 
 function saveProduct(){
 
-let name=document.getElementById("pName").value
-let price=document.getElementById("pPrice").value
-let img=preview.src
+let p={
 
-let product={name,price,img}
+name:pName.value,
+price:pPrice.value,
+img:preview.src
 
-products.push(product)
+}
+
+products.push(p)
+
+localStorage.setItem("products",JSON.stringify(products))
 
 renderProducts()
 
@@ -198,13 +247,11 @@ renderProducts()
 
 function renderProducts(){
 
-let div=document.getElementById("products")
+productsDiv.innerHTML=""
 
-div.innerHTML=""
+products.forEach((p,i)=>{
 
-products.forEach(p=>{
-
-div.innerHTML+=`
+productsDiv.innerHTML+=`
 
 <div class="product">
 
@@ -212,7 +259,69 @@ div.innerHTML+=`
 <h3>${p.name}</h3>
 <p>₹${p.price}</p>
 
-<button onclick="buy(${p.price})">Buy</button>
+<button onclick="addCart(${i})">Add to Cart</button>
+
+</div>
+
+`
+
+})
+
+}
+
+function addCart(i){
+
+cart.push(products[i])
+
+alert("Added")
+
+}
+
+function checkout(){
+
+let total=0
+
+cart.forEach(p=>total+=Number(p.price))
+
+if(total===0){
+
+alert("Cart empty")
+
+return
+
+}
+
+orders.push({items:cart,total})
+
+localStorage.setItem("orders",JSON.stringify(orders))
+
+renderOrders()
+
+var options={
+
+key:"YOUR_RAZORPAY_KEY",
+amount:total*100,
+currency:"INR",
+name:"DABIX MASTER",
+description:"Order Payment"
+
+}
+
+new Razorpay(options).open()
+
+}
+
+function renderOrders(){
+
+ordersDiv.innerHTML=""
+
+orders.forEach(o=>{
+
+ordersDiv.innerHTML+=`
+
+<div class="product">
+
+<p>Order ₹${o.total}</p>
 
 </div>
 
@@ -237,66 +346,37 @@ ctx.fillRect(0,0,360,640)
 ctx.fillStyle="white"
 ctx.font="28px sans-serif"
 
-let text=document.getElementById("reelText").value
-
-ctx.fillText(text,40,300)
+ctx.fillText(reelText.value,40,300)
 
 let stream=canvas.captureStream(30)
 
-let recorder=new MediaRecorder(stream)
+let rec=new MediaRecorder(stream)
 
 let chunks=[]
 
-recorder.ondataavailable=e=>chunks.push(e.data)
+rec.ondataavailable=e=>chunks.push(e.data)
 
-recorder.onstop=()=>{
+rec.onstop=()=>{
 
-let blob=new Blob(chunks,{type:"video/webm"})
-let url=URL.createObjectURL(blob)
-
-document.getElementById("video").src=url
+video.src=URL.createObjectURL(new Blob(chunks,{type:"video/webm"}))
 
 }
 
-recorder.start()
+rec.start()
 
-setTimeout(()=>{
-
-recorder.stop()
-
-},30000)
+setTimeout(()=>rec.stop(),30000)
 
 }
 
-function buy(price){
+navigator.geolocation.getCurrentPosition(pos=>{
 
-var options={
+let map=L.map('map').setView([pos.coords.latitude,pos.coords.longitude],13)
 
-key:"YOUR_RAZORPAY_KEY",
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map)
 
-amount:price*100,
+L.marker([pos.coords.latitude,pos.coords.longitude]).addTo(map)
 
-currency:"INR",
-
-name:"DABIX MASTER",
-
-description:"Product Payment"
-
-}
-
-var rzp=new Razorpay(options)
-
-rzp.open()
-
-}
-
-function payNow(){
-
-let price=document.getElementById("pPrice").value
-
-buy(price)
-
-}
+})
 
 </script>
 
