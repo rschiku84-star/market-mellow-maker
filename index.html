@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>DABIX MASTER V3</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>DABIX MASTER V4</title>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 <style>
 
@@ -27,6 +25,33 @@ margin:auto;
 background:#161616;
 padding:25px;
 border-radius:20px;
+}
+
+.title{
+font-size:24px;
+margin-bottom:15px;
+font-weight:bold;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.tab{
+flex:1;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#333;
+color:white;
+cursor:pointer;
+}
+
+.active{
+background:#55e6ee;
+color:black;
 }
 
 input{
@@ -49,14 +74,20 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.gen{background:#55e6ee;color:black;}
 .save{background:#333;color:white;}
+.gen{background:#55e6ee;color:black;}
 .pay{background:#ffc107;color:black;}
 
 img{
 width:100%;
 margin-top:10px;
 border-radius:10px;
+}
+
+video{
+width:100%;
+margin-top:15px;
+border-radius:12px;
 }
 
 .product{
@@ -67,26 +98,43 @@ border-radius:10px;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="card">
 
-<h2>🔥 DABIX MASTER V3</h2>
+<div class="title">🔥 DABIX MASTER</div>
+
+<div class="tabs">
+<button id="shopTab" class="tab active" onclick="setMode('shop')">Shop</button>
+<button id="creatorTab" class="tab" onclick="setMode('creator')">Creator</button>
+</div>
+
+<div id="shopInputs">
 
 <input id="pName" placeholder="Product Name">
 <input id="pPrice" placeholder="Price">
-
 <input type="file" id="imageUpload">
 
 <img id="preview">
 
-<button class="save" onclick="saveProduct()">🛒 Save Product</button>
+<button class="save" onclick="saveProduct()">Save Product</button>
 
-<button class="gen" onclick="generateReel()">🎬 Generate Reel</button>
+<button class="pay" onclick="payNow()">Pay</button>
 
-<button class="pay" onclick="payNow()">💳 Pay</button>
+</div>
+
+<div id="creatorInputs" style="display:none">
+
+<input id="reelText" placeholder="Reel Text">
+
+<button class="gen" onclick="generateReel()">Generate Reel</button>
+
+<video id="video" controls></video>
+
+</div>
 
 <div id="products"></div>
 
@@ -94,15 +142,29 @@ border-radius:10px;
 
 <script>
 
-const firebaseConfig={
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-projectId:"YOUR_PROJECT"
+let mode="shop"
+let products=[]
+
+function setMode(m){
+
+mode=m
+
+document.getElementById("shopInputs").style.display=
+m==="shop"?"block":"none"
+
+document.getElementById("creatorInputs").style.display=
+m==="creator"?"block":"none"
+
+shopTab.classList.remove("active")
+creatorTab.classList.remove("active")
+
+if(m==="shop"){
+shopTab.classList.add("active")
+}else{
+creatorTab.classList.add("active")
 }
 
-firebase.initializeApp(firebaseConfig)
-
-const db=firebase.firestore()
+}
 
 imageUpload.onchange=function(e){
 
@@ -126,49 +188,105 @@ let name=document.getElementById("pName").value
 let price=document.getElementById("pPrice").value
 let img=preview.src
 
-db.collection("products").add({
+let product={name,price,img}
 
-name:name,
-price:price,
-img:img
+products.push(product)
 
-})
-
-loadProducts()
+renderProducts()
 
 }
 
-function loadProducts(){
+function renderProducts(){
 
-db.collection("products").get().then(snap=>{
+let div=document.getElementById("products")
 
-products.innerHTML=""
+div.innerHTML=""
 
-snap.forEach(doc=>{
+products.forEach(p=>{
 
-let p=doc.data()
+div.innerHTML+=`
 
-products.innerHTML+=`
 <div class="product">
 
 <img src="${p.img}">
 <h3>${p.name}</h3>
 <p>₹${p.price}</p>
 
-</div>
-`
+<button onclick="buy(${p.price})">Buy</button>
 
-})
+</div>
+
+`
 
 })
 
 }
 
-loadProducts()
-
 function generateReel(){
 
-alert("Reel generator connected")
+let canvas=document.createElement("canvas")
+
+canvas.width=360
+canvas.height=640
+
+let ctx=canvas.getContext("2d")
+
+ctx.fillStyle="black"
+ctx.fillRect(0,0,360,640)
+
+ctx.fillStyle="white"
+ctx.font="28px sans-serif"
+
+let text=document.getElementById("reelText").value
+
+ctx.fillText(text,40,300)
+
+let stream=canvas.captureStream(30)
+
+let recorder=new MediaRecorder(stream)
+
+let chunks=[]
+
+recorder.ondataavailable=e=>chunks.push(e.data)
+
+recorder.onstop=()=>{
+
+let blob=new Blob(chunks,{type:"video/webm"})
+let url=URL.createObjectURL(blob)
+
+document.getElementById("video").src=url
+
+}
+
+recorder.start()
+
+setTimeout(()=>{
+
+recorder.stop()
+
+},30000)
+
+}
+
+function buy(price){
+
+var options={
+
+key:"YOUR_RAZORPAY_KEY",
+
+amount:price*100,
+
+currency:"INR",
+
+name:"DABIX MASTER",
+
+description:"Product Payment"
+
+}
+
+var rzp=new Razorpay(options)
+
+rzp.open()
 
 }
 
@@ -176,17 +294,7 @@ function payNow(){
 
 let price=document.getElementById("pPrice").value
 
-var options={
-key:"YOUR_RAZORPAY_KEY",
-amount:price*100,
-currency:"INR",
-name:"DABIX MASTER",
-description:"Product Payment"
-}
-
-var rzp=new Razorpay(options)
-
-rzp.open()
+buy(price)
 
 }
 
