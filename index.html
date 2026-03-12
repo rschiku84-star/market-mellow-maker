@@ -7,22 +7,25 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; text-align: center; margin: 0; }
-        .card { max-width: 480px; margin: auto; background: #111; padding: 20px; border-radius: 25px; border: 1px solid #333; }
+        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; --card-bg: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; padding: 15px; text-align: center; margin: 0; }
+        .card { max-width: 450px; margin: auto; background: var(--card-bg); padding: 25px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #222; padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; }
-        .active { background: var(--neon); color: #000; }
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; }
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        #output-zone { width: 100%; height: 480px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); position: relative; overflow: hidden; }
-        video { width: 100%; height: 100%; object-fit: cover; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; font-size: 14px; }
+        .file-input { background: #222; border: 1px dashed var(--neon); color: var(--neon); cursor: pointer; }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
+        .main-btn:active { transform: scale(0.98); }
+        #output-zone { width: 100%; height: 450px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); overflow: hidden; position: relative; }
+        video, img { width: 100%; height: 100%; object-fit: cover; }
+        .hashtag-box { margin-top: 10px; background: #222; padding: 10px; border-radius: 10px; font-size: 12px; color: var(--neon); text-align: left; display: none; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2 style="color:var(--neon)">🚀 DABIX MASTER STUDIO</h2>
+        <h2 style="color:var(--neon); margin-top:0;">🚀 DABIX MASTER STUDIO</h2>
         
         <div class="tabs">
             <button id="b1" class="tab-btn active" onclick="setMode('shop')">Shop Mode</button>
@@ -30,20 +33,29 @@
         </div>
 
         <div id="shopPanel">
-            <input type="text" id="pName" placeholder="Product Name">
-            <input type="text" id="pPrice" placeholder="Price (₹999)">
-            <input type="text" id="pDisc" placeholder="Discount (20% OFF)">
+            <input type="text" id="pName" placeholder="Product Name (iPhone, Shoes...)">
+            <input type="text" id="pPrice" placeholder="Price (e.g. ₹999)">
+            <input type="file" id="pImage" accept="image/*" class="file-input" onchange="handleImg(this)">
+            <p style="font-size:10px; color:#666;">*Photo upload karke generate dabayein</p>
         </div>
 
         <div id="creatorPanel" style="display:none;">
-            <textarea id="storyTxt" rows="3" placeholder="Apni story likhein..."></textarea>
+            <textarea id="storyTxt" rows="4" placeholder="Apni viral story likhein... AI video aur voice banayega!"></textarea>
+            <select id="musicType">
+                <option value="none">No Music</option>
+                <option value="https://www.bensound.com/bensound-music/bensound-epic.mp3">Epic Motivation</option>
+                <option value="https://www.bensound.com/bensound-music/bensound-energy.mp3">High Energy</option>
+            </select>
         </div>
 
-        <button class="main-btn" onclick="generate()">🎬 GENERATE AI VIDEO</button>
+        <button class="main-btn" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
 
         <div id="output-zone">
-            <video id="v-player" loop playsinline autoplay muted></video>
+            <img id="preview-img" style="display:none;">
+            <video id="v-player" loop playsinline autoplay muted style="display:none;"></video>
         </div>
+
+        <div id="h-box" class="hashtag-box"></div>
 
         <div style="display:flex; gap:10px; margin-top:10px;">
             <button class="main-btn" style="background:#222; color:#fff; flex:1;" onclick="download()">📥 SAVE</button>
@@ -53,8 +65,12 @@
         <button class="main-btn" style="background:var(--gold); margin-top:20px;" onclick="pay()">💎 PRO ACTIVATION (₹199)</button>
     </div>
 
+    <audio id="bg-audio" loop></audio>
+
     <script>
         let mode = 'shop';
+        let userImg = null;
+
         function setMode(m) {
             mode = m;
             document.getElementById('b1').className = m=='shop'?'tab-btn active':'tab-btn';
@@ -63,63 +79,84 @@
             document.getElementById('creatorPanel').style.display = m=='creator'?'block':'none';
         }
 
+        function handleImg(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => { userImg = e.target.result; };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         async function generate() {
             const v = document.getElementById('v-player');
+            const img = document.getElementById('preview-img');
             const zone = document.getElementById('output-zone');
+            const hBox = document.getElementById('h-box');
+            const audio = document.getElementById('bg-audio');
             
-            let q = mode == 'shop' ? "luxury shopping" : "motivation";
-            let msg = mode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
-            
-            if(!msg) { alert("Pehle details bharo bhai!"); return; }
-            zone.style.display = 'block';
+            let text = mode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
+            if(!text) return alert("Pehle details bharo!");
 
-            // PROBLEM SOLVED: Added proper async fetch and error catching
-            const P_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav"; 
-            fetch(`https://api.pexels.com/videos/search?query=${q}&per_page=1`, {
-                headers: { Authorization: P_KEY }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.videos && data.videos.length > 0) {
+            zone.style.display = 'block';
+            hBox.style.display = 'block';
+            hBox.innerHTML = "<b>Hashtags:</b> #dabix #ai #viral #trending " + (mode=='shop' ? "#shopping" : "#motivation");
+
+            // Music Setup
+            if(mode == 'creator' && document.getElementById('musicType').value !== 'none') {
+                audio.src = document.getElementById('musicType').value;
+                audio.volume = 0.2;
+                audio.play();
+            }
+
+            if (mode == 'shop' && userImg) {
+                v.style.display = 'none';
+                img.style.display = 'block';
+                img.src = userImg;
+                responsiveVoice.speak("Doston, check kijiye " + text + ". Iska price hai sirf " + document.getElementById('pPrice').value, "Hindi Male");
+            } else {
+                v.style.display = 'block';
+                img.style.display = 'none';
+                const KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+                // Smart keyword extraction
+                let q = text.split(" ").slice(0, 2).join(" ") || "abstract";
+                
+                try {
+                    const res = await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(q)}&per_page=1`, {
+                        headers: { Authorization: KEY }
+                    });
+                    const data = await res.json();
                     v.src = data.videos[0].video_files[0].link;
-                    v.play().catch(e => console.log("Auto-play blocked, manual play required"));
-                    responsiveVoice.speak(msg, "Hindi Male");
-                } else {
-                    alert("No video found for this topic.");
+                    v.play();
+                    responsiveVoice.speak(text, "Hindi Male");
+                } catch(e) {
+                    v.src = "https://player.vimeo.com/external/403425024.sd.mp4?s=d00465342a731d102e342750e3223f6631b0a793&profile_id=139";
+                    v.play();
+                    responsiveVoice.speak(text, "Hindi Male");
                 }
-            })
-            .catch(err => alert("Video server connection error. Internet check karein."));
+            }
         }
 
         function pay() {
-            // PROBLEM SOLVED: Checking if Razorpay is loaded before running
             if (typeof Razorpay === 'undefined') {
-                alert("Razorpay load ho raha hai... 2 second baad click karein.");
+                alert("Loading... Ek baar page refresh karein agar ye baar-baar aaye.");
                 return;
             }
-
             var options = {
-                "key": "rzp_test_SPotf8L7S7I5pS", 
+                "key": "rzp_test_SPotf8L7S7I5pS",
                 "amount": "19900",
-                "name": "Dabix AI Studio",
-                "description": "Pro Mode Activation",
-                "handler": function(res){ alert("Success: " + res.razorpay_payment_id); },
-                "prefill": { "name": "Manik Chaudhary" },
+                "name": "Dabix Pro Activation",
+                "handler": function(res){ alert("Payment Success! ID: " + res.razorpay_payment_id); },
                 "theme": { "color": "#00f2ff" }
             };
-            var rzp = new Razorpay(options);
-            rzp.on('payment.failed', function (resp){ alert("Oops! " + resp.error.description); });
-            rzp.open();
+            new Razorpay(options).open();
         }
 
         function download() {
-            const src = document.getElementById('v-player').src;
+            const src = userImg || document.getElementById('v-player').src;
             if(src) window.open(src, '_blank');
         }
 
-        function share() {
-            window.location.href = "instagram://camera";
-        }
+        function share() { window.location.href = "instagram://camera"; }
     </script>
 </body>
 </html>
