@@ -7,147 +7,77 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
-        :root { --neon: #00f2ff; --gold: #ffcc00; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; text-align: center; margin: 0; }
-        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,242,255,0.2); }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #222; padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; background: transparent; color: #888; cursor: pointer; font-weight: bold; }
-        .active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-        input, textarea, select { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; }
-        .upload-box { border: 2px dashed var(--neon); padding: 15px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; color: var(--neon); display: block; font-weight: bold; }
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 10px; }
-        #output-zone { width: 100%; height: 400px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); position: relative; overflow: hidden; }
-        video, img { width: 100%; height: 100%; object-fit: cover; }
-        .hashtag-area { font-size: 13px; color: var(--neon); margin-top: 10px; background: #1a1a1a; padding: 10px; border-radius: 10px; display: none; }
+        :root { --neon: #00f2ff; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 15px; }
+        .card { max-width: 450px; margin: auto; background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; background: var(--neon); color: #000; text-transform: uppercase; margin-top: 15px; }
+        textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; background: #1a1a1a; color: #fff; border: 1px solid #444; box-sizing: border-box; font-size: 16px; }
+        #output { width: 100%; height: 420px; background: #000; border-radius: 20px; margin-top: 20px; display: none; border: 2px solid var(--neon); overflow: hidden; }
+        video { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2 style="color:var(--neon)">🚀 DABIX MASTER STUDIO</h2>
+        <h2 style="color:var(--neon)">🚀 DABIX VIDEO ENGINE</h2>
+        <textarea id="storyTxt" rows="5" placeholder="Yahan apni viral story likhein..."></textarea>
         
-        <div class="tabs">
-            <button id="b1" class="tab-btn active" onclick="setMode('shop')">Shop Mode</button>
-            <button id="b2" class="tab-btn" onclick="setMode('creator')">Creator Mode</button>
+        <button class="main-btn" onclick="generateVideo()">🎬 GENERATE VIRAL REEL</button>
+
+        <div id="output">
+            <video id="v-player" loop playsinline autoplay muted></video>
         </div>
 
-        <div id="shopPanel">
-            <input type="text" id="pName" placeholder="Product Name (e.g. Shoes)">
-            <input type="text" id="pPrice" placeholder="Price (e.g. ₹1499)">
-            <label class="upload-box">
-                📷 UPLOAD PRODUCT IMAGE
-                <input type="file" id="pImg" accept="image/*" style="display:none;" onchange="previewImg(this)">
-            </label>
-        </div>
-
-        <div id="creatorPanel" style="display:none;">
-            <textarea id="storyTxt" rows="4" placeholder="Apni puri kahani ya script yahan likhein..."></textarea>
-            <select id="bgMusic">
-                <option value="">Select Music Style</option>
-                <option value="https://www.bensound.com/bensound-music/bensound-epic.mp3">Motivational Epic</option>
-                <option value="https://www.bensound.com/bensound-music/bensound-energy.mp3">Fast Energy</option>
-            </select>
-        </div>
-
-        <button class="main-btn" onclick="runApp()">🎬 GENERATE FINAL REEL</button>
-
-        <div id="output-zone">
-            <img id="img-out" style="display:none;">
-            <video id="vid-out" loop playsinline autoplay muted style="display:none;"></video>
-        </div>
-        
-        <div id="h-tags" class="hashtag-area"></div>
-
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="main-btn" style="background:#222; color:#fff; flex:1;" onclick="downloadContent()">📥 SAVE</button>
-            <button class="main-btn" style="background:#E1306C; color:#fff; flex:1;" onclick="instaGo()">📸 INSTA</button>
-        </div>
-
-        <button class="main-btn" style="background:var(--gold); margin-top:20px;" onclick="startPayment()">💎 ACTIVATE PRO (₹199)</button>
+        <button class="main-btn" style="background:#ffcc00; margin-top:20px;" onclick="startPay()">💎 UNLOCK PRO (₹199)</button>
     </div>
 
-    <audio id="music-player" loop></audio>
-
     <script>
-        let currentMode = 'shop';
-        let productPhoto = null;
+        async function generateVideo() {
+            const v = document.getElementById('v-player');
+            const txt = document.getElementById('storyTxt').value;
+            const zone = document.getElementById('output');
 
-        function setMode(m) {
-            currentMode = m;
-            document.getElementById('b1').className = m=='shop'?'tab-btn active':'tab-btn';
-            document.getElementById('b2').className = m=='creator'?'tab-btn active':'tab-btn';
-            document.getElementById('shopPanel').style.display = m=='shop'?'block':'none';
-            document.getElementById('creatorPanel').style.display = m=='creator'?'block':'none';
-        }
-
-        function previewImg(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => { productPhoto = e.target.result; alert("Image Ready!"); };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        async function runApp() {
-            const v = document.getElementById('vid-out');
-            const i = document.getElementById('img-out');
-            const zone = document.getElementById('output-zone');
-            const ht = document.getElementById('h-tags');
-            const music = document.getElementById('music-player');
-            
-            let content = currentMode == 'shop' ? document.getElementById('pName').value : document.getElementById('storyTxt').value;
-            if(!content) return alert("Pehle details bharo!");
-
+            if(!txt) return alert("Pehle story likho!");
             zone.style.display = 'block';
-            ht.style.display = 'block';
-            ht.innerHTML = "<b>Trending Hashtags:</b> #dabix #viral #trending #reels2026 " + (currentMode=='shop' ? "#buynow" : "#motivation");
 
-            if(currentMode == 'creator' && document.getElementById('bgMusic').value) {
-                music.src = document.getElementById('bgMusic').value;
-                music.volume = 0.2;
-                music.play();
-            }
+            // Voice Engine
+            responsiveVoice.speak(txt, "Hindi Male");
 
-            if(currentMode == 'shop' && productPhoto) {
-                v.style.display = 'none';
-                i.style.display = 'block';
-                i.src = productPhoto;
-                responsiveVoice.speak("Special offer! " + content + " only for " + document.getElementById('pPrice').value, "Hindi Male");
-            } else {
-                v.style.display = 'block';
-                i.style.display = 'none';
-                const API_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
-                let searchWord = content.substring(0, 10);
-                try {
-                    const res = await fetch(`https://api.pexels.com/videos/search?query=${searchWord}&per_page=1`, {
-                        headers: { Authorization: API_KEY }
-                    });
-                    const data = await res.json();
+            // Video Engine with your Key
+            const API_KEY = "hCRmy5XNPlbrU9Y2JuCrl8gBcJwQwCCgcPUQfuOYjzLh3YMVlyAwRav";
+            
+            // Logic: Sirf pehla keyword search karega taki error na aaye
+            let searchWord = txt.split(" ")[0] || "motivation";
+
+            try {
+                const res = await fetch(`https://api.pexels.com/videos/search?query=${searchWord}&per_page=1`, {
+                    headers: { Authorization: API_KEY }
+                });
+                const data = await res.json();
+                
+                if(data.videos && data.videos.length > 0) {
                     v.src = data.videos[0].video_files[0].link;
-                    v.play();
-                    responsiveVoice.speak(content, "Hindi Male");
-                } catch(err) {
-                    alert("Video fetching... Audio playing!");
-                    responsiveVoice.speak(content, "Hindi Male");
+                } else {
+                    // Backup Video agar search result na mile
+                    v.src = "https://player.vimeo.com/external/403425024.sd.mp4?s=d00465342a731d102e342750e3223f6631b0a793&profile_id=139";
                 }
+            } catch(err) {
+                // Failsafe Video
+                v.src = "https://player.vimeo.com/external/403425024.sd.mp4?s=d00465342a731d102e342750e3223f6631b0a793&profile_id=139";
             }
+            v.play();
         }
 
-        function startPayment() {
-            if (typeof Razorpay === 'undefined') return alert("System loading... Refresh karke 2 sec wait karein.");
+        function startPay() {
             var options = {
-                "key": "rzp_test_SPotf8L7S7I5pS",
+                "key": "rzp_test_SPotf8L7S7I5pS", 
                 "amount": "19900",
-                "name": "Dabix AI Pro",
-                "handler": function(response){ alert("Payment Success: " + response.razorpay_payment_id); },
+                "name": "Dabix Pro",
+                "handler": function(res){ alert("Payment Success!"); },
                 "theme": { "color": "#00f2ff" }
             };
-            var rzp = new Razorpay(options);
-            rzp.open();
+            new Razorpay(options).open();
         }
-
-        function downloadContent() { window.open(productPhoto || document.getElementById('vid-out').src, '_blank'); }
-        function instaGo() { window.location.href = "instagram://camera"; }
     </script>
 </body>
 </html>
