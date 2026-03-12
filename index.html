@@ -54,9 +54,7 @@
         <div class="music-toggle">
             <input type="checkbox" id="musicCheck" checked> Background Music Enable 🎵
         </div>
-
-        <button class="btn-gen" onclick="generate()">🎬 GENERATE & AUTOMATE</button>
-
+<button class="btn-gen" onclick="generateReel()">🔥 GENERATE & AUTOMATE</button>
         <div id="video-zone"><video id="vid" loop playsinline autoplay muted></video></div>
         
         <div id="hashtag-box"></div>
@@ -122,7 +120,23 @@
         function pay() {
             var o = { "key": "rzp_test_SPotf8L7S7I5pS", "amount": "19900", "name": "Dabix Pro", "handler": function(r){ alert("Success!"); } };
             new Razorpay(o).open();
-        }
+    
+
+async function generateReel(){
+
+const res = await fetch("/api/generateReel");
+
+const data = await res.json();
+
+if(data.output){
+
+document.getElementById("vid").src = data.output;
+
+}
+
+}
+
+</script>
     </script>
 </body>
 </html>
