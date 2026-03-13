@@ -1,5 +1,3 @@
-import Replicate from "replicate";
-
 export default async function handler(req, res) {
 
 if (req.method !== "POST") {
@@ -10,26 +8,14 @@ try {
 
 const { prompt } = req.body;
 
-const replicate = new Replicate({
-auth: process.env.REPLICATE_API_TOKEN,
+res.status(200).json({
+video:"https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
+prompt:prompt
 });
 
-const output = await replicate.run(
-"lucataco/animate-diff",
-{
-input: {
-prompt: prompt
-}
-}
-);
+} catch (e) {
 
-res.status(200).json({ video: output });
-
-} catch (error) {
-
-res.status(500).json({
-error: error.message
-});
+res.status(500).json({ error: e.message });
 
 }
 
