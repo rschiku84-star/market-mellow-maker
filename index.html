@@ -4,8 +4,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Studio</title>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
 
 body{
@@ -73,17 +71,33 @@ border-radius:10px;
 
 <button onclick="downloadVideo()">⬇ DOWNLOAD</button>
 
+<br>
 
+<button onclick="pay()">💳 BUY PRO</button>
 
 <br>
 
 <video id="video" controls></video>
 
+<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7f7c33c6a2.mp3"></audio>
+
 <script>
+
+let isPro=false
+
 function pay(){
+
 window.location.href="upi://pay?pa=9660785143-2@axl&pn=STUDIO&am=99&cu=INR"
+
+setTimeout(()=>{
+
+isPro=true
+alert("Pro unlocked")
+
+},3000)
+
 }
-</script>
+
 function showShop(){
 document.getElementById("shopBox").style.display="block"
 document.getElementById("creatorBox").style.display="none"
@@ -116,7 +130,13 @@ reader.readAsDataURL(file)
 function generateReel(){
 
 let prompt=document.getElementById("script").value
-createLocalVideo(prompt)
+
+if(!prompt){
+alert("Script likho")
+return
+}
+
+createLocalVideo()
 
 }
 
@@ -149,6 +169,8 @@ document.getElementById("video").src=url
 
 rec.start()
 
+document.getElementById("music").play()
+
 let text=document.getElementById("script").value
 
 let image=new Image()
@@ -158,68 +180,50 @@ if(img) image.src=img
 let y=600
 
 let draw=setInterval(()=>{
+
 ctx.fillStyle="black"
 ctx.fillRect(0,0,360,640)
 
+if(img){
+ctx.drawImage(image,40,100,280,280)
+}
 
+ctx.fillStyle="white"
+ctx.font="30px sans-serif"
+ctx.fillText(text,40,y)
 
-
-
-
-
-
+y-=2
 
 },30)
 
 setTimeout(()=>{
+
 clearInterval(draw)
 rec.stop()
 
-},60000)
-}
-
-async function createAIVideo(prompt){
-
-const r = await fetch("/api/generateReel",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({prompt})
-})
-
-const d = await r.json()
-
-console.log(d)
+},30000)
 
 }
 
 function downloadVideo(){
 
+if(!isPro){
+alert("Pro purchase karo")
+return
+}
+
 let video=document.getElementById("video")
+
+if(!video.src){
+alert("Pehle video banao")
+return
+}
 
 let a=document.createElement("a")
 
 a.href=video.src
-
 a.download="reel.webm"
-
 a.click()
-
-}
-
-function payPro(){
-
-var options={
-key:"YOUR_RAZORPAY_KEY",
-amount:9900,
-currency:"INR",
-name:"DABIX PRO",
-description:"Pro Upgrade"
-}
-
-var rzp=new Razorpay(options)
-rzp.open()
 
 }
 
