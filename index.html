@@ -1,3 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio</title>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<style>
+
+body{
+background:#0f0f0f;
+color:white;
+font-family:sans-serif;
+text-align:center;
+}
+
+button{
+padding:14px;
+margin:10px;
+border:none;
+border-radius:8px;
+background:#2aa198;
+color:white;
+font-size:16px;
+}
+
+textarea{
+width:90%;
+height:100px;
+background:#222;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+}
+
+video{
+width:90%;
+margin-top:20px;
+border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>STUDIO</h1>
+
+<button onclick="showShop()">Shop Mode</button>
+<button onclick="showCreator()">Creator Mode</button>
+
+<div id="shopBox" style="display:none">
+
+<input type="file" id="shopImage">
+<br>
+<button onclick="shopVideo()">Generate Shop Reel</button>
+
+</div>
+
+<div id="creatorBox">
+
+<textarea id="script" placeholder="Script likho..."></textarea>
+
+<br>
+
+<button onclick="generateReel()">🔥 GENERATE REEL</button>
+
+</div>
+
+<br>
+
+<button onclick="downloadVideo()">⬇ DOWNLOAD</button>
+
+<button onclick="payPro()">💳 PRO</button>
+
+<br>
+
+<video id="video" controls></video>
+
 <script>
 
 function showShop(){
@@ -143,3 +224,6 @@ rzp.open()
 }
 
 </script>
+
+</body>
+</html>
