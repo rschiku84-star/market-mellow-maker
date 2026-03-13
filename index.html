@@ -246,7 +246,25 @@ description:"Pro Upgrade"
 var rzp=new Razorpay(options)
 
 rzp.open()
+  
+}
+  async function createVideo(prompt){
 
+const r = await fetch("/api/generateReel",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+prompt:prompt
+})
+});
+
+const d = await r.json();
+
+console.log(d);
+
+}
 }
 
 </script></body></html>
