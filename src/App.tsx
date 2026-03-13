@@ -85,7 +85,13 @@ a.download="ai-reel.webm";
 a.click();
 
 }
+function payNow(){
 
+const upi="upi://pay?pa=9660785143@axl&pn=AIReel&am=99&cu=INR";
+
+window.location.href=upi;
+
+}
 return (
 
 <div style={{fontFamily:"Arial",background:"#0d2b45",height:"100vh",padding:"20px",color:"white"}}>
@@ -130,7 +136,12 @@ style={{width:"100%",padding:"12px",marginTop:"10px",background:"#22c55e",border
 >
 Download Reel
 </button>
-
+<button
+onClick={payNow}
+style={{width:"100%",padding:"12px",marginTop:"10px",background:"#00ff95",border:"none"}}
+>
+Buy Pro ₹99
+</button>
 </div>
 
 </div>
