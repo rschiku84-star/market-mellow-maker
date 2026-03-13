@@ -73,14 +73,17 @@ border-radius:10px;
 
 <button onclick="downloadVideo()">⬇ DOWNLOAD</button>
 
-<button onclick="payPro()">💳 PRO</button>
+
 
 <br>
 
 <video id="video" controls></video>
 
 <script>
-
+function pay(){
+window.location.href="upi://pay?pa=9660785143-2@axl&pn=STUDIO&am=99&cu=INR"
+}
+</script>
 function showShop(){
 document.getElementById("shopBox").style.display="block"
 document.getElementById("creatorBox").style.display="none"
@@ -158,26 +161,21 @@ let draw=setInterval(()=>{
 ctx.fillStyle="black"
 ctx.fillRect(0,0,360,640)
 
-ctx.fillStyle="white"
-ctx.font="28px Arial"
-ctx.fillText(text,20,300)
 
 
 
 
-ctx.fillStyle="white"
-ctx.font="24px sans-serif"
-ctx.fillText(text,20,y)
 
-y-=2
+
+
 
 },30)
 
 setTimeout(()=>{
 clearInterval(draw)
 rec.stop()
-},8000)
 
+},60000)
 }
 
 async function createAIVideo(prompt){
