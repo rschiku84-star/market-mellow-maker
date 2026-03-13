@@ -3,7 +3,9 @@ import { useState } from "react";
 export default function App() {
 
 const [videoUrl,setVideoUrl]=useState("");
-
+const [mode,setMode]=useState("creator");
+const [topic,setTopic]=useState("");
+const [script,setScript]=useState("");
 function generateReel(e:any){
 
 const file=e.target.files[0];
@@ -89,7 +91,24 @@ return (
 <div style={{fontFamily:"Arial",background:"#0d2b45",height:"100vh",padding:"20px",color:"white"}}>
 
 <h2 style={{textAlign:"center"}}>AI Reel Maker PRO</h2>
+<div style={{marginTop:"20px"}}>
 
+<button 
+onClick={()=>setMode("creator")}
+style={{padding:"10px",marginRight:"10px"}
+}
+>
+Creator Mode
+</button>
+
+<button 
+onClick={()=>setMode("shop")}
+style={{padding:"10px"}}
+>
+Shop Mode
+</button>
+
+</div>
 <div style={{maxWidth:"400px",margin:"auto",background:"#163a5f",padding:"20px",borderRadius:"10px"}}>
 
 <input
