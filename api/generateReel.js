@@ -1,22 +1,36 @@
+import Replicate from "replicate";
+
 export default async function handler(req, res) {
 
-const r = await fetch(
-"https://api.pexels.com/videos/search?query=reels&per_page=3",
-{
-headers:{
-Authorization: process.env.PEXELS_KEY
+if (req.method !== "POST") {
+return res.status(405).json({ error: "Method not allowed" });
 }
-})
 
-const data = await r.json()
+try {
 
-const video = data.videos[Math.floor(Math.random()*data.videos.length)]
+const { prompt } = req.body;
 
-res.status(200).json({
-video: video.video_files[0].link,
-thumbnail: video.image,
-hashtags: "#reels #viral #shopnow #trending",
-music: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8cBa73467.mp3"
-})
+const replicate = new Replicate({
+auth: process.env.REPLICATE_API_TOKEN,
+});
+
+const output = await replicate.run(
+"lucataco/animate-diff",
+{
+input: {
+prompt: prompt
+}
+}
+);
+
+res.status(200).json({ video: output });
+
+} catch (error) {
+
+res.status(500).json({
+error: error.message
+});
+
+}
 
 }
