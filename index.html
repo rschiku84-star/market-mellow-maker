@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>DABIX MASTER STUDIO</title>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<style>
+<!DOCTYPE html><html>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>DABIX MASTER STUDIO</title><script src="https://checkout.razorpay.com/v1/checkout.js"></script><style>
 
 body{
 background:#0b0b0b;
@@ -51,6 +42,16 @@ color:white;
 padding:10px;
 }
 
+input{
+width:100%;
+margin-top:10px;
+padding:10px;
+background:#222;
+border:none;
+border-radius:10px;
+color:white;
+}
+
 button{
 width:100%;
 padding:14px;
@@ -79,70 +80,75 @@ margin-top:15px;
 border-radius:10px;
 }
 
-</style>
+</style></head><body><div class="card"><h2>🔥 DABIX MASTER STUDIO</h2><div class="tabs"><button class="tab" onclick="showShop()">Shop Mode</button>
 
-</head>
+<button class="tab" style="background:#56d1d6" onclick="showCreator()">Creator Mode</button>
 
-<body>
+</div><!-- SHOP MODE --><div id="shopBox" style="display:none"><input id="pName" placeholder="Product Name"><input id="pPrice" placeholder="Price"><input type="file" id="shopImage"><button class="generate" onclick="shopVideo()">🎬 GENERATE PRODUCT VIDEO
 
-<div class="card">
-
-<h2>🔥 DABIX MASTER STUDIO</h2>
-
-<div class="tabs">
-
-<button class="tab">Shop Mode</button>
-
-<button class="tab" style="background:#56d1d6">Creator Mode</button>
-
-</div>
-
-<textarea id="script">
+</button></div><!-- CREATOR MODE --><div id="creatorBox"><textarea id="script">
 
 Laptop / mobile use करते हुए
 Dialogue:
 "Par kuch log isi mobile se paisa bhi kama rahe hain."
 
-</textarea>
-
-<br>
-
-<label>
+</textarea><br><label>
 <input type="checkbox" id="music" checked>
 🎵 Music
-</label>
+</label><button class="generate" onclick="generateReel()">🔥 GENERATE REEL
 
-<button class="generate" onclick="generateReel()">
+</button><button class="download" onclick="downloadVideo()">⬇ DOWNLOAD
 
-🔥 GENERATE REEL
+</button><button class="pro" onclick="payPro()">💳 PRO
 
-</button>
+</button></div><video id="video" controls></video>
 
-<button class="download" onclick="downloadVideo()">
+<p style="font-size:12px">#viral #reels #trending #shopindia #marketing #instagramreels #viralvideo
 
-⬇ DOWNLOAD
+</p></div><script>
 
-</button>
+function showShop(){
 
-<button class="pro" onclick="payPro()">
+document.getElementById("shopBox").style.display="block"
+document.getElementById("creatorBox").style.display="none"
 
-💳 PRO
+}
 
-</button>
+function showCreator(){
 
-<video id="video" controls></video>
+document.getElementById("shopBox").style.display="none"
+document.getElementById("creatorBox").style.display="block"
 
-<p style="font-size:12px">
+}
 
-#viral #reels #trending #shopindia #marketing #instagramreels #viralvideo
+function shopVideo(){
 
-</p>
+let file=document.getElementById("shopImage").files[0]
 
-</div>
+if(!file){
+alert("Image upload karo")
+return
+}
 
-<script>
+let reader=new FileReader()
+
+reader.onload=function(){
+
+createVideo(reader.result)
+
+}
+
+reader.readAsDataURL(file)
+
+}
 
 function generateReel(){
+
+createVideo(null)
+
+}
+
+function createVideo(img){
 
 let canvas=document.createElement("canvas")
 
@@ -150,16 +156,6 @@ canvas.width=360
 canvas.height=640
 
 let ctx=canvas.getContext("2d")
-
-ctx.fillStyle="black"
-ctx.fillRect(0,0,360,640)
-
-ctx.fillStyle="white"
-ctx.font="24px sans-serif"
-
-let text=document.getElementById("script").value
-
-ctx.fillText(text,20,300)
 
 let stream=canvas.captureStream(30)
 
@@ -181,7 +177,41 @@ video.src=url
 
 rec.start()
 
-setTimeout(()=>rec.stop(),10000)
+let text=document.getElementById("script").value
+
+let image=new Image()
+
+if(img) image.src=img
+
+let y=600
+
+let draw=setInterval(()=>{
+
+ctx.fillStyle="black"
+ctx.fillRect(0,0,360,640)
+
+if(img){
+
+ctx.drawImage(image,0,0,360,640)
+
+}
+
+ctx.fillStyle="white"
+ctx.font="24px sans-serif"
+
+ctx.fillText(text,20,y)
+
+y-=2
+
+},30)
+
+setTimeout(()=>{
+
+clearInterval(draw)
+
+rec.stop()
+
+},8000)
 
 }
 
@@ -219,8 +249,4 @@ rzp.open()
 
 }
 
-</script>
-
-</body>
-
-</html>
+</script></body></html>
