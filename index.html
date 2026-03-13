@@ -1,124 +1,13 @@
-<!DOCTYPE html><html>
-<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>DABIX MASTER STUDIO</title><script src="https://checkout.razorpay.com/v1/checkout.js"></script><style>
-
-body{
-background:#0b0b0b;
-color:white;
-font-family:sans-serif;
-display:flex;
-justify-content:center;
-padding:20px;
-}
-
-.card{
-width:400px;
-background:#161616;
-padding:20px;
-border-radius:20px;
-}
-
-.tabs{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
-
-.tab{
-flex:1;
-padding:10px;
-border-radius:10px;
-border:none;
-background:#2a2a2a;
-color:white;
-}
-
-textarea{
-width:100%;
-height:100px;
-background:#222;
-border:none;
-border-radius:10px;
-color:white;
-padding:10px;
-}
-
-input{
-width:100%;
-margin-top:10px;
-padding:10px;
-background:#222;
-border:none;
-border-radius:10px;
-color:white;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-margin-top:10px;
-font-weight:bold;
-}
-
-.generate{
-background:#56d1d6;
-}
-
-.download{
-background:#333;
-color:white;
-}
-
-.pro{
-background:#ffbf00;
-}
-
-video{
-width:100%;
-margin-top:15px;
-border-radius:10px;
-}
-
-</style></head><body><div class="card"><h2>🔥 DABIX MASTER STUDIO</h2><div class="tabs"><button class="tab" onclick="showShop()">Shop Mode</button>
-
-<button class="tab" style="background:#56d1d6" onclick="showCreator()">Creator Mode</button>
-
-</div><!-- SHOP MODE --><div id="shopBox" style="display:none"><input id="pName" placeholder="Product Name"><input id="pPrice" placeholder="Price"><input type="file" id="shopImage"><button class="generate" onclick="shopVideo()">🎬 GENERATE PRODUCT VIDEO
-
-</button></div><!-- CREATOR MODE --><div id="creatorBox"><textarea id="script">
-
-Laptop / mobile use करते हुए
-Dialogue:
-"Par kuch log isi mobile se paisa bhi kama rahe hain."
-
-</textarea><br><label>
-<input type="checkbox" id="music" checked>
-🎵 Music
-</label><button class="generate" onclick="generateReel()">🔥 GENERATE REEL
-
-</button><button class="download" onclick="downloadVideo()">⬇ DOWNLOAD
-
-</button><button class="pro" onclick="payPro()">💳 PRO
-
-</button></div><video id="video" controls></video>
-
-<p style="font-size:12px">#viral #reels #trending #shopindia #marketing #instagramreels #viralvideo
-
-</p></div><script>
+<script>
 
 function showShop(){
-
 document.getElementById("shopBox").style.display="block"
 document.getElementById("creatorBox").style.display="none"
-
 }
 
 function showCreator(){
-
 document.getElementById("shopBox").style.display="none"
 document.getElementById("creatorBox").style.display="block"
-
 }
 
 function shopVideo(){
@@ -133,9 +22,7 @@ return
 let reader=new FileReader()
 
 reader.onload=function(){
-
-createVideo(reader.result)
-
+createLocalVideo(reader.result)
 }
 
 reader.readAsDataURL(file)
@@ -144,11 +31,12 @@ reader.readAsDataURL(file)
 
 function generateReel(){
 
-createVideo(null)
+let prompt=document.getElementById("script").value
+createAIVideo(prompt)
 
 }
 
-function createVideo(img){
+function createLocalVideo(img){
 
 let canvas=document.createElement("canvas")
 
@@ -171,7 +59,7 @@ let blob=new Blob(chunks,{type:"video/webm"})
 
 let url=URL.createObjectURL(blob)
 
-video.src=url
+document.getElementById("video").src=url
 
 }
 
@@ -191,14 +79,11 @@ ctx.fillStyle="black"
 ctx.fillRect(0,0,360,640)
 
 if(img){
-
 ctx.drawImage(image,0,0,360,640)
-
 }
 
 ctx.fillStyle="white"
 ctx.font="24px sans-serif"
-
 ctx.fillText(text,20,y)
 
 y-=2
@@ -206,16 +91,31 @@ y-=2
 },30)
 
 setTimeout(()=>{
-
 clearInterval(draw)
-
 rec.stop()
-
 },8000)
 
 }
 
+async function createAIVideo(prompt){
+
+const r = await fetch("/api/generateReel",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({prompt})
+})
+
+const d = await r.json()
+
+console.log(d)
+
+}
+
 function downloadVideo(){
+
+let video=document.getElementById("video")
 
 let a=document.createElement("a")
 
@@ -230,41 +130,16 @@ a.click()
 function payPro(){
 
 var options={
-
 key:"YOUR_RAZORPAY_KEY",
-
 amount:9900,
-
 currency:"INR",
-
 name:"DABIX PRO",
-
 description:"Pro Upgrade"
-
 }
 
 var rzp=new Razorpay(options)
-
 rzp.open()
-  
-}
-  async function createVideo(prompt){
-
-const r = await fetch("/api/generateReel",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-prompt:prompt
-})
-});
-
-const d = await r.json();
-
-console.log(d);
 
 }
-}
 
-</script></body></html>
+</script>
