@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   Video,
+  ShoppingBag,
   Lightbulb,
   Zap,
   MessageSquare,
