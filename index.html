@@ -1,234 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Studio</title>
-
-<style>
-
-body{
-background:#0f0f0f;
-color:white;
-font-family:sans-serif;
-text-align:center;
-}
-
-button{
-padding:14px;
-margin:10px;
-border:none;
-border-radius:8px;
-background:#2aa198;
-color:white;
-font-size:16px;
-}
-
-textarea{
-width:90%;
-height:100px;
-background:#222;
-color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-}
-
-video{
-width:90%;
-margin-top:20px;
-border-radius:10px;
-}
-
-</style>
-<meta name="google-site-verification" content="tz6SYsEWl2Jkda4SSuDw_tY_HmA9bPBqdgRGuVJC_oA" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Mellow Maker - rschiku84</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src 'self' https://www.youtube.com; media-src 'self' blob: data:;">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: rgba(255,255,255,0.1); padding: 20px; text-align: center; color: white; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .video-section, .products-section { margin-bottom: 30px; }
+        .video-player { width: 100%; max-width: 800px; margin: 0 auto; display: block; background: #000; }
+        .upload-btn { background: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .upload-btn:hover { background: #45a049; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #ddd; border-radius: 10px; padding: 15px; text-align: center; }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
+        .price { font-size: 24px; color: #4CAF50; font-weight: bold; }
+    </style>
 </head>
-
 <body>
-
-<h1>STUDIO</h1>
-
-<button onclick="showShop()">Shop Mode</button>
-<button onclick="showCreator()">Creator Mode</button>
-
-<div id="shopBox" style="display:none">
-
-<input type="file" id="shopImage">
-<br>
-<button onclick="shopVideo()">Generate Shop Reel</button>
-
-</div>
-
-<div id="creatorBox">
-
-<textarea id="script" placeholder="Script likho..."></textarea>
-
-<br>
-
-<button onclick="generateReel()">🔥 GENERATE REEL</button>
-
-</div>
-
-<br>
-
-<button onclick="downloadVideo()">⬇ DOWNLOAD</button>
-
-<br>
-
-<button onclick="pay()">💳 BUY PRO</button>
-
-<br>
-
-<video id="video" controls></video>
-
-<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7f7c33c6a2.mp3"></audio>
-
-<script>
-
-let isPro=false
-
-function pay(){
-
-window.location.href="upi://pay?pa=9660785143-2@axl&pn=STUDIO&am=99&cu=INR"
-
-setTimeout(()=>{
-
-isPro=true
-alert("Pro unlocked")
-
-},3000)
-
-}
-
-function showShop(){
-document.getElementById("shopBox").style.display="block"
-document.getElementById("creatorBox").style.display="none"
-}
-
-function showCreator(){
-document.getElementById("shopBox").style.display="none"
-document.getElementById("creatorBox").style.display="block"
-}
-
-function shopVideo(){
-
-let file=document.getElementById("shopImage").files[0]
-
-if(!file){
-alert("Image upload karo")
-return
-}
-
-let reader=new FileReader()
-
-reader.onload=function(){
-createLocalVideo(reader.result)
-}
-
-reader.readAsDataURL(file)
-
-}
-
-function generateReel(){
-
-let prompt=document.getElementById("script").value
-
-if(!prompt){
-alert("Script likho")
-return
-}
-
-createLocalVideo()
-
-}
-
-function createLocalVideo(img){
-
-let canvas=document.createElement("canvas")
-
-canvas.width=360
-canvas.height=640
-
-let ctx=canvas.getContext("2d")
-
-let stream=canvas.captureStream(30)
-
-let rec=new MediaRecorder(stream)
-
-let chunks=[]
-
-rec.ondataavailable=e=>chunks.push(e.data)
-
-rec.onstop=()=>{
-
-let blob=new Blob(chunks,{type:"video/webm"})
-
-let url=URL.createObjectURL(blob)
-
-document.getElementById("video").src=url
-
-}
-
-rec.start()
-
-document.getElementById("music").play()
-
-let text=document.getElementById("script").value
-
-let image=new Image()
-
-if(img) image.src=img
-
-let y=600
-
-let draw=setInterval(()=>{
-
-ctx.fillStyle="black"
-ctx.fillRect(0,0,360,640)
-
-if(img){
-ctx.drawImage(image,40,100,280,280)
-}
-
-ctx.fillStyle="white"
-ctx.font="30px sans-serif"
-ctx.fillText(text,40,y)
-
-y-=2
-
-},30)
-
-setTimeout(()=>{
-
-clearInterval(draw)
-rec.stop()
-
-},30000)
-
-}
-
-function downloadVideo(){
-
-if(!isPro){
-alert("Pro purchase karo")
-return
-}
-
-let video=document.getElementById("video")
-
-if(!video.src){
-alert("Pehle video banao")
-return
-}
-
-let a=document.createElement("a")
-
-a.href=video.src
-a.download="reel.webm"
-a.click()
-
-}
-
-</script>
-
+    <div class="header">
+        <h1>🎵 Market Mellow Maker</h1>
+        <p>rschiku84 द्वारा बनाया गया | वीडियो + प्रोडक्ट मार्केटप्लेस</p>
+    </div>
+    
+    <div class="container">
+        <!-- वीडियो सेक्शन -->
+        <div class="video-section">
+            <h2>📹 अपना वीडियो अपलोड/प्ले करें</h2>
+            <video id="mainVideo" class="video-player" controls poster="https://via.placeholder.com/800x450?text=Video+Upload+Karो">
+                <source src="" type="video/mp4">
+                ब्राउज़र वीडियो सपोर्ट नहीं करता।
+            </video>
+            <br><br>
+            <input type="file" id="videoUpload" accept="video/*" style="display:none;">
+            <button class="upload-btn" onclick="uploadVideo()">वीडियो अपलोड करें</button>
+            <p>या YouTube लिंक पेस्ट करें:</p>
+            <input type="text" id="youtubeUrl" placeholder="https://youtube.com/watch?v=..." style="width:100%; padding:10px;">
+            <button class="upload-btn" onclick="loadYouTube()">YouTube लोड करें</button>
+        </div>
+
+        <!-- प्रोडक्ट्स सेक्शन -->
+        <div class="products-section">
+            <h2>🛒 प्रोडक्ट्स बेचें/खरीदें</h2>
+            <div class="product-grid" id="productGrid">
+                <!-- प्रोडक्ट्स यहां लोड होंगे -->
+            </div>
+            <button class="upload-btn" onclick="addProduct()" style="margin-top:20px;">नया प्रोडक्ट ऐड करें</button>
+        </div>
+    </div>
+
+    <script>
+        // वीडियो अपलोड फंक्शन
+        function uploadVideo() {
+            const input = document.getElementById('videoUpload');
+            input.click();
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file && file.size < 10*1024*1024) { // 10MB लिमिट
+                    const url = URL.createObjectURL(file);
+                    document.getElementById('mainVideo').src = url;
+                    alert('वीडियो लोड हो गया! 🎉');
+                } else {
+                    alert('10MB से छोटा वीडियो चुनें!');
+                }
+            };
+        }
+
+        // YouTube एम्बेड
+        function loadYouTube() {
+            const url = document.getElementById('youtubeUrl').value;
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                document.querySelector('.video-player').outerHTML = 
+                `<iframe class="video-player" src="${url.replace('watch?v=', 'embed/')}" frameborder="0" allowfullscreen></iframe>`;
+                alert('YouTube वीडियो लोड हो गया!');
+            } else {
+                alert('सही YouTube लिंक डालें!');
+            }
+        }
+
+        // सैंपल प्रोडक्ट्स
+        const products = [
+            { name: 'Mellow T-Shirt', price: 499, img: 'https://via.placeholder.com/250x200?text=T-Shirt' },
+            { name: 'Market Cap', price: 999, img: 'https://via.placeholder.com/250x200?text=Cap' },
+            { name: 'Video Course', price: 1999, img: 'https://via.placeholder.com/250x200?text=Course' }
+        ];
+
+        // प्रोडक्ट्स दिखाएं
+        function loadProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h3>${p.name}</h3>
+                    <div class="price">₹${p.price}</div>
+                    <button class="upload-btn" onclick="buy('${p.name}')">खरीदें</button>
+                </div>
+            `).join('');
+        }
+
+        function addProduct() {
+            const name = prompt('प्रोडक्ट नाम:');
+            const price = prompt('कीमत:');
+            if (name && price) {
+                products.push({ name, price: parseInt(price), img: 'https://via.placeholder.com/250x200?text=New+Product' });
+                loadProducts();
+            }
+        }
+
+        function buy(name) {
+            alert(`${name} खरीद लिया! 💰`);
+        }
+
+        // पेज लोड पर प्रोडक्ट्स दिखाएं
+        loadProducts();
+    </script>
 </body>
 </html>
