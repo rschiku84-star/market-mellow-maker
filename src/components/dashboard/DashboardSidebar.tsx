@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   Video,
+  ShoppingBag,
   Lightbulb,
   Zap,
   MessageSquare,
@@ -105,6 +106,10 @@ const DashboardSidebar = () => {
         ))}
 
         <div className="pt-4 mt-4 border-t border-border space-y-0.5">
+          <NavLink to="/dashboard/shop-catalog" className={linkClass}>
+            <ShoppingBag className="w-4 h-4" />
+            Shop Mode
+          </NavLink>
           <NavLink to="/dashboard/my-content" className={linkClass}>
             <FolderOpen className="w-4 h-4" />
             My Content
