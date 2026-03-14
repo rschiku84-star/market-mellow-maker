@@ -1,151 +1,111 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+
+import Index from "@/pages/Index";
+import LoginPage from "@/pages/LoginPage";
+import SignupPage from "@/pages/SignupPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import Dashboard from "@/pages/Dashboard";
+import DashboardOverview from "@/pages/DashboardOverview";
+import ProductsPage from "@/pages/ProductsPage";
+import NewProductPage from "@/pages/NewProductPage";
+import EditProductPage from "@/pages/EditProductPage";
+import VideoGeneratorPage from "@/pages/VideoGeneratorPage";
+import ViralIdeasPage from "@/pages/ViralIdeasPage";
+import HookGeneratorPage from "@/pages/HookGeneratorPage";
+import CaptionGeneratorPage from "@/pages/CaptionGeneratorPage";
+import ScriptConverterPage from "@/pages/ScriptConverterPage";
+import TikTokIdeasPage from "@/pages/TikTokIdeasPage";
+import FacelessYouTubePage from "@/pages/FacelessYouTubePage";
+import ThumbnailIdeasPage from "@/pages/ThumbnailIdeasPage";
+import ReelCreatorPage from "@/pages/ReelCreatorPage";
+import ContentRepurposerPage from "@/pages/ContentRepurposerPage";
+import TrendingTopicsPage from "@/pages/TrendingTopicsPage";
+import ContentCalendarPage from "@/pages/ContentCalendarPage";
+import ViralHookLibraryPage from "@/pages/ViralHookLibraryPage";
+import MyContentPage from "@/pages/MyContentPage";
+import MyVideosPage from "@/pages/MyVideosPage";
+import SettingsPage from "@/pages/SettingsPage";
+import SubscriptionPage from "@/pages/SubscriptionPage";
+import StorefrontPage from "@/pages/StorefrontPage";
+import PublicProductsPage from "@/pages/PublicProductsPage";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
+import TermsPage from "@/pages/TermsPage";
+import AIStudioPage from "@/pages/AIStudioPage";
+import AnalyticsPage from "@/pages/AnalyticsPage";
+import SocialMediaPage from "@/pages/SocialMediaPage";
+import ImageToReelPage from "@/pages/ImageToReelPage";
+import ScriptToVideoPage from "@/pages/ScriptToVideoPage";
+import ProductAdPage from "@/pages/ProductAdPage";
+import ShopCatalogPage from "@/pages/ShopCatalogPage";
+import NotFound from "@/pages/NotFound";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/storefront" element={<StorefrontPage />} />
+          <Route path="/products" element={<PublicProductsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
 
-const [videoUrl,setVideoUrl]=useState("");
-const [mode,setMode]=useState("creator");
-const [topic,setTopic]=useState("");
-const [script,setScript]=useState("");
-function generateReel(e:any){
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DashboardOverview />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="products/new" element={<NewProductPage />} />
+            <Route path="products/:id/edit" element={<EditProductPage />} />
+            <Route path="shop-catalog" element={<ShopCatalogPage />} />
+            <Route path="video-generator" element={<VideoGeneratorPage />} />
+            <Route path="viral-ideas" element={<ViralIdeasPage />} />
+            <Route path="hook-generator" element={<HookGeneratorPage />} />
+            <Route path="caption-generator" element={<CaptionGeneratorPage />} />
+            <Route path="script-converter" element={<ScriptConverterPage />} />
+            <Route path="tiktok-ideas" element={<TikTokIdeasPage />} />
+            <Route path="faceless-youtube" element={<FacelessYouTubePage />} />
+            <Route path="thumbnail-ideas" element={<ThumbnailIdeasPage />} />
+            <Route path="reel-creator" element={<ReelCreatorPage />} />
+            <Route path="content-repurposer" element={<ContentRepurposerPage />} />
+            <Route path="trending-topics" element={<TrendingTopicsPage />} />
+            <Route path="content-calendar" element={<ContentCalendarPage />} />
+            <Route path="viral-hooks" element={<ViralHookLibraryPage />} />
+            <Route path="my-content" element={<MyContentPage />} />
+            <Route path="my-videos" element={<MyVideosPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="subscription" element={<SubscriptionPage />} />
+            <Route path="ai-studio" element={<AIStudioPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="social-media" element={<SocialMediaPage />} />
+            <Route path="image-to-reel" element={<ImageToReelPage />} />
+            <Route path="script-to-video" element={<ScriptToVideoPage />} />
+            <Route path="product-ad" element={<ProductAdPage />} />
+          </Route>
 
-const file=e.target.files[0];
-if(!file){
-alert("Upload image");
-return;
-}
-
-const img=new Image();
-img.src=URL.createObjectURL(file);
-
-img.onload=()=>{
-
-const canvas=document.createElement("canvas");
-canvas.width=720;
-canvas.height=1280;
-
-const ctx=canvas.getContext("2d");
-
-const stream=canvas.captureStream(30);
-const recorder=new MediaRecorder(stream);
-
-let chunks:any=[];
-
-recorder.ondataavailable=e=>chunks.push(e.data);
-
-recorder.onstop=()=>{
-
-const blob=new Blob(chunks,{type:"video/webm"});
-const url=URL.createObjectURL(blob);
-setVideoUrl(url);
-
-};
-
-recorder.start();
-
-let frame=0;
-
-function draw(){
-
-ctx!.fillStyle="black";
-ctx!.fillRect(0,0,720,1280);
-
-const zoom=1+(frame*0.0005);
-
-const w=720*zoom;
-const h=900*zoom;
-
-ctx!.drawImage(img,(720-w)/2,(900-h)/2,w,h);
-
-frame++;
-
-if(frame<900){
-requestAnimationFrame(draw);
-}else{
-recorder.stop();
-}
-
-}
-
-draw();
-
-};
-
-}
-
-function download(){
-
-if(!videoUrl){
-alert("Generate reel first");
-return;
-}
-
-const a=document.createElement("a");
-a.href=videoUrl;
-a.download="ai-reel.webm";
-a.click();
-
-}
-function payNow(){
-
-const upi="upi://pay?pa=9660785143@axl&pn=AIReel&am=99&cu=INR";
-
-window.location.href=upi;
-
-}
-return (
-
-<div style={{fontFamily:"Arial",background:"#0d2b45",height:"100vh",padding:"20px",color:"white"}}>
-
-<h2 style={{textAlign:"center"}}>AI Reel Maker PRO</h2>
-<div style={{marginTop:"20px"}}>
-
-<button 
-onClick={()=>setMode("creator")}
-style={{padding:"10px",marginRight:"10px"}
-}
->
-Creator Mode
-</button>
-
-<button 
-onClick={()=>setMode("shop")}
-style={{padding:"10px"}}
->
-Shop Mode
-</button>
-
-</div>
-<div style={{maxWidth:"400px",margin:"auto",background:"#163a5f",padding:"20px",borderRadius:"10px"}}>
-
-<input
-type="file"
-accept="image/*"
-onChange={generateReel}
-style={{width:"100%",marginBottom:"10px"}}
-/>
-
-<video
-src={videoUrl}
-controls
-style={{width:"100%",marginTop:"10px"}}
-/>
-
-<button
-onClick={download}
-style={{width:"100%",padding:"12px",marginTop:"10px",background:"#22c55e",border:"none"}}
->
-Download Reel
-</button>
-<button
-onClick={payNow}
-style={{width:"100%",padding:"12px",marginTop:"10px",background:"#00ff95",border:"none"}}
->
-Buy Pro ₹99
-</button>
-</div>
-
-</div>
-
-);
-
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
