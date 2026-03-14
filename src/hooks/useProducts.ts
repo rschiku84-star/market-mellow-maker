@@ -11,6 +11,7 @@ export interface Product {
   category: string;
   status: "active" | "draft" | "archived";
   images: string[];
+  whatsappNumber?: string;
   createdAt: Date;
 }
 
